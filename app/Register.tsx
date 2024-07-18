@@ -1,30 +1,116 @@
 import React, { useState } from 'react';
 import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { useNavigation } from 'expo-router';
+import axios from 'axios';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
+
+type RootStackParamList = {
+  'index': undefined;
+  'main': undefined;
+};
+
+type RegistrationScreenNavigationProp = StackNavigationProp<RootStackParamList, 'index'>;
 
 const Registration: React.FC = () => {
+  const [name, setName] = useState<string>('');
+  const [familyName, setFamilyName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
   const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [verificationCode, setVerificationCode] = useState<string>('');
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const navigation = useNavigation();
+  const [isVerified, setIsVerified] = useState<boolean>(false);
+
+  const navigation = useNavigation<RegistrationScreenNavigationProp>();
 
   const validatePhoneNumber = (phone: string): boolean => {
-    const phoneRegex = /^[0-9]{10}$/; // Simple validation for 10-digit phone number
-    return phoneRegex.test(phone);
+    const phoneNumber = parsePhoneNumberFromString(phone, 'IL');
+    return phoneNumber?.isValid() || false;
   };
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (validatePhoneNumber(phoneNumber)) {
-      setIsSubmitted(true);
-      Alert.alert('Success', 'Phone number registered successfully!');
-      // Here, you would typically send the phone number to your backend server
+      try {
+        const response = await axios.post('http://127.0.0.1:5000/register', {
+          name,
+          family_name: familyName,
+          email,
+          phone_number: phoneNumber,
+        });
+        setIsSubmitted(true);
+        Alert.alert('Success', response.data.message);
+        // Navigate to another page if needed
+      } catch (err) {
+        if (axios.isAxiosError(err)) {
+          Alert.alert('Error', err.response?.data?.error || 'Failed to register user');
+        } else {
+          Alert.alert('Error', 'An unexpected error occurred');
+        }
+      }
     } else {
-      Alert.alert('Error', 'Please enter a valid 10-digit phone number.');
+      Alert.alert('Error', 'Please enter a valid phone number.');
+    }
+  };
+
+  const sendVerificationCode = async () => {
+    if (validatePhoneNumber(phoneNumber)) {
+      try {
+        // Replace with your verification service endpoint
+        await axios.post('http://127.0.0.1:5000/send-code', {
+          phone_number: phoneNumber,
+        });
+        Alert.alert('Verification code sent');
+      } catch (err) {
+        Alert.alert('Error', 'Failed to send verification code');
+      }
+    } else {
+      Alert.alert('Error', 'Please enter a valid phone number.');
+    }
+  };
+
+  const verifyCode = async () => {
+    try {
+      // Replace with your verification service endpoint
+      const response = await axios.post('http://127.0.0.1:5000/verify-code', {
+        phone_number: phoneNumber,
+        code: verificationCode,
+      });
+      if (response.data.verified) {
+        setIsVerified(true);
+        Alert.alert('Phone number verified successfully!');
+      } else {
+        Alert.alert('Error', 'Invalid verification code');
+      }
+    } catch (err) {
+      Alert.alert('Error', 'Failed to verify code');
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.form}>
+        <Text style={styles.label}>Enter your name:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Name"
+          value={name}
+          onChangeText={setName}
+        />
+        <Text style={styles.label}>Enter your family name:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Family Name"
+          value={familyName}
+          onChangeText={setFamilyName}
+        />
+        <Text style={styles.label}>Enter your email:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+        />
         <Text style={styles.label}>Enter your phone number:</Text>
         <TextInput
           style={styles.input}
@@ -32,11 +118,19 @@ const Registration: React.FC = () => {
           keyboardType="numeric"
           value={phoneNumber}
           onChangeText={setPhoneNumber}
-          maxLength={10} // Limiting the input to 10 digits
         />
-        <Button title="Register" onPress={handleRegister} />
+        <Button title="Send Verification Code" onPress={sendVerificationCode} />
+        <TextInput
+          style={styles.input}
+          placeholder="Verification Code"
+          keyboardType="numeric"
+          value={verificationCode}
+          onChangeText={setVerificationCode}
+        />
+        <Button title="Verify Code" onPress={verifyCode} />
+        <Button title="Register" onPress={handleRegister} disabled={!isVerified} />
         {isSubmitted && <Text style={styles.success}>Registration Successful!</Text>}
-        <Button title="Go to Another Page" onPress={() => navigation.navigate('main')} />
+        <Button title="Go to Main Page" onPress={() => navigation.navigate('main')} />
       </View>
     </SafeAreaView>
   );

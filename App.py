@@ -1,24 +1,23 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from twilio.rest import Client
-import os
+# from twilio.rest import Client
 
 app = Flask(__name__)
 CORS(app)
 
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://myuser:mypassword@localhost/mydatabase'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://AmrKal:124487@localhost:5432/PowerTrack'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# Twilio configuration
+# Twilio configuration - replace with your actual Twilio credentials
 TWILIO_ACCOUNT_SID = 'your_account_sid'
 TWILIO_AUTH_TOKEN = 'your_auth_token'
 TWILIO_VERIFICATION_SERVICE_SID = 'your_verification_service_sid'
 
-client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+# client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
 # Model definition
 class User(db.Model):
@@ -32,7 +31,8 @@ class User(db.Model):
         return f'<User {self.phone_number}>'
 
 # Initialize the database
-db.create_all()
+with app.app_context():
+    db.create_all()
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -66,7 +66,7 @@ def send_code():
         return jsonify({'error': 'Phone number is required'}), 400
 
     try:
-        client.verify.services(TWILIO_VERIFICATION_SERVICE_SID).verifications.create(to=phone_number, channel='sms')
+        # Mock response instead of calling Twilio API
         return jsonify({'message': 'Verification code sent'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -81,13 +81,10 @@ def verify_code():
         return jsonify({'error': 'Phone number and code are required'}), 400
 
     try:
-        verification_check = client.verify.services(TWILIO_VERIFICATION_SERVICE_SID).verification_checks.create(to=phone_number, code=code)
-        if verification_check.status == 'approved':
-            return jsonify({'verified': True}), 200
-        else:
-            return jsonify({'verified': False}), 400
+        # Mock response instead of calling Twilio API
+        return jsonify({'verified': True}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=8001)

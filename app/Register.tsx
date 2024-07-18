@@ -31,7 +31,7 @@ const Registration: React.FC = () => {
   const handleRegister = async () => {
     if (validatePhoneNumber(phoneNumber)) {
       try {
-        const response = await axios.post('http://127.0.0.1:5000/register', {
+        const response = await axios.post('http://127.0.0.1:5432/register', {
           name,
           family_name: familyName,
           email,
@@ -55,8 +55,7 @@ const Registration: React.FC = () => {
   const sendVerificationCode = async () => {
     if (validatePhoneNumber(phoneNumber)) {
       try {
-        // Replace with your verification service endpoint
-        await axios.post('http://127.0.0.1:5000/send-code', {
+        await axios.post('http://127.0.0.1:5432/send-code', {
           phone_number: phoneNumber,
         });
         Alert.alert('Verification code sent');
@@ -70,8 +69,7 @@ const Registration: React.FC = () => {
 
   const verifyCode = async () => {
     try {
-      // Replace with your verification service endpoint
-      const response = await axios.post('http://127.0.0.1:5000/verify-code', {
+      const response = await axios.post('http://127.0.0.1:5432/verify-code', {
         phone_number: phoneNumber,
         code: verificationCode,
       });

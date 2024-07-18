@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://AmrKal:124487@localhost:5432/PowerTrack'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://amrkal:124487@localhost:5432/powertrack'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -36,6 +36,7 @@ with app.app_context():
 
 @app.route('/register', methods=['POST'])
 def register():
+    print("Sending verification code...")
     data = request.json
     phone_number = data.get('phone_number')
     name = data.get('name')
@@ -59,6 +60,7 @@ def register():
 
 @app.route('/send-code', methods=['POST'])
 def send_code():
+    print("Sending verification code...")
     data = request.json
     phone_number = data.get('phone_number')
 
@@ -73,6 +75,7 @@ def send_code():
 
 @app.route('/verify-code', methods=['POST'])
 def verify_code():
+    print("Sending verification code...")
     data = request.json
     phone_number = data.get('phone_number')
     code = data.get('code')
@@ -87,4 +90,4 @@ def verify_code():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8001)
+    app.run(debug=True,host='192.168.0.153', port=5000)

@@ -11,6 +11,8 @@ type RootStackParamList = {
 };
 
 type RegistrationScreenNavigationProp = StackNavigationProp<RootStackParamList, 'index'>;
+const baseURL = 'http://192.168.0.153:5000'; // Replace with your Flask server's local IP and port
+axios.defaults.baseURL = baseURL;
 
 const Registration: React.FC = () => {
   const [name, setName] = useState<string>('');
@@ -31,7 +33,7 @@ const Registration: React.FC = () => {
   const handleRegister = async () => {
     if (validatePhoneNumber(phoneNumber)) {
       try {
-        const response = await axios.post('http://127.0.0.1:5432/register', {
+        const response = await axios.post('http://192.168.0.153:5000/register', {
           name,
           family_name: familyName,
           email,
@@ -41,6 +43,7 @@ const Registration: React.FC = () => {
         Alert.alert('Success', response.data.message);
         // Navigate to another page if needed
       } catch (err) {
+        console.error('Registration Error:', err);
         if (axios.isAxiosError(err)) {
           Alert.alert('Error', err.response?.data?.error || 'Failed to register user');
         } else {
@@ -55,11 +58,14 @@ const Registration: React.FC = () => {
   const sendVerificationCode = async () => {
     if (validatePhoneNumber(phoneNumber)) {
       try {
-        await axios.post('http://127.0.0.1:5432/send-code', {
+        const response = await axios.post('http://192.168.0.153:5000/send-code', {
           phone_number: phoneNumber,
         });
+        console.log('Verification Code Response:', response.data);
         Alert.alert('Verification code sent');
-      } catch (err) {
+      } catch (err: any) {
+        console.error('Send Verification Code Error:', err);
+        console.log('Error Response Data:', err.response?.data); // Log detailed error response
         Alert.alert('Error', 'Failed to send verification code');
       }
     } else {
@@ -69,7 +75,8 @@ const Registration: React.FC = () => {
 
   const verifyCode = async () => {
     try {
-      const response = await axios.post('http://127.0.0.1:5432/verify-code', {
+      // Replace with your verification service endpoint
+      const response = await axios.post('http://192.168.0.153:5000/verify-code', {
         phone_number: phoneNumber,
         code: verificationCode,
       });
@@ -79,7 +86,8 @@ const Registration: React.FC = () => {
       } else {
         Alert.alert('Error', 'Invalid verification code');
       }
-    } catch (err) {
+    } catch (err: any) { // Explicitly specify the type here
+      console.error('Verify Code Error:', err);
       Alert.alert('Error', 'Failed to verify code');
     }
   };

@@ -6,8 +6,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 
 type RootStackParamList = {
-  'index': undefined;
-  'main': undefined;
+  index: undefined;
+  main: undefined;
 };
 
 type RegistrationScreenNavigationProp = StackNavigationProp<RootStackParamList, 'index'>;

@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from twilio.rest import Client
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -10,6 +12,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://myuser:mypassword@localhos
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+
+# Twilio configuration
+TWILIO_ACCOUNT_SID = 'your_account_sid'
+TWILIO_AUTH_TOKEN = 'your_auth_token'
+TWILIO_VERIFICATION_SERVICE_SID = 'your_verification_service_sid'
+
+client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
 # Model definition
 class User(db.Model):
@@ -47,6 +56,38 @@ def register():
     db.session.commit()
 
     return jsonify({'message': 'User registered successfully!', 'phone_number': phone_number})
+
+@app.route('/send-code', methods=['POST'])
+def send_code():
+    data = request.json
+    phone_number = data.get('phone_number')
+
+    if not phone_number:
+        return jsonify({'error': 'Phone number is required'}), 400
+
+    try:
+        client.verify.services(TWILIO_VERIFICATION_SERVICE_SID).verifications.create(to=phone_number, channel='sms')
+        return jsonify({'message': 'Verification code sent'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/verify-code', methods=['POST'])
+def verify_code():
+    data = request.json
+    phone_number = data.get('phone_number')
+    code = data.get('code')
+
+    if not phone_number or not code:
+        return jsonify({'error': 'Phone number and code are required'}), 400
+
+    try:
+        verification_check = client.verify.services(TWILIO_VERIFICATION_SERVICE_SID).verification_checks.create(to=phone_number, code=code)
+        if verification_check.status == 'approved':
+            return jsonify({'verified': True}), 200
+        else:
+            return jsonify({'verified': False}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

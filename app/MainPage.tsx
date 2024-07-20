@@ -1,14 +1,14 @@
 import React from 'react';
 import { SafeAreaView, View, Text, Button, StyleSheet } from 'react-native';
-import { useNavigation } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
 
-const AnotherPage: React.FC = () => {
+const MainPage: React.FC = () => {
   const navigation = useNavigation();
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.text}>This is another page</Text>
+        <Text style={styles.text}>This is the main page</Text>
         <Button title="Go Back" onPress={() => navigation.goBack()} />
       </View>
     </SafeAreaView>
@@ -30,4 +30,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AnotherPage;
+export default MainPage;

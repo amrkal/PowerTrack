@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SafeAreaView, View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { SafeAreaView, View, Text,TextInput, Button, StyleSheet, Alert, TouchableWithoutFeedback, Keyboard,  ScrollView, } from 'react-native';
 import axios from 'axios';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { useNavigation } from '@react-navigation/native';
@@ -24,7 +24,7 @@ const Register: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [verificationCode, setVerificationCode] = useState<string>('');
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const [isVerified, setIsVerified] = useState<boolean>(false);
+  const [isVerified, setIsVerified] = useState<boolean>(true);
 
   const navigation = useNavigation<RegistrationScreenNavigationProp>();
 
@@ -115,79 +115,87 @@ const Register: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.form}>
-        <Text style={styles.label}>Username:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Username"
-          value={username}
-          onChangeText={setUsername}
-        />
-        <Text style={styles.label}>Password:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-        <Text style={styles.label}>Name:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Name"
-          value={name}
-          onChangeText={setName}
-        />
-        <Text style={styles.label}>Family Name:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Family Name"
-          value={familyName}
-          onChangeText={setFamilyName}
-        />
-        <Text style={styles.label}>Email:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-        />
-        <Text style={styles.label}>Phone Number:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Phone Number"
-          keyboardType="numeric"
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-        />
-        <Button title="Send Verification Code" onPress={sendVerificationCode} />
-        <TextInput
-          style={styles.input}
-          placeholder="Verification Code"
-          keyboardType="numeric"
-          value={verificationCode}
-          onChangeText={setVerificationCode}
-        />
-        <Button title="Verify Code" onPress={verifyCode} />
-        <Button title="Register" onPress={handleRegister} disabled={!isVerified} />
-        {isSubmitted && <Text style={styles.success}>Registration Successful!</Text>}
-        <Button title="Test Connection" onPress={testConnection} />
-      </View>
-    </SafeAreaView>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.form}>
+            <Text style={styles.label}>Username:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Username"
+              value={username}
+              onChangeText={setUsername}
+            />
+            <Text style={styles.label}>Password:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+            <Text style={styles.label}>Name:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Name"
+              value={name}
+              onChangeText={setName}
+            />
+            <Text style={styles.label}>Family Name:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Family Name"
+              value={familyName}
+              onChangeText={setFamilyName}
+            />
+            <Text style={styles.label}>Email:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
+            <Text style={styles.label}>Phone Number:</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Phone Number"
+              keyboardType="numeric"
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+            />
+            <Button title="Send Verification Code" onPress={sendVerificationCode} />
+            <TextInput
+              style={styles.input}
+              placeholder="Verification Code"
+              keyboardType="numeric"
+              value={verificationCode}
+              onChangeText={setVerificationCode}
+            />
+            <Button title="Verify Code" onPress={verifyCode} />
+            <Button title="Register" onPress={handleRegister} disabled={!isVerified} />
+            {isSubmitted && <Text style={styles.success}>Registration Successful!</Text>}
+            <Button title="Test Connection" onPress={testConnection} />
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
+  },
+  scrollContainer: {
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
   form: {
-    width: '80%',
-    padding: 20,
+    width: '100%',
     backgroundColor: '#f2f2f2',
     borderRadius: 10,
     shadowColor: '#000',
@@ -195,6 +203,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 5,
+    padding: 20,
   },
   label: {
     fontSize: 18,

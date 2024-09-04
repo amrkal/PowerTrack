@@ -4,12 +4,14 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { router } from 'expo-router';
 
 type RootStackParamList = {
   LoginScreen: undefined;
   Register: undefined;
   MainPage: undefined;
 };
+
 
 type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'LoginScreen'>;
 
@@ -31,7 +33,7 @@ const LoginScreen: React.FC = () => {
         try {
           const response = await axios.post('/auth/login', { username: savedUsername, password: savedPassword });
           if (response.data) {
-            navigation.navigate('MainPage');
+            router.push('/(drawer)/ProductsPage');
           }
         } catch (error) {
           // Handle login failure
@@ -45,11 +47,10 @@ const LoginScreen: React.FC = () => {
   const handleLogin = async () => {
     try {
       const response = await axios.post('/auth/login', { username, password });
-      Alert.alert('Login Successful', response.data.message);
       // Save the login details
       await AsyncStorage.setItem('username', username);
       await AsyncStorage.setItem('password', password);
-      navigation.navigate('MainPage');
+      router.push('/(drawer)/ProductsPage');
     } catch (error) {
       Alert.alert('Login Failed', 'Invalid username or password');
     }

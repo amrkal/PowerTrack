@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { Alert, Keyboard, SafeAreaView, ScrollView, TouchableWithoutFeedback, View,} from "react-native";
 import { Text, TextInput, Button, } from "react-native-paper";
 import { GlobalStyles } from "../../constants/GlobalStyles";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import axios from "axios";
 import { StackNavigationProp } from "@react-navigation/stack";
 import parsePhoneNumberFromString from "libphonenumber-js";
+import { Route } from "expo-router/build/Route";
 
 
 type RootStackParamList = {
@@ -50,7 +51,26 @@ const SignUpPage: React.FC = () => {
       return;
     }
 
-    navigation.navigate("VerificationPage",{ phoneNumber });
+    try {
+      console.log('Attempting to register with:', { username, password, name, familyName, email, phoneNumber });
+      const response = await axios.post('/auth/register', {
+        username,
+        password,
+        name,
+        family_name: familyName,
+        email,
+        phone_number: phoneNumber,
+      });
+      console.log('Registration Response:', response.data);
+      navigation.navigate('VerificationPage', { phoneNumber });
+    } catch (err) {
+      console.error('Registration Error:', err);
+      if (axios.isAxiosError(err)) {
+        Alert.alert('Error', err.response?.data?.error || 'Failed to register user');
+      } else {
+        Alert.alert('Error', 'An unexpected error occurred');
+      }
+    }
   };
 
 
@@ -76,6 +96,14 @@ const SignUpPage: React.FC = () => {
               style={[{ flex: 1 }, GlobalStyles.searchBar]} // Takes up the other half of the space
             />
             </View>
+            <TextInput
+              style={GlobalStyles.searchBar}
+              label={ "User Name" }
+              mode="outlined"
+              placeholder="username"
+              value={username}
+              onChangeText={setUsername}
+            />
             <TextInput
               style={GlobalStyles.searchBar}
               mode="outlined"

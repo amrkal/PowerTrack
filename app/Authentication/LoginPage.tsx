@@ -58,7 +58,7 @@ import { router } from 'expo-router';
 
     const handleLogin = async () => {
       try {
-        const response = await axios.post('/auth/login', { username, password });
+        const response = await axios.post('/users/login', { username, password });
         // Save the login details
         await AsyncStorage.setItem('username', username);
         await AsyncStorage.setItem('password', password);
@@ -72,7 +72,6 @@ import { router } from 'expo-router';
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={GlobalStyles.container}>
           <View style={GlobalStyles.container}>
-            <Text style={GlobalStyles.title}>Login</Text>
             <TextInput
               style={GlobalStyles.searchBar}
               mode = "outlined"

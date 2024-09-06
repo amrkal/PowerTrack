@@ -63,7 +63,6 @@ const VerificationPage: React.FC = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <View style={GlobalStyles.container}>
-      <Text style={GlobalStyles.title}>Verification</Text>
       <Text style={GlobalStyles.text}>Please enter the verification code sent to your phone.</Text>
       <TextInput
         style={GlobalStyles.searchBar}

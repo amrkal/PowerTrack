@@ -17,17 +17,35 @@ def get_categories():
 @items_bp.route('/items', methods=['GET'])
 def get_items():
     try:
-        items = Item.get_all()
-        return jsonify([{
-             'id': str(item['_id']),
-            'item_key': item.get('ItemKey'),  # Change 'ItemKey' to match your field names
-            'item_name': item.get('ItemName'),  # Change 'ItemName' to match your field names
-            'description': item.get('description', ''),  # Use .get() to avoid KeyError
-            'price': item.get('Price', 0),  # Provide default values to avoid KeyError
-            'purch_price': item.get('PurchPrice', 0),
-            'quantity': item.get('Quantity', 0),
-            'discount_code': item.get('DiscountCode', '')
-        } for item in items])
+        # Get page and limit from query parameters, with default values
+        page = int(request.args.get('page', 1))
+        limit = request.args.get('limit')  # No default value for limit
+        
+        # If limit is not provided or is 0, fetch all items
+        if not limit or int(limit) == 0:
+            items = Item.get_all()  # Fetch all items from the database
+        else:
+            limit = int(limit)
+            skip = (page - 1) * limit
+            items = Item.get_paginated(skip, limit)  # Fetch paginated items
+        
+        total_items = Item.count_all()  # Get total number of items
+        
+        return jsonify({
+            'items': [{
+                'id': str(item['_id']),
+                'item_key': item.get('ItemKey'),
+                'item_name': item.get('ItemName'),
+                'description': item.get('description', ''),
+                'price': item.get('Price', 0),
+                'purch_price': item.get('PurchPrice', 0),
+                'quantity': item.get('Quantity', 0),
+                'discount_code': item.get('DiscountCode', '')
+            } for item in items],
+            'total_items': total_items,
+            'page': page,
+            'limit': limit
+        })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

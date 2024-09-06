@@ -339,4 +339,24 @@ export const GlobalStyles = StyleSheet.create({
   animatedTouchablePress: {
     transform: [{ scale: 0.95 }],
   },
+
+
+
+  backToTopButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#007bff',
+    borderRadius: 50,
+    padding: 10,
+    elevation: 5,
+  },
+
+
+
+
+
+
 });
+
+

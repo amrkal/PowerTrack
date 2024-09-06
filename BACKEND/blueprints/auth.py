@@ -3,6 +3,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from models import User
 
 auth_bp = Blueprint('auth', __name__)
+# Temporary in-memory store for unverified users (in production, use a database or Redis)
+unverified_users = {}
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
@@ -26,34 +28,19 @@ def register():
 
         if User.find_by_email(email):
             return jsonify({'error': 'Email already exists'}), 400
-
-        User.create_user(data)
+        # User.create_user(username=username, password=hashed_password, phone_number=phone_number, name=name, family_name=family_name, email=email)
+        unverified_users[phone_number] = {
+            'username': username,
+            'password': password,
+            'name': name,
+            'family_name': family_name,
+            'email': email,
+        }
 
         return jsonify({'message': 'User registered successfully and is approved!', 'username': username}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@auth_bp.route('/login', methods=['POST'])
-def login():
-    try:
-        data = request.json
-        username = data.get('username')
-        password = data.get('password')
-
-        if not username or not password:
-            return jsonify({'error': 'Username and password are required'}), 400
-
-        user = User.find_by_username(username)
-
-        if not user or not check_password_hash(user['password'], password):
-            return jsonify({'error': 'Invalid username or password'}), 400
-
-        if not user.get('is_approved'):
-            return jsonify({'error': 'User is not approved by admin'}), 403
-
-        return jsonify({'message': 'Login successful!', 'username': username}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 @auth_bp.route('/send-code', methods=['POST'])
 def send_code():
@@ -69,17 +56,80 @@ def send_code():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
+
+
+
 @auth_bp.route('/verify-code', methods=['POST'])
 def verify_code():
     try:
         data = request.json
         phone_number = data.get('phone_number')
-        code = data.get('code')
 
-        if not phone_number or not code:
-            return jsonify({'error': 'Phone number and code are required'}), 400
+        # Debugging: Print incoming request data to console
+        print(f"Verifying user for phone number: {phone_number}")
 
-        # Mock response for verifying code
-        return jsonify({'verified': True}), 200
+        # Verify if the phone number exists in unverified users
+        if phone_number not in unverified_users:
+            return jsonify({'error': 'Phone number not found or not registered.'}), 404
+
+        user_data = unverified_users[phone_number]
+
+        # Skip the verification code check for now
+        # Directly create the user in the main database
+        User.create_user(
+            username=user_data['username'],
+            password=user_data['password'],
+            phone_number=phone_number,
+            name=user_data['name'],
+            family_name=user_data['family_name'],
+            email=user_data['email']
+        )
+
+        # Remove user from unverified_users after successful registration
+        del unverified_users[phone_number]
+
+        return jsonify({'message': 'User verified and registered successfully!'}), 200
+
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        # Log the exception details for debugging
+        print(f"Error in verify_code: {str(e)}")
+        return jsonify({'error': 'An internal error occurred', 'details': str(e)}), 500
+    
+
+# @auth_bp.route('/verify-code', methods=['POST'])
+# def verify_code():
+#     try:
+#         data = request.json
+#         phone_number = data.get('phone_number')
+#         code = data.get('code')
+
+#         if not phone_number or not code:
+#             return jsonify({'error': 'Phone number and code are required'}), 400
+
+#         # Verify if the phone number exists in unverified users
+#         if phone_number not in unverified_users:
+#             return jsonify({'error': 'Phone number not found or not registered.'}), 404
+
+#         user_data = unverified_users[phone_number]
+        
+#         # Check if the verification code matches
+#         if int(code) != user_data['verification_code']:
+#             return jsonify({'error': 'Invalid verification code.'}), 400
+
+#         # Verification successful, create the user in the main database
+#         User.create_user(
+#             username=user_data['username'],
+#             password=user_data['password'],
+#             phone_number=phone_number,
+#             name=user_data['name'],
+#             family_name=user_data['family_name'],
+#             email=user_data['email']
+#         )
+
+#         # Remove user from unverified_users
+#         del unverified_users[phone_number]
+
+#         return jsonify({'message': 'User verified and registered successfully!'}), 200
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500

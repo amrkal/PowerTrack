@@ -6,6 +6,7 @@ import { Color } from '../../constants/Color';
 import axios from 'axios'; // Import axios if you prefer using it
 import { useCart } from '../context/CartContext';
 
+
 const categories = [
   { id: 'all', name: 'All' }, 
   { id: '1', name: 'Electronics' },
@@ -52,9 +53,10 @@ const ProductsPage: React.FC = () => {
   const { addToCart } = useCart();
 
   useEffect(() => {
-    axios.get('/items/items',{params: {page:1,limit:20}}) // Add any query params here
+    axios.get('/items/items',)
       .then(response => {
-        const products: Product[] = response.data.map((item: any) => ({
+        console.log(response.data); // Log the response to check its structure
+        const products: Product[] = response.data.items.map((item: any) => ({
           id: item.id,
           item_key: item.item_key,
           item_name: item.item_name,
@@ -64,6 +66,7 @@ const ProductsPage: React.FC = () => {
           purch_price: item.purch_price || 0,
           quantity: item.quantity || 1,
           discount_code: item.discount_code || '',
+          categoryId: item.categoryId || '1', // Ensure categoryId is mapped from the response
           image: item.image || null // Ensure the image is set or null
         }));
         setItems(products);
@@ -74,14 +77,19 @@ const ProductsPage: React.FC = () => {
         setLoading(false);
       });
   }, []);
+  
+  
 
   const filteredProducts = items.filter(product => {
-    const matchesCategory = selectedCategory === 'all' || selectedCategory === 'viewAll' || product.item_key === selectedCategory;
-    const itemName = product.item_name || ''; // Use empty string if item_name is null or undefined
-    const matchesSearch = itemName.toLowerCase().includes(searchQuery.toLowerCase());
+    // Check if the selected category is 'all' or if the product's categoryId matches the selected category
+    const matchesCategory = selectedCategory === 'all' || selectedCategory === 'viewAll' || product.categoryId === selectedCategory;
+    
+    // Ensure search query is properly compared to product name (case insensitive)
+    const itemName = product.item_name || ''; 
+    const matchesSearch = searchQuery.trim() === '' || itemName.toLowerCase().includes(searchQuery.toLowerCase()); 
+    
     return matchesCategory && matchesSearch;
   });
-
   const handleIncreaseQuantity = () => {
     qty = qty + 1;
   };
@@ -105,14 +113,14 @@ const ProductsPage: React.FC = () => {
     const currentOffset = event.nativeEvent.contentOffset.y;
     const direction = currentOffset - lastScrollY > 0 ? 'down' : 'up';
 
-    if (direction === 'down' && currentOffset > 50) {
+    if (direction === 'down' && currentOffset > 100) {
       setShowCategories(false);
     } else if (direction === 'up') {
       setShowCategories(true);
     }
 
     // Show back-to-top button if scrolled down
-    if (currentOffset > 300) {
+    if (currentOffset > 500) {
       setShowBackToTop(true);
     } else {
       setShowBackToTop(false);
@@ -178,8 +186,8 @@ const ProductsPage: React.FC = () => {
       <TextInput
         style={GlobalStyles.searchBar}
         placeholder="Search Products"
-        value={searchQuery}
-        onChangeText={setSearchQuery}
+        value={searchQuery} // Bind search query to input
+        onChangeText={setSearchQuery} // Update state as user types
       />
       {showCategories && ( // Only show categories when `showCategories` is true
         <View>
@@ -201,7 +209,7 @@ const ProductsPage: React.FC = () => {
       )}
       <Animated.FlatList
         ref={flatListRef} // Reference to the FlatList
-        data={items}
+        data={filteredProducts}  // Use filteredProducts instead of items
         renderItem={({ item }) => <ProductItem item={item} />}
         keyExtractor={(item) => item.id}
         numColumns={2}
@@ -215,7 +223,7 @@ const ProductsPage: React.FC = () => {
 
       {showBackToTop && ( // Show back-to-top button when scrolled down
         <TouchableOpacity
-          style={styles.backToTopButton}
+          style={GlobalStyles.backToTopButton}
           onPress={handleBackToTop}
         >
           <IconButton icon="arrow-up" size={24} />
@@ -226,17 +234,6 @@ const ProductsPage: React.FC = () => {
   
 };
 
-const styles = StyleSheet.create({
-  backToTopButton: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: '#007bff',
-    borderRadius: 50,
-    padding: 10,
-    elevation: 5,
-  },
-});
 
 export default ProductsPage;
 

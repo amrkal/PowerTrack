@@ -4,7 +4,11 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 import pymongo.errors
+from flask_mail import Mail, Message
 from config import Config
+from extensions import mail,mongo
+
+
 
 # Create Flask app instance
 app = Flask(__name__)
@@ -16,17 +20,25 @@ app.config.from_object(Config)
 # Debugging: Print the MONGO_URI to verify it is being loaded
 print(f"MONGO_URI: {app.config['MONGO_URI']}")
 
-# Initialize PyMongo
-mongo = PyMongo(app)
+
+    # Initialize extensions
+mongo.init_app(app)
+mail.init_app(app)
+
+# # Initialize PyMongo
+# mail = Mail(app)
+# mongo = PyMongo(app)
 
 # Register Blueprints
 from blueprints.auth import auth_bp
 from blueprints.items import items_bp
 from blueprints.users import users_bp
+from blueprints.resetPassword import resetPassword_bp
 
 app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(items_bp, url_prefix='/items')
 app.register_blueprint(users_bp, url_prefix='/users')
+app.register_blueprint(resetPassword_bp, url_prefix='/resetPassword')
 
 # Define a test route to check if app is working
 @app.route('/')

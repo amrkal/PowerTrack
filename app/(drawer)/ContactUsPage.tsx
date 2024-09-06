@@ -3,7 +3,7 @@ import { View, StyleSheet, Linking } from 'react-native';
 import { Text, TextInput, Button, IconButton } from 'react-native-paper';
 import { GlobalStyles } from '../../constants/GlobalStyles';
 
-const mailto = 'info@hashmalharama.com';
+const mailto = 'HashmalHarma@hotmail.com';
 const tel = '046981130';
 const locationUrl = 'https://maps.app.goo.gl/9uJkfanmxPkdifCi7';
 

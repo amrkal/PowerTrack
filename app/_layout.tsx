@@ -5,6 +5,7 @@ import useFonts from '../constants/UseFonts';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { MD3LightTheme as DefaultTheme, PaperProvider } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
+import { Admin, Resource } from 'react-admin';
 
 const theme = {
   ...DefaultTheme,
@@ -24,6 +25,7 @@ export const unstable_settings = {
 
 export default function Layout() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false); // New state for admin
   const fontsLoaded = useFonts();
 
   useEffect(() => {
@@ -31,13 +33,20 @@ export default function Layout() {
       try {
         const token = await AsyncStorage.getItem('userToken');
         setIsLoggedIn(!!token); // Assign a boolean value (true/false) based on token existence
+        const userRole = await AsyncStorage.getItem('userRole'); 
+        if (userRole === 'admin') {
+          setIsAdmin(true);
+        } else {
+          setIsAdmin(false);
+        }
       } catch (e) {
-        console.error('Failed to load token.', e);
+        console.error('Failed to load token or role.', e);
       }
     };
 
     checkLoginStatus();
   }, []);
+
 
   if (!fontsLoaded || isLoggedIn === null) {
     return null; // Or render a loading spinner
@@ -49,7 +58,7 @@ export default function Layout() {
     <Stack>
       {isLoggedIn ? (
         <Stack.Screen
-          name="(drawer)/MyCartPage"
+          name="(drawer)/ProfilePage"
           options={{ headerShown: false }}
         />
       ) : (

@@ -1,8 +1,9 @@
 # from flask import Blueprint, request, jsonify, g
 from datetime import datetime, timedelta
 from flask import Blueprint, render_template, request, jsonify, url_for, current_app
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import User, Category, Item
+from models import User, Category, Item,Order
 from bson.objectid import ObjectId
 from app import mail,Message
 from extensions import mail  # Import from extensions
@@ -13,6 +14,7 @@ auth_bp = Blueprint('auth', __name__)
 items_bp = Blueprint('items', __name__)
 users_bp = Blueprint('users', __name__)
 resetPassword_bp = Blueprint('resetPassword', __name__)
+orders_bp = Blueprint('orders', __name__)
 unverified_users = {}
 
 
@@ -122,7 +124,6 @@ def verify_code():
 
 
 
-# User Routes
 @users_bp.route('/login', methods=['POST'])
 def login():
     try:
@@ -140,8 +141,11 @@ def login():
 
         if not user.get('is_approved'):
             return jsonify({'error': 'User is not approved by admin'}), 403
-
-        return jsonify({'message': 'Login successful!', 'username': username}), 200
+        access_token = create_access_token(identity=username)
+        return jsonify({
+            'access_token': access_token,
+            'username': username
+        }), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -165,25 +169,12 @@ def approve_user():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-    try:
-        data = request.json
-        username = data.get('username')
-
-        if not username:
-            return jsonify({'error': 'Username is required'}), 400
-
-        user = User.find_by_username(username)
-
-        if not user:
-            return jsonify({'error': 'User not found'}), 404
-
-        User.approve_user(username)
-
-        return jsonify({'message': 'User approved successfully!', 'username': username}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 
+
+
+
+#orders
 
 
 
@@ -395,3 +386,107 @@ def delete_item(item_id):
             return jsonify({"message": "Item not found"}), 404
     except Exception as e:
         return jsonify({"message": str(e)}), 400
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Order Routes
+@orders_bp.route('/orders', methods=['POST'])
+@jwt_required()
+def create_order():
+    try:
+        user_id = get_jwt_identity()  # Fetch the user's ID from the JWT token
+        data = request.json
+        print(f"Request data: {data}")  # Add this line for debugging
+
+        # Extract order details from the request
+        items = data.get('items')
+        total_amount = data.get('total_amount')
+
+        if not items or not total_amount:
+            return jsonify({"error": "Items and total amount are required"}), 400  # This is the cause of 400 error
+
+        order = {
+            "user_id": ObjectId(user_id),
+            "items": items,
+            "total_amount": total_amount,
+            "order_status": "pending",
+            "order_date": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        }
+        order_id = Order.create_order(user_id=user_id, items=items, total_amount=total_amount).inserted_id
+        return jsonify({"message": "Order created", "order_id": str(order_id)}), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@orders_bp.route('/history', methods=['GET'])
+@jwt_required()
+def get_order_history():
+    try:
+        user_id = get_jwt_identity()  # Get the user ID from the JWT token
+        if not user_id:
+            return jsonify({"error": "User ID not found in token"}), 400
+
+        # Fetch the user's orders from the database
+        orders = Order.find({"user_id": ObjectId(user_id)})
+        if orders is None:
+            return jsonify({"error": "No orders found"}), 404
+
+        # Format and return the orders
+        order_list = []
+        for order in orders:
+            order_list.append({
+                "order_id": str(order["_id"]),
+                "items": order["items"],
+                "total_amount": order["total_amount"],
+                "order_status": order["order_status"],
+                "order_date": order["order_date"],
+                "updated_at": order["updated_at"]
+            })
+
+        return jsonify({"orders": order_list}), 200
+
+    except Exception as e:
+        print(f"Error in fetching order history: {str(e)}")  # Print the error to logs
+        return jsonify({"error": "Internal server error", "details": str(e)}), 500
+    
+
+@orders_bp.route('/<order_id>', methods=['PUT'])
+@jwt_required()
+def update_order_status(order_id):
+    try:
+        data = request.json
+        new_status = data.get("order_status")
+
+        if new_status not in ["pending", "completed", "cancelled"]:
+            return jsonify({"error": "Invalid order status"}), 400
+
+        # Update the order status
+        result = Order.update_order_status(
+            {"_id": ObjectId(order_id)},
+            {"$set": {"order_status": new_status, "updated_at": datetime.utcnow()}}
+        )
+
+        if result.matched_count == 0:
+            return jsonify({"error": "Order not found"}), 404
+
+        return jsonify({"message": "Order status updated"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

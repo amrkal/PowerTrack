@@ -19,6 +19,8 @@
   import { GlobalStyles } from '../../constants/GlobalStyles';
 import { router } from 'expo-router';
 
+
+
   type RootStackParamList = {
     LoginPage: undefined;
     SignUpPage: undefined;
@@ -43,7 +45,7 @@ import { router } from 'expo-router';
         if (savedUsername && savedPassword) {
           // Validate the stored credentials with the server
           try {
-            const response = await axios.post('/auth/login', { username: savedUsername, password: savedPassword });
+            const response = await axios.post('/users/login', { username: savedUsername, password: savedPassword });
             if (response.data) {
               router.push('/(drawer)/MyCartPage');
             }
@@ -59,9 +61,20 @@ import { router } from 'expo-router';
     const handleLogin = async () => {
       try {
         const response = await axios.post('/users/login', { username, password });
-        // Save the login details
+    
+        // Extract the access_token from the response
+        const { access_token } = response.data;
+    
+        // Save the login details and token
         await AsyncStorage.setItem('username', username);
         await AsyncStorage.setItem('password', password);
+        
+        if (access_token) {
+          await AsyncStorage.setItem('accessToken', access_token);  // Save the JWT token
+          console.log('Access token saved');
+        }
+    
+        // Navigate to the Products page after successful login
         router.push('/(drawer)/ProductsPage');
       } catch (error) {
         Alert.alert('Login Failed', 'Invalid username or password');

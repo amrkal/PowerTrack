@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from models import User
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_jwt_extended import create_access_token  # Import create_access_token
 
 users_bp = Blueprint('users', __name__)
 
@@ -22,8 +23,10 @@ def login():
 
         if not user.get('is_approved'):
             return jsonify({'error': 'User is not approved by admin'}), 403
-
-        return jsonify({'message': 'Login successful!', 'username': username}), 200
+        
+        # Pass the user's MongoDB ObjectId as the identity
+        access_token = create_access_token(identity=str(user['_id']))  
+        return jsonify({'access_token': access_token, 'username': username}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

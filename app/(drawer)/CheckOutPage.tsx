@@ -4,28 +4,48 @@ import { GlobalStyles } from '../../constants/GlobalStyles';
 import { useRouter } from 'expo-router';
 import { Button, TextInput } from 'react-native-paper';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useCart } from '../context/CartContext';
+
+const baseURL = 'http://192.168.0.153:5000';
+axios.defaults.baseURL = baseURL;
 
 const CheckOutPage: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<'Take Away' | 'Delivery' | null>(null);
   const [city, setCity] = useState('');
   const [address, setAddress] = useState('');
+  const { cart } = useCart();  // Access cart from the context
   const router = useRouter();
 
+  
   const handleOrderCompletion = async () => {
     try {
-      let orderDetails = {
-        option: selectedOption,
-        city: city || 'N/A',
-        address: address || 'N/A',
+      const accessToken = await AsyncStorage.getItem('accessToken');
+      if (!accessToken) {
+        console.error('No access token found');
+        return;
+      }
+      
+      const orderDetails = {
+        items: cart.map(item => ({
+          id: item.id,
+          item_key: item.item_key,  // Ensure item_key is sent along with other details
+          name: item.name,
+          quantity: item.quantityInCart,
+          price_per_unit: item.price,
+        })), // Map items from the cart
+        total_amount: cart.reduce((total, item) => total + item.price * item.quantityInCart, 0),
       };
-
-      // Make an API request to add the order to the database
-      const response = await axios.post('https://your-api-endpoint/orders', orderDetails);
-
-      if (response.status === 200) {
+      console.log('Cart items:', cart);
+      const response = await axios.post('/orders/orders', orderDetails, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,  // Use the stored token
+        },
+      });
+  
+      if (response.status === 201) {
         Alert.alert('Success', 'Your order has been completed!');
-        // Optionally, navigate to another page or reset the form
-        router.push('/ProductsPage'); // Assuming you have an OrderCompleted page
+        router.push('/ProductsPage');
       }
     } catch (error) {
       Alert.alert('Error', 'Something went wrong while completing your order.');
@@ -53,6 +73,7 @@ const CheckOutPage: React.FC = () => {
       >
         Self Collection
       </Button>
+
 
       <Button
         style={{ margin: 15 }}

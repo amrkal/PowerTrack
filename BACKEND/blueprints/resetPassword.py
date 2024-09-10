@@ -72,6 +72,7 @@ def reset_password_token(token):
             if not user:
                 return jsonify({'error': 'User not found'}), 404
 
+            print(f"password: {new_password}")
             # Hash the new password and update it in the database
             User.update_password(user['_id'], new_password)
 
@@ -79,3 +80,4 @@ def reset_password_token(token):
     except Exception as e:
         print(f"Error occurred: {str(e)}")  # Log the error to console
         return jsonify({'error': 'An internal error occurred', 'details': str(e)}), 500
+    

@@ -11,7 +11,7 @@ const DeliveryPage: React.FC = () => {
 
   const handleConfirm = () => {
     // Pass the address to the next step or save it in the state/store
-    router.push('/CheckDelivery/CheckOutPage');
+    router.push('/(drawer)/CheckOutPage');
   };
 
   return (

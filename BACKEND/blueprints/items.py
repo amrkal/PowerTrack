@@ -13,25 +13,30 @@ def get_categories():
         return jsonify({'error': str(e)}), 500
 
 
-# Item Routes
+
+
 @items_bp.route('/items', methods=['GET'])
 def get_items():
     try:
         # Get page and limit from query parameters, with default values
         page = int(request.args.get('page', 1))
-        limit = request.args.get('limit')  # No default value for limit
+        limit = int(request.args.get('limit', 20))  # Default limit of 20 items per page
         
-        # If limit is not provided or is 0, fetch all items
-        if not limit or int(limit) == 0:
-            items = Item.get_all()  # Fetch all items from the database
-        else:
-            limit = int(limit)
-            skip = (page - 1) * limit
-            items = Item.get_paginated(skip, limit)  # Fetch paginated items
+        # Enforce a maximum limit to prevent fetching too many items at once
+        max_limit = 100
+        if limit > max_limit:
+            limit = max_limit
+
+        skip = (page - 1) * limit
         
-        total_items = Item.count_all()  # Get total number of items
+        # Fetch paginated items
+        items = Item.get_paginated(skip, limit)
         
-        return jsonify({
+        # Get total number of items
+        total_items = Item.count_all()
+        
+        # Prepare response data
+        response_data = {
             'items': [{
                 'id': str(item['_id']),
                 'item_key': item.get('ItemKey'),
@@ -44,10 +49,56 @@ def get_items():
             } for item in items],
             'total_items': total_items,
             'page': page,
-            'limit': limit
-        })
+            'limit': limit,
+            "hasMore": True,
+        }
+        
+        return jsonify(response_data)
+    
+    except ValueError:
+        # Handle case where page or limit is not a valid integer
+        return jsonify({'error': 'Invalid pagination parameters'}), 400
+    
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        # Log the exception for debugging
+        print(f"Error fetching items: {e}")
+        return jsonify({'error': 'An internal server error occurred'}), 500
+
+# # Item Routes
+# @items_bp.route('/items', methods=['GET'])
+# def get_items():
+#     try:
+#         # Get page and limit from query parameters, with default values
+#         page = int(request.args.get('page', 1))
+#         limit = request.args.get('limit')  # No default value for limit
+        
+#         # If limit is not provided or is 0, fetch all items
+#         if not limit or int(limit) == 0:
+#             items = Item.get_all()  # Fetch all items from the database
+#         else:
+#             limit = int(limit)
+#             skip = (page - 1) * limit
+#             items = Item.get_paginated(skip, limit)  # Fetch paginated items
+        
+#         total_items = Item.count_all()  # Get total number of items
+        
+#         return jsonify({
+#             'items': [{
+#                 'id': str(item['_id']),
+#                 'item_key': item.get('ItemKey'),
+#                 'item_name': item.get('ItemName'),
+#                 'description': item.get('description', ''),
+#                 'price': item.get('Price', 0),
+#                 'purch_price': item.get('PurchPrice', 0),
+#                 'quantity': item.get('Quantity', 0),
+#                 'discount_code': item.get('DiscountCode', '')
+#             } for item in items],
+#             'total_items': total_items,
+#             'page': page,
+#             'limit': limit
+#         })
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
 
 @items_bp.route('/items', methods=['POST'])
 def create_item():

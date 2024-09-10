@@ -1,5 +1,7 @@
 # models.py
+from datetime import datetime
 import re
+from bson import ObjectId
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 from config import Config
@@ -24,11 +26,13 @@ class User:
     @staticmethod
     def find_by_email(email):
         return db_mongo.users.find_one({'email': email})
+    
 
     @staticmethod
     def update_password(user_id, new_password):
+        print(f"new_password = {new_password}")
         hashed_password = generate_password_hash(new_password, method='pbkdf2:sha256')
-        return db_mongo.db.users.update_one({'_id': user_id}, {'$set': {'password': hashed_password}})
+        return db_mongo.users.update_one({'_id': user_id}, {'$set': {'password': hashed_password}})
 
     @staticmethod
     def create_user(username, password, phone_number, name, family_name, email):
@@ -92,3 +96,55 @@ class Item:
     def delete_item(item_id):
         return db_mongo.items.delete_one({"_id": item_id})
     
+
+
+
+
+
+class Order:
+    @staticmethod
+    def find(filter_criteria):
+        return db_mongo.orders.find(filter_criteria)
+
+    @staticmethod
+    def create_order(user_id, items, total_amount):
+        order = {
+            "user_id": ObjectId(user_id),  # Convert user_id to ObjectId
+            "items": items,  # Pass items from request
+            "total_amount": total_amount,  # Pass total amount from request
+            "order_status": "pending",
+            "order_date": datetime.utcnow(),
+            "updated_at": datetime.utcnow()
+        }
+        return db_mongo.orders.insert_one(order)
+
+    @staticmethod
+    def find_by_user_id(user_id):
+        return list(db_mongo.orders.find({"user_id": ObjectId(user_id)}))  # Convert to ObjectId and list
+
+    @staticmethod
+    def get_order_history(user_id):
+        orders = db_mongo.orders.find({"user_id": ObjectId(user_id)})  # Ensure ObjectId is used
+        order_list = []
+        for order in orders:
+            order_list.append({
+                "order_id": str(order["_id"]),
+                "items": order["items"],
+                "total_amount": order["total_amount"],
+                "order_status": order["order_status"],
+                "order_date": order["order_date"],
+                "updated_at": order["updated_at"]
+            })
+        return order_list
+
+    @staticmethod
+    def update_order_status(order_id, new_status):
+        return db_mongo.orders.update_one({"_id": ObjectId(order_id)}, {"$set": {"order_status": new_status}})
+
+    @staticmethod
+    def delete_order(order_id):
+        return db_mongo.orders.delete_one({"_id": ObjectId(order_id)})
+
+    @staticmethod
+    def get_all_orders():
+        return list(db_mongo.orders.find({}))

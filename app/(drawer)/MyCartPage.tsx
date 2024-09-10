@@ -79,13 +79,13 @@ const MyCartPage: React.FC = () => {
       />
 
       <View style={GlobalStyles.totalContainer}>
-        <Text style={GlobalStyles.totalText}>Total: ${totalPrice.toFixed(2)}</Text>
+        <Text style={GlobalStyles.totalText}>Total: ₪{totalPrice.toFixed(2)}</Text>
       </View>
 
       <View style={GlobalStyles.buttonsContainer}>
         <Button
           mode="contained-tonal"
-          onPress={() => router.push('/CheckDelivery/CheckOutPage')}
+          onPress={() => router.push('/CheckOutPage')}
         >
           Proceed to Checkout
         </Button>

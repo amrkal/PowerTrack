@@ -26,6 +26,7 @@ const ProfilePage: React.FC = () => {
     // Save updated profile information to the backend or AsyncStorage
   };
 
+
   return (
     <View style={GlobalStyles.container}>
       <View style={styles.header}>
@@ -88,6 +89,9 @@ const ProfilePage: React.FC = () => {
         )}
         <Button mode="outlined" onPress={handleLogout} style={styles.logoutButton}>
           Log out
+        </Button>
+        <Button mode="outlined" onPress={() => router.push('/OrderHistoryPage')}>
+          Order History
         </Button>
       </View>
     </View>

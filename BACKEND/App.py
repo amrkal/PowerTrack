@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_jwt_extended import JWTManager
 from flask_pymongo import PyMongo
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -25,6 +26,8 @@ print(f"MONGO_URI: {app.config['MONGO_URI']}")
 mongo.init_app(app)
 mail.init_app(app)
 
+jwt = JWTManager(app)
+
 # # Initialize PyMongo
 # mail = Mail(app)
 # mongo = PyMongo(app)
@@ -34,11 +37,15 @@ from blueprints.auth import auth_bp
 from blueprints.items import items_bp
 from blueprints.users import users_bp
 from blueprints.resetPassword import resetPassword_bp
+from blueprints.orders import orders_bp
+from blueprints.admin import admin
 
 app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(items_bp, url_prefix='/items')
 app.register_blueprint(users_bp, url_prefix='/users')
 app.register_blueprint(resetPassword_bp, url_prefix='/resetPassword')
+app.register_blueprint(orders_bp, url_prefix='/orders')
+app.register_blueprint(admin, url_prefix='/admin')  # Your admin routes
 
 # Define a test route to check if app is working
 @app.route('/')

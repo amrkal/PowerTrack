@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, Alert } from 'react-native';
+import { View, Alert, StyleSheet, Dimensions } from 'react-native';
 import { GlobalStyles } from '../../constants/GlobalStyles';
 import { useRouter } from 'expo-router';
-import { Button, TextInput } from 'react-native-paper';
+import { Button, TextInput, Card, Title, Paragraph } from 'react-native-paper';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCart } from '../context/CartContext';
+
+const { width } = Dimensions.get('window'); // For responsive layout
 
 const baseURL = 'http://192.168.0.153:5000';
 axios.defaults.baseURL = baseURL;
@@ -65,53 +67,119 @@ const CheckOutPage: React.FC = () => {
   };
 
   return (
-    <View style={GlobalStyles.container}>
-      <Button
-        style={{ margin: 15 }}
-        mode='contained'
-        onPress={() => setSelectedOption('Take Away')}
-      >
-        Self Collection
-      </Button>
+    <View style={styles.container}>
+      <Card style={styles.card}>
+        <Card.Content>
+          <Title style={styles.title}>Checkout Options</Title>
+          <Paragraph style={styles.paragraph}>
+            Choose how you'd like to receive your order.
+          </Paragraph>
+          
+          {/* Self Collection */}
+          <Button
+            style={[styles.optionButton, selectedOption === 'Take Away' ? styles.selectedButton : styles.defaultButton]}
+            mode="contained"
+            onPress={() => setSelectedOption('Take Away')}
+          >
+            Self Collection
+          </Button>
 
+          {/* Delivery */}
+          <Button
+            style={[styles.optionButton, selectedOption === 'Delivery' ? styles.selectedButton : styles.defaultButton]}
+            mode="contained"
+            onPress={() => setSelectedOption('Delivery')}
+          >
+            Delivery
+          </Button>
 
-      <Button
-        style={{ margin: 15 }}
-        mode='contained'
-        onPress={() => setSelectedOption('Delivery')}
-      >
-        Delivery
-      </Button>
+          {/* Delivery Fields */}
+          {selectedOption === 'Delivery' && (
+            <View style={styles.inputContainer}>
+              <TextInput
+                label="City"
+                mode="outlined"
+                value={city}
+                onChangeText={setCity}
+                style={styles.input}
+              />
+              <TextInput
+                label="Address"
+                mode="outlined"
+                value={address}
+                onChangeText={setAddress}
+                style={styles.input}
+              />
+            </View>
+          )}
 
-      {selectedOption === 'Delivery' && (
-        <View>
-          <TextInput
-            label="City"
-            mode="outlined"
-            value={city}
-            onChangeText={setCity}
-            style={{ marginVertical: 10 }}
-          />
-          <TextInput
-            label="Address"
-            mode="outlined"
-            value={address}
-            onChangeText={setAddress}
-            style={{ marginVertical: 10 }}
-          />
-        </View>
-      )}
-
-      <Button
-        style={{ margin: 15 }}
-        disabled={!selectedOption}
-        mode='contained'
-        onPress={handleNextPress}
-      >
-        Next
-      </Button>
+          {/* Next Button */}
+          <Button
+            style={styles.nextButton}
+            disabled={!selectedOption}
+            mode='contained'
+            onPress={handleNextPress}
+          >
+            Next
+          </Button>
+        </Card.Content>
+      </Card>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center',
+    backgroundColor: '#f0f4f7',
+  },
+  card: {
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    padding: 20,
+    elevation: 4,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#1E90FF',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  paragraph: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#555',
+  },
+  optionButton: {
+    marginVertical: 10,
+    borderRadius: 10,
+    paddingVertical: 10,
+  },
+  selectedButton: {
+    backgroundColor: '#1E90FF',
+  },
+  defaultButton: {
+    backgroundColor: 'lightblue',
+  },
+  inputContainer: {
+    marginTop: 20,
+  },
+  input: {
+    marginVertical: 10,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    fontSize: 16,
+  },
+  nextButton: {
+    marginTop: 20,
+    paddingVertical: 12,
+    borderRadius: 10,
+    backgroundColor: '#1E90FF',
+  },
+});
 
 export default CheckOutPage;

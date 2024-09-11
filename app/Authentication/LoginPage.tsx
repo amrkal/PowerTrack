@@ -5,6 +5,8 @@
     Alert,
     Keyboard,
     TouchableWithoutFeedback,
+    StyleSheet,
+    ImageBackground,
   } from 'react-native';
   import {
     Text,
@@ -18,7 +20,7 @@
   import { Color } from '../../constants/Color';
   import { GlobalStyles } from '../../constants/GlobalStyles';
 import { router } from 'expo-router';
-
+import background from '../../assets/background.jpg';
 
 
   type RootStackParamList = {
@@ -83,35 +85,100 @@ import { router } from 'expo-router';
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <SafeAreaView style={GlobalStyles.container}>
-          <View style={GlobalStyles.container}>
+      <ImageBackground source={background} style={styles.background}>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.formContainer}>
             <TextInput
-              style={GlobalStyles.searchBar}
+              style={styles.input}
               mode = "outlined"
               label={"Username"}
               placeholder="Username"
               value={username}
               onChangeText={setUsername}
               autoCapitalize="none"
+              theme={{ colors: { primary: 'navy' } }} 
             />
             <TextInput
               mode = "outlined"
               label={"Password"}
-              style={GlobalStyles.searchBar}
+              // style={GlobalStyles.searchBar}
               placeholder="Password"
               value={password}
               onChangeText={setPassword}
               secureTextEntry
+              style={styles.input}
+              theme={{ colors: { primary: 'navy' } }}
             />
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 10 }}>
-            <Button onPress={() => navigation.navigate("ForgotPasswordPage") }>Forgot Password?</Button>
-            <Button onPress={() => navigation.navigate("SignUpPage")}>New user? Sign Up</Button>
+            <Button onPress={() => navigation.navigate("ForgotPasswordPage") }
+                                        color="navy"
+                                        labelStyle={styles.buttonText}>
+              Forgot Password?</Button>
+            <Button onPress={() => navigation.navigate("SignUpPage")}
+                            color="navy"
+                            labelStyle={styles.buttonText}>
+                              New user? Sign Up</Button>
             </View>
-            <Button mode ="outlined" onPress={handleLogin}>Login</Button>
+            <Button mode ="outlined" onPress={handleLogin}
+            style={styles.loginButton}
+            >Login</Button>
           </View>
         </SafeAreaView>
+        </ImageBackground>
       </TouchableWithoutFeedback>
     );
   };
+
+  const styles = StyleSheet.create({
+    background: {
+      flex: 1,
+      width: '100%',
+      height: '100%',
+      resizeMode: 'cover',
+      justifyContent: 'center',
+    },
+    safeArea: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    formContainer: {
+      width: '90%',  
+      maxWidth: 500,
+      backgroundColor: 'rgba(255, 255, 255, 0.85)',
+      padding: 30, 
+      borderRadius: 12,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 6 },
+      shadowOpacity: 0.15,
+      shadowRadius: 8,
+      elevation: 10,
+    },
+    title: {
+      fontSize: 26,
+      fontWeight: '600',
+      marginBottom: 20,
+      textAlign: 'center',
+      color: 'navy', 
+    },
+    input: {
+      marginBottom: 18,
+    },
+    buttonRow: {
+      flexDirection: 'column', 
+      alignItems: 'center', 
+      marginVertical: 10,
+    },
+    buttonText: {
+      fontSize: 14,
+      textAlign: 'center',
+    },
+    loginButton: {
+     // backgroundColor: Color.primary,
+      paddingVertical: 10, 
+      borderRadius: 8,
+      marginTop: 10, 
+    },
+  });
 
   export default LoginPage;

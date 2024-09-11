@@ -31,8 +31,8 @@ const ProfilePage: React.FC = () => {
     <View style={GlobalStyles.container}>
       <View style={styles.header}>
         <Image
-          style={GlobalStyles.profileImage}
-          source={{ uri: 'https://via.placeholder.com/150' }} // Placeholder image
+          style={styles.profileImage} // Responsive profile image
+          source={{ uri: 'https://i.pinimg.com/originals/07/33/ba/0733ba760b29378474dea0fdbcb97107.png' }} // Placeholder demo image
         />
         <IconButton
           icon="pencil"
@@ -40,6 +40,7 @@ const ProfilePage: React.FC = () => {
           onPress={handleEditProfile}
           style={styles.editIcon}
           disabled={isEditing}
+          iconColor="blue"
         />
       </View>
       
@@ -52,6 +53,7 @@ const ProfilePage: React.FC = () => {
               value={name}
               onChangeText={setName}
               style={styles.input} // Adjusted style for input
+              
             />
             <TextInput
               label="Family Name"
@@ -99,10 +101,23 @@ const ProfilePage: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingVertical: 20, // Ensure proper spacing on smaller devices
+  },
   header: {
     alignItems: 'center',
     position: 'relative',
     marginBottom: 20,
+  },
+  profileImage: {
+    width: 150, // Responsive width based on screen size
+    height: 150, // Keep height the same for a square image
+    borderRadius: 75, // Half of width/height to make it circular
+    borderWidth: 3,
+    borderColor: '#1E90FF',
+    marginBottom: 10,
   },
   editIcon: {
     position: 'absolute',
@@ -138,5 +153,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
   },
 });
+
 
 export default ProfilePage;

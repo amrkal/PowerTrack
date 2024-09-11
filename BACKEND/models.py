@@ -45,13 +45,23 @@ class User:
                 'name': name,
                 'family_name': family_name,
                 'email': email,
-                'is_approved': True
+                'prices_tag': 5,
+                'role': 'user',
+                'is_approved': True,
+                'suspend': False,
+                'city': 'majdal shams',
+                'zip_code': 1243800,
+                'address': 'majdal shams',
+                'secound_phone_number': 0,
+                'created_at': datetime.utcnow(),
+                'updated_at': datetime.utcnow()
             }
             db_mongo.users.insert_one(user_data)  # Insert into MongoDB
             print(f"User {username} created successfully")
         except Exception as e:
             print(f"Error creating user: {str(e)}")
             raise  # Re-raise the exception to handle it in the calling function
+        
     @staticmethod
     def approve_user(username):
         db_mongo.users.update_one({'username': username}, {'$set': {'is_approved': True}})
@@ -96,7 +106,27 @@ class Item:
     def delete_item(item_id):
         return db_mongo.items.delete_one({"_id": item_id})
     
+    @staticmethod
+    def get_price_by_item_and_tag(item_key, PriceListNumber):
+        # Step 1: Check the prices collection for the most recent price based on ItemKey and PriceListNumber
+        price_data = db_mongo.PriceLists.find_one(
+            {
+                'ItemKey': item_key,
+                'PriceListNumber': PriceListNumber
+            },
+            sort=[('DatF', -1)]  # Sort by DatF in descending order to get the most recent price
+        )
 
+        if price_data and 'Price' in price_data:
+            return price_data['Price']  # Return the most recent price if found
+
+        # Step 2: If no adjusted price is found, fallback to the price in the items collection
+        item_data = db_mongo.items.find_one({'ItemKey': item_key})
+        if item_data and 'Price' in item_data:
+            return item_data['Price']  # Return the original item price if found
+
+        # Step 3: Return 0 if no price is found at all
+        return 0
 
 
 

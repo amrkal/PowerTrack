@@ -19,7 +19,7 @@ def register():
 
         if not username or not password or not phone_number or not name or not family_name or not email:
             return jsonify({'error': 'All fields are required'}), 400
-
+ 
         if User.find_by_username(username):
             return jsonify({'error': 'Username already exists'}), 400
 

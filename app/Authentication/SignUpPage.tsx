@@ -82,7 +82,8 @@ const SignUpPage: React.FC = () => {
         <SafeAreaView style={styles.safeArea}>
           <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.formContainer}>
-            <View style={{ flexDirection: 'row',  justifyContent: 'space-between' }} >
+          <Text style={styles.title}>Sign Up</Text>
+          <View style={styles.inputRow}>
             <TextInput
               label={ "Name" }
               mode="outlined"

@@ -87,7 +87,9 @@ import background from '../../assets/background.jpg';
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ImageBackground source={background} style={styles.background}>
         <SafeAreaView style={styles.safeArea}>
+          
           <View style={styles.formContainer}>
+          <Text style={styles.title}>Login</Text>
             <TextInput
               style={styles.input}
               mode = "outlined"
@@ -119,9 +121,9 @@ import background from '../../assets/background.jpg';
                             labelStyle={styles.buttonText}>
                               New user? Sign Up</Button>
             </View>
-            <Button mode ="outlined" onPress={handleLogin}
-            style={styles.loginButton}
-            >Login</Button>
+            <Button mode="contained" onPress={handleLogin} style={styles.loginButton}>
+              Login
+            </Button>
           </View>
         </SafeAreaView>
         </ImageBackground>
@@ -142,6 +144,14 @@ import background from '../../assets/background.jpg';
       justifyContent: 'center',
       alignItems: 'center',
     },
+
+    scrollContainer: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingVertical: 20,
+    },
+
     formContainer: {
       width: '90%',  
       maxWidth: 500,

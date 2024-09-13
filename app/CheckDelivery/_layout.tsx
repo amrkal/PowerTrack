@@ -5,7 +5,7 @@ import { CartProvider } from '../context/CartContext';
 export default function CheckDeliveryLayout() {
   return (
     <Stack>
-      <Stack.Screen name="DeliveryPage" />
+      <Stack.Screen name="PaymentPage" />
       {/* Add other CheckDelivery screens as needed */}
     </Stack>
   );

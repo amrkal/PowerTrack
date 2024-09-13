@@ -42,7 +42,7 @@ const MyCartPage: React.FC = () => {
           <View style={GlobalStyles.cartItemDetails}>
             {/* Make sure all text items are wrapped in <Text> */}
             <Text style={GlobalStyles.cartItemName}>{item.item_name}</Text>
-            <Text style={GlobalStyles.cartItemPrice}>${item.price.toFixed(2)}</Text>
+            <Text style={GlobalStyles.cartItemPrice}>₪{item.price.toFixed(2)}</Text>
         
             <View style={GlobalStyles.quantityContainer}>
               <Button

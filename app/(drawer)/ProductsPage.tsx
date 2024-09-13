@@ -9,10 +9,10 @@ import { useUser } from '../context/UserContext'; // Import useUser
 
 const categories = [
   { id: 'all', name: 'All' }, 
-  { id: '1', name: 'Electronics' },
-  { id: '2', name: 'Clothing' },
-  { id: '3', name: 'Home Appliances' },
-  { id: '4', name: 'Books' },
+  { id: '1', name: 'Copper' },
+  { id: '2', name: 'Pipes' },
+  { id: '3', name: 'Cables' },
+  { id: '4', name: 'Electric Tools' },
   { id: 'viewAll', name: 'View All' },
 ];
 

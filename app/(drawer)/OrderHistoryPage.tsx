@@ -25,12 +25,13 @@ axios.defaults.baseURL = baseURL;
 const OrderHistoryPage = () => {
   const [orders, setOrders] = useState<Order[]>([]); // Orders array
   const [loading, setLoading] = useState(true);
+  const [orderDetailsArray, setOrderDetailsArray] = useState<any[][]>([]); // 2D array
 
   useEffect(() => {
     const fetchOrderHistory = async () => {
       try {
         // Retrieve the JWT token from AsyncStorage
-        const accessToken = await AsyncStorage.getItem('accessToken');    
+        const accessToken = await AsyncStorage.getItem('accessToken');
         if (!accessToken) {
           console.error('No JWT token found');
           setLoading(false);
@@ -42,6 +43,16 @@ const OrderHistoryPage = () => {
           },
         });
         setOrders(response.data.orders);
+
+        // Map over the orders to extract details into a 2D array
+        const detailsArray = response.data.orders.map((order: Order) => [
+          order.order_id,
+          order.total_amount,
+          order.order_status,
+          new Date(order.order_date).toLocaleString(),
+        ]);
+        
+        setOrderDetailsArray(detailsArray); // Store the 2D array in state
         setLoading(false);
       } catch (error) {
         console.error("Error fetching order history", error);
@@ -56,6 +67,7 @@ const OrderHistoryPage = () => {
     return <ActivityIndicator size="large" />;
   }
 
+  // Display the 2D array (optional for testing)
   return (
     <View>
       <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 20 }}>Order History</Text>
@@ -88,6 +100,16 @@ const OrderHistoryPage = () => {
           </View>
         )}
       />
+
+      {/* Display the 2D array */}
+      <View style={{ marginTop: 20 }}>
+        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Order Details (2D Array):</Text>
+        {orderDetailsArray.map((orderDetails, index) => (
+          <Text key={index}>
+            {orderDetails.join(' | ')}
+          </Text>
+        ))}
+      </View>
     </View>
   );
 };

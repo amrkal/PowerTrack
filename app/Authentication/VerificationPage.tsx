@@ -79,7 +79,7 @@ const VerificationPage: React.FC = () => {
         value={verificationCode}
         onChangeText={setVerificationCode}
       />
-      <View>
+      <View style = {styles.buttonContainer}>
         <Button mode="outlined" onPress={sendVerificationCode}>
           Resend Code
         </Button>
@@ -142,6 +142,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginVertical: 10,
+    marginTop: 10,
     width: '48%', 
   },
 });

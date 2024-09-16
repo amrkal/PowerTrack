@@ -16,6 +16,10 @@ db_sql = SQLAlchemy()
 
 class User:
     @staticmethod
+    def find_by_id(user_id):
+        return db_mongo.users.find_one({'_id': ObjectId(user_id)})
+    
+    @staticmethod
     def find_by_username(username):
         return db_mongo.users.find_one({'username': username})
 
@@ -26,6 +30,20 @@ class User:
     @staticmethod
     def find_by_email(email):
         return db_mongo.users.find_one({'email': email})
+    
+    @staticmethod
+    def update_user(user_id, data):
+        db_mongo.users.update_one(
+            {'_id': ObjectId(user_id)},
+            {'$set': {
+                'name': data['name'],
+                'family_name': data['familyName'],
+                'email': data['email'],
+                'city': data['city'],
+                'zip_code': data['zip_code'],
+                'address': data['address']
+            }}
+        )
     
 
     @staticmethod
@@ -80,6 +98,24 @@ class Item:
         pattern = r'^\d{2}-\d{3}$'
         return list(db_mongo.items.find({"ItemKey": {"$regex": pattern}}))
 
+    @staticmethod
+    def search(query):
+        if not query:
+            raise ValueError("Search query cannot be empty")
+        
+        # Build a regular expression pattern with case-insensitive matching
+        search_pattern = re.compile(query, re.IGNORECASE)
+        
+        # Perform search on ItemName and ItemKey using the pattern for partial matches
+        search_query = {
+            "$or": [
+                {"ItemName": {"$regex": search_pattern}},
+                {"ItemKey": {"$regex": search_pattern}}
+            ]
+        }
+        
+        # Return the list of items matching the search criteria
+        return list(db_mongo.items.find(search_query))
 
     @staticmethod
     def get_paginated(skip, limit):
@@ -100,7 +136,32 @@ class Item:
 
     @staticmethod
     def update_item(item_id, data):
-        return db_mongo.items.update_one({"_id": item_id}, {"$set": data})
+        result = db_mongo.items.update_one({"_id": item_id}, {"$set": {'Qunatity': data['Quantity']}})
+        return result
+    
+    @staticmethod
+    def update_item_quantity(item_id, quantity):
+        if quantity is None:
+            raise ValueError("Quantity key is missing in the data")
+        
+        # Ensure quantity is an integer
+        if not isinstance(quantity, int):
+            try:
+                quantity = int(quantity)
+            except ValueError:
+                raise ValueError("Quantity must be an integer value")
+
+        # Perform the update
+        try:
+            result = db_mongo.items.update_one({"_id": ObjectId(item_id)}, {"$set": {'Quantity': quantity}})
+            if result.matched_count == 0:
+                raise ValueError("Item not found")
+            return result
+        except Exception as e:
+            print("Error occurred:", e)
+            raise
+
+
 
     @staticmethod
     def delete_item(item_id):

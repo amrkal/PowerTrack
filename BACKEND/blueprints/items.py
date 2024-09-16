@@ -57,6 +57,25 @@ def get_items():
 
 
 
+@items_bp.route('/items/search', methods=['GET'])
+def search_items():
+    try:
+        query = request.args.get('query', '')  # Fetch the search query from the request
+        print(f"Search query: {query}")  # Debugging
+
+        # Validate query
+        if not query:
+            return jsonify({"error": "Search query is required"}), 400
+
+        # Perform search using the model's search method
+        items = Item.search(query)
+        return jsonify(items), 200
+
+    except Exception as e:
+        print(f"Error occurred: {e}")  # Debugging
+        return jsonify({"error": str(e)}), 500
+
+
 
 
 

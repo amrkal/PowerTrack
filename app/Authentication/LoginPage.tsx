@@ -49,7 +49,7 @@ import background from '../../assets/background.jpg';
           try {
             const response = await axios.post('/users/login', { username: savedUsername, password: savedPassword });
             if (response.data) {
-              router.push('/(drawer)/MyCartPage');
+              router.push('/(drawer)/ProductsPage');
             }
           } catch (error) {
             // Handle login failure

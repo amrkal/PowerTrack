@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef, createContext, useContext } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Text, TextInput, Button, IconButton, } from "react-native-paper";
-import { View, FlatList, Image, TouchableOpacity, Animated,StyleSheet  } from 'react-native';
+import { View, FlatList, Image, TouchableOpacity, Animated, StyleSheet } from 'react-native';
 import { GlobalStyles } from "../../constants/GlobalStyles";
-import { Color } from '../../constants/Color';
-import axios from 'axios'; // Import axios if you prefer using it
+import axios from 'axios';
 import { useCart } from '../context/CartContext';
 import { useUser } from '../context/UserContext'; // Import useUser
 
@@ -15,8 +14,6 @@ const categories = [
   { id: '4', name: 'Electric Tools' },
   { id: 'viewAll', name: 'View All' },
 ];
-
-
 
 interface Product {
   id: string;
@@ -31,17 +28,14 @@ interface Product {
   categoryId?: string;
   image?: string;
 }
+
 interface CartItem extends Product {
   quantityInCart: number;
 }
 
-
 const baseURL = 'http://192.168.0.153:5000';
 axios.defaults.baseURL = baseURL;
 axios.defaults.timeout = 10000;
-
-let qty = 1;
-
 
 const ProductsPage: React.FC = () => {
   const { user } = useUser(); // Access the user context which includes prices_tag
@@ -58,7 +52,7 @@ const ProductsPage: React.FC = () => {
   const flatListRef = useRef<FlatList<any>>(null);
   const { addToCart } = useCart();
 
-  // Fetch items with pagination
+  // Fetch items with pagination and search query
   useEffect(() => {
     const fetchItems = async () => {
       try {
@@ -66,6 +60,7 @@ const ProductsPage: React.FC = () => {
           params: {
             page: page,
             prices_tag: user.prices_tag, // Send user's prices_tag to backend
+            search: searchQuery // Include search query
           },
           timeout: 30000
         });
@@ -84,9 +79,7 @@ const ProductsPage: React.FC = () => {
     };
 
     fetchItems();
-  }, [page, user.prices_tag]); // Fetch data again if prices_tag changes
-
-
+  }, [page, user.prices_tag, searchQuery]); // Fetch data again if prices_tag or searchQuery changes
 
   const handleAddToCart = (item: Product, quantity: number) => {
     addToCart({

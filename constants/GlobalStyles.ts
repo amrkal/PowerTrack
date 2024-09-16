@@ -1,7 +1,9 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 import { Color } from './Color';
 import { FontFamily, FontSize } from './Fonts';
 import { Border, Padding, Gap } from './Spacing';
+
+const { width } = Dimensions.get('window');
 
 /* Global Styles */
 export const GlobalStyles = StyleSheet.create({
@@ -168,10 +170,6 @@ export const GlobalStyles = StyleSheet.create({
     color: Color.light.text,
   },
 
-  buttonsContainer: {
-    width: '100%',
-    alignItems: 'center',
-  },
 
   quantityContainer: {
     flexDirection: 'row',
@@ -196,24 +194,7 @@ export const GlobalStyles = StyleSheet.create({
     fontFamily: FontFamily.bold,
   },
 
-  profileContainer: {
-    alignItems: 'center',
-    marginBottom: 40,
-  },
 
-  profileImage: {
-    width: 160,
-    height: 160,
-    borderRadius: Border.roundedFull,
-    marginBottom: 20,
-    backgroundColor: Color.light.grayLight,
-    shadowColor: Color.light.shadowDark,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 5,
-    borderWidth: 4,
-  },
 
   userName: {
     fontSize: FontSize.xl,
@@ -222,11 +203,6 @@ export const GlobalStyles = StyleSheet.create({
     marginBottom: 8,
   },
 
-  userEmail: {
-    fontSize: FontSize.base,
-    fontFamily: FontFamily.regular,
-    color: Color.light.text,
-  },
 
   optionButton: {
     padding: Padding.base,
@@ -249,20 +225,7 @@ export const GlobalStyles = StyleSheet.create({
     fontSize: FontSize.base,
   },
 
-  input: {
-    height: 50,
-    borderColor: Color.light.grayLight,
-    borderWidth: 1,
-    borderRadius: Border.base,
-    paddingHorizontal: Padding.base,
-    marginBottom: Padding.base,
-    backgroundColor: Color.light.background,
-    shadowColor: Color.light.shadowLight,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
+
 
   inputFocus: {
     borderColor: Color.light.primary,
@@ -350,6 +313,88 @@ export const GlobalStyles = StyleSheet.create({
     borderRadius: 50,
     padding: 10,
     elevation: 5,
+  },
+
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingVertical: 20,
+  },
+  header: {
+    alignItems: 'center',
+    position: 'relative',
+    marginBottom: 20,
+  },
+  profileImage: {
+    width: width > 600 ? 200 : 150,
+    height: width > 600 ? 200 : 150,
+    borderRadius: width > 600 ? 100 : 75,
+    borderWidth: 3,
+    borderColor: '#1E90FF',
+    marginBottom: 10,
+  },
+  editIcon: {
+    position: 'absolute',
+    top: 0,
+    right: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  profileContainer: {
+    width: width > 600 ? '50%' : '90%',
+    alignSelf: 'center',
+  },
+  userInfo: {
+    fontSize: width > 600 ? 24 : 18,
+    marginVertical: 5,
+    color: 'black',
+    textAlign: 'center',
+  },
+  userEmail: {
+    fontSize: width > 600 ? 20 : 16,
+    marginVertical: 5,
+    color: 'gray',
+    textAlign: 'center',
+  },
+
+  input: {
+    borderColor: Color.light.grayLight,
+    borderWidth: 1,
+    borderRadius: Border.base,
+    paddingHorizontal: Padding.base,
+    marginBottom: Padding.base,
+    backgroundColor: Color.light.background,
+    shadowColor: Color.light.shadowLight,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    marginVertical: 8,
+    height: width > 600 ? 60 : 50,
+  },
+  
+  buttonsContainer: {
+    width: width > 600 ? '50%' : '90%',
+    alignSelf: 'center',
+    marginTop: 20,
+  },
+  editButton: {
+    marginVertical: 10,
+    paddingVertical: width > 600 ? 15 : 10,
+  },
+  saveButton: {
+    marginVertical: 10,
+    backgroundColor: 'green',
+    paddingVertical: width > 600 ? 15 : 10,
+  },
+  logoutButton: {
+    marginVertical: 10,
+    backgroundColor: 'red',
+    paddingVertical: width > 600 ? 15 : 10,
+  },
+  historyButton: {
+    marginVertical: 10,
+    backgroundColor: '#1E90FF',
+    paddingVertical: width > 600 ? 15 : 10,
   },
 
 

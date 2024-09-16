@@ -13,7 +13,7 @@ const baseURL = 'http://192.168.0.153:5000';
 axios.defaults.baseURL = baseURL;
 
 const CheckOutPage: React.FC = () => {
-  const [selectedOption, setSelectedOption] = useState<'Take Away' | 'Delivery' | null>(null);
+  const [selectedOption, setSelectedOption] = useState<'Collection' | 'Delivery' | null>(null);
   const [city, setCity] = useState('');
   const [address, setAddress] = useState('');
   const { cart } = useCart();  // Access cart from the context
@@ -55,7 +55,7 @@ const CheckOutPage: React.FC = () => {
   };
 
   const handleNextPress = () => {
-    if (selectedOption === 'Take Away') {
+    if (selectedOption === 'Collection') {
       handleOrderCompletion();
     } else if (selectedOption === 'Delivery') {
       if (city && address) {
@@ -77,9 +77,9 @@ const CheckOutPage: React.FC = () => {
           
           {/* Self Collection */}
           <Button
-            style={[styles.optionButton, selectedOption === 'Take Away' ? styles.selectedButton : styles.defaultButton]}
+            style={[styles.optionButton, selectedOption === 'Collection' ? styles.selectedButton : styles.defaultButton]}
             mode="contained"
-            onPress={() => setSelectedOption('Take Away')}
+            onPress={() => setSelectedOption('Collection')}
           >
             Self Collection
           </Button>

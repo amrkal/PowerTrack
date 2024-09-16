@@ -37,43 +37,44 @@ const MyCartPage: React.FC = () => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={GlobalStyles.cartItem}>
-          <Image source={item.image ? { uri: item.image } : require('../../assets/images/icon.png')}
-          style={GlobalStyles.cartItemImage} />
-          <View style={GlobalStyles.cartItemDetails}>
-            {/* Make sure all text items are wrapped in <Text> */}
-            <Text style={GlobalStyles.cartItemName}>{item.item_name}</Text>
-            <Text style={GlobalStyles.cartItemPrice}>₪{item.price.toFixed(2)}</Text>
-        
-            <View style={GlobalStyles.quantityContainer}>
-              <Button
-                mode="contained"
-                onPress={() => handleDecreaseQuantity(item.id)}
-                style={{ marginRight: 5, minWidth: 5 }}
-              >
-                -
-              </Button>
-              {/* Ensure quantity is wrapped inside <Text> */}
-              <Text variant="titleLarge" style={{ marginTop: 5 }}>{item.quantityInCart}</Text>
-              <Button
-                mode="contained"
-                onPress={() => handleIncreaseQuantity(item.id)}
-                style={{ marginLeft: 5, minWidth: 5 }}
-              >
-                +
-              </Button>
+            <Image
+              source={item.image ? { uri: item.image } : require('../../assets/images/icon.png')}
+              style={GlobalStyles.cartItemImage}
+            />
+            <View style={GlobalStyles.cartItemDetails}>
+              <Text style={GlobalStyles.cartItemName}>{item.item_name}</Text>
+              <Text style={GlobalStyles.cartItemPrice}>₪{item.price.toFixed(2)}</Text>
+
+              <View style={GlobalStyles.quantityContainer}>
+                <Button
+                  mode="contained"
+                  onPress={() => handleDecreaseQuantity(item.id)}
+                  style={{ marginRight: 5, minWidth: 5 }}
+                >
+                  -
+                </Button>
+                <Text variant="titleLarge" style={{ marginTop: 5 }}>
+                  {item.quantityInCart}
+                </Text>
+                <Button
+                  mode="contained"
+                  onPress={() => handleIncreaseQuantity(item.id)}
+                  style={{ marginLeft: 5, minWidth: 5 }}
+                >
+                  +
+                </Button>
+              </View>
             </View>
+            <Button
+              style={GlobalStyles.deleteButton}
+              labelStyle={{ fontSize: 16, lineHeight: 17 }}
+              mode="contained"
+              buttonColor="red"
+              onPress={() => handleDelete(item.id)}
+            >
+              Delete
+            </Button>
           </View>
-          <Button
-            style={GlobalStyles.deleteButton}
-            labelStyle={{ fontSize: 16, lineHeight: 17 }}
-            mode="contained"
-            buttonColor="red"
-            onPress={() => handleDelete(item.id)}
-          >
-            Delete
-          </Button>
-        </View>
-        
         )}
         style={GlobalStyles.cartList}
       />

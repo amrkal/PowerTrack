@@ -1,75 +1,58 @@
-import React, { useEffect, useState } from 'react';
-import { Drawer } from 'expo-router/drawer';
+import React from 'react';
 import { Stack } from 'expo-router';
-import useFonts from '../constants/UseFonts';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { MD3LightTheme as DefaultTheme, PaperProvider } from 'react-native-paper';
-import { StatusBar } from 'expo-status-bar';
-import { Admin, Resource } from 'react-admin';
+import {
+  MD3DarkTheme,
+  MD3LightTheme,
+  PaperProvider,
+  adaptNavigationTheme, //1. Import this package
+} from "react-native-paper";
 
-const theme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: '#1e3755',
-    secondary: '#dbdbdc',
-    tertiary: '#f5f5f5',
-    background: '#f5f5f5',
-    onPrimary : '#ffffff',
-  },
-};
+//2. Import Router Theme
+import {
+  DarkTheme as NavigationDarkTheme,
+  DefaultTheme as NavigationDefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
 
-export const unstable_settings = {
-  initialRouteName: "Authentication",
-};
+//3. Install deepmerge first and import it
+import merge from "deepmerge";
 
-export default function Layout() {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false); // New state for admin
-  const fontsLoaded = useFonts();
+import { Colors } from "../constants/Colors";
+import { useColorScheme } from 'react-native';
 
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      try {
-        const token = await AsyncStorage.getItem('userToken');
-        setIsLoggedIn(!!token); // Assign a boolean value (true/false) based on token existence
-        const userRole = await AsyncStorage.getItem('userRole'); 
-        if (userRole === 'admin') {
-          setIsAdmin(true);
-        } else {
-          setIsAdmin(false);
-        }
-      } catch (e) {
-        console.error('Failed to load token or role.', e);
-      }
-    };
+const customDarkTheme = { ...MD3DarkTheme, colors: Colors.dark };
+const customLightTheme = { ...MD3LightTheme, colors: Colors.light };
 
-    checkLoginStatus();
-  }, []);
+//4. The adaptNavigationTheme function takes an existing React Navigation 
+// theme and returns a React Navigation theme using the colors from 
+// Material Design 3.
+const { LightTheme, DarkTheme } = adaptNavigationTheme({
+  reactNavigationLight: NavigationDefaultTheme,
+  reactNavigationDark: NavigationDarkTheme,
+});
 
+//5.We will merge React Native Paper Theme and Expo Router Theme 
+// using deepmerge
+const CombinedLightTheme = merge(LightTheme, customLightTheme);
+const CombinedDarkTheme = merge(DarkTheme, customDarkTheme);
 
-  if (!fontsLoaded || isLoggedIn === null) {
-    return null; // Or render a loading spinner
-  }
-
-  return (
-    <PaperProvider theme={theme}>
-    <StatusBar style="dark" />
-    <Stack>
-      {isLoggedIn ? (
-        <Stack.Screen
-          name="(drawer)/ProfilePage"
-          options={{ headerShown: false }}
-        />
-      ) : (
-        <Stack.Screen
-          name="Authentication"
-          options={{ headerShown: false }}
-        />
-      )}
-      <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-      <Stack.Screen name="CheckDelivery" options={{ headerShown: false }} />
-    </Stack>
+export default function RootLayout() {
+    const colorScheme = useColorScheme();
+  
+  //6. Let's use the merged themes
+    const paperTheme =
+      colorScheme === "dark" ? CombinedDarkTheme : CombinedLightTheme;
+  
+    return (
+      <PaperProvider theme={paperTheme}>
+        <ThemeProvider value={paperTheme}>
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="Authentication" options={{ headerShown: false }} />
+        <Stack.Screen name="CheckDelivery" options={{ headerShown: false }} />
+        <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+      </Stack>
+      </ThemeProvider>
     </PaperProvider>
   );
 }

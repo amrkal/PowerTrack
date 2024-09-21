@@ -8,21 +8,36 @@ const { width } = Dimensions.get('window');
 /* Global Styles */
 export const GlobalStyles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: Padding.xs,
+    padding: Padding.sm,
     borderRadius: Border.base,
-    backgroundColor: Color.light.background,
-    shadowColor: Color.light.shadowLight,
+    //backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    //shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 1,
     shadowRadius: 8,
-    elevation: 5,
-  },
+    elevation: 10,
+    width: '90%',
+    alignSelf: 'center',
 
+
+  },
+  formContainer: {
+    width: '90%',  
+    maxWidth: 500,
+    //backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    padding: 30, 
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 10,
+  },
+  
   title: {
     fontSize: FontSize['3xl'],
     fontFamily: FontFamily.boldItalic,
-    color: Color.light.text,
+    //color: Color.light.text,
     marginBottom: Padding.lg,
     textAlign: 'center',
     textTransform: 'uppercase',
@@ -36,7 +51,7 @@ export const GlobalStyles = StyleSheet.create({
   text: {
     fontSize: FontSize.base,
     fontFamily: FontFamily.regular,
-    color: Color.light.text,
+    //color: Color.light.text,
     lineHeight: 26,
     marginBottom: Padding.sm,
   },
@@ -55,7 +70,7 @@ export const GlobalStyles = StyleSheet.create({
   },
 
   buttonText: {
-    color: Color.light.white,
+    //color: Color.light.white,
     fontFamily: FontFamily.medium,
     fontSize: FontSize.lg,
     letterSpacing: 1.5,
@@ -63,19 +78,19 @@ export const GlobalStyles = StyleSheet.create({
 
   searchBar: {
     height: 50,
-    borderColor: Color.light.grayLight,
+    //borderColor: Color.light.grayLight,
     borderWidth: 1,
     borderRadius: Border.base,
     paddingHorizontal: Padding.base,
     marginBottom: Padding.base,
-    backgroundColor: Color.light.background,
+    //backgroundColor: Color.light.background,
   },
 
   categoryButton: {
     paddingVertical: Gap.sm,
     paddingHorizontal: 15,
     borderRadius: Border.base,
-    backgroundColor: Color.light.tabIconDefault,
+   //backgroundColor: Color.light.tabIconDefault,
     marginRight: Gap.sm,
     alignItems: 'center',
     justifyContent: 'center',
@@ -83,11 +98,11 @@ export const GlobalStyles = StyleSheet.create({
   },
 
   selectedCategoryButton: {
-    backgroundColor: Color.light.tint,
+    //backgroundColor: Color.light.tint,
   },
 
   categoryText: {
-    color: Color.light.text,
+    //color: Color.light.text,
     fontFamily: FontFamily.bold,
   },
 
@@ -95,10 +110,9 @@ export const GlobalStyles = StyleSheet.create({
     flex: 1,
     margin: Gap.sm,
     padding: Padding.base,
-    backgroundColor: Color.light.background,
+    //backgroundColor: Color.light.background,
     borderRadius: Border.base,
     alignItems: 'center',
-    borderColor: Color.light.tabIconDefault,
     borderWidth: 1,
   },
 
@@ -117,7 +131,7 @@ export const GlobalStyles = StyleSheet.create({
   productPrice: {
     fontSize: FontSize.sm,
     fontFamily: FontFamily.regular,
-    color: Color.light.text,
+    //color: Color.light.text,
     marginBottom: Padding.base,
   },
 
@@ -129,7 +143,7 @@ export const GlobalStyles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: Padding.base,
     padding: Padding.base,
-    backgroundColor: Color.light.background,
+    //backgroundColor: Color.light.background,
     borderRadius: Border.base,
     borderColor: Color.light.grayLight,
     borderWidth: 1,
@@ -206,7 +220,7 @@ export const GlobalStyles = StyleSheet.create({
 
   optionButton: {
     padding: Padding.base,
-    backgroundColor: Color.light.background,
+    //backgroundColor: Color.light.background,
     borderRadius: Border.base,
     marginVertical: Gap.sm,
     borderWidth: 1,
@@ -216,7 +230,7 @@ export const GlobalStyles = StyleSheet.create({
 
   selectedOptionButton: {
     borderColor: Color.light.primary,
-    backgroundColor: Color.light.primary,
+    //backgroundColor: Color.light.primary,
   },
 
   optionText: {
@@ -247,13 +261,13 @@ export const GlobalStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    //backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
 
   modalContent: {
     width: '80%',
     padding: Padding.lg,
-    backgroundColor: Color.light.background,
+    //backgroundColor: Color.light.background,
     borderRadius: Border.base,
     shadowColor: Color.light.shadowDark,
     shadowOffset: { width: 0, height: 4 },
@@ -268,7 +282,7 @@ export const GlobalStyles = StyleSheet.create({
     left: '10%',
     right: '10%',
     padding: Padding.sm,
-    backgroundColor: Color.light.success,
+    //backgroundColor: Color.light.success,
     borderRadius: Border.base,
     alignItems: 'center',
     justifyContent: 'center',
@@ -288,7 +302,7 @@ export const GlobalStyles = StyleSheet.create({
   animatedTouchable: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Color.light.primary,
+    //backgroundColor: Color.light.primary,
     paddingVertical: Padding.sm,
     paddingHorizontal: Padding.lg,
     borderRadius: Border.base,
@@ -309,7 +323,7 @@ export const GlobalStyles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     right: 20,
-    backgroundColor: '#007bff',
+    //backgroundColor: '#007bff',
     borderRadius: 50,
     padding: 10,
     elevation: 5,
@@ -337,7 +351,7 @@ export const GlobalStyles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     right: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    //backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
   profileContainer: {
     width: width > 600 ? '50%' : '90%',
@@ -362,7 +376,7 @@ export const GlobalStyles = StyleSheet.create({
     borderRadius: Border.base,
     paddingHorizontal: Padding.base,
     marginBottom: Padding.base,
-    backgroundColor: Color.light.background,
+    //backgroundColor: Color.light.background,
     shadowColor: Color.light.shadowLight,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -383,17 +397,17 @@ export const GlobalStyles = StyleSheet.create({
   },
   saveButton: {
     marginVertical: 10,
-    backgroundColor: 'green',
+    //backgroundColor: 'green',
     paddingVertical: width > 600 ? 15 : 10,
   },
   logoutButton: {
     marginVertical: 10,
-    backgroundColor: 'red',
+    //backgroundColor: 'red',
     paddingVertical: width > 600 ? 15 : 10,
   },
   historyButton: {
     marginVertical: 10,
-    backgroundColor: '#1E90FF',
+    //backgroundColor: '#1E90FF',
     paddingVertical: width > 600 ? 15 : 10,
   },
 

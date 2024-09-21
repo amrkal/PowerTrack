@@ -23,6 +23,8 @@ import { router } from 'expo-router';
 import background from '../../assets/background.jpg';
 
 
+  
+
   type RootStackParamList = {
     LoginPage: undefined;
     SignUpPage: undefined;
@@ -34,7 +36,7 @@ import background from '../../assets/background.jpg';
   const baseURL = 'http://192.168.0.153:5000';
   axios.defaults.baseURL = baseURL;
 
-  const LoginPage: React.FC = () => {
+  const LoginPage: React.FC = (route) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigation = useNavigation<LoginPageNavigationProp>();
@@ -85,11 +87,10 @@ import background from '../../assets/background.jpg';
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ImageBackground source={background} style={styles.background}>
+
         <SafeAreaView style={styles.safeArea}>
           
-          <View style={styles.formContainer}>
-          <Text style={styles.title}>Login</Text>
+          <View style={GlobalStyles.formContainer}>
             <TextInput
               style={styles.input}
               mode = "outlined"
@@ -98,7 +99,6 @@ import background from '../../assets/background.jpg';
               value={username}
               onChangeText={setUsername}
               autoCapitalize="none"
-              theme={{ colors: { primary: 'navy' } }} 
             />
             <TextInput
               mode = "outlined"
@@ -109,14 +109,13 @@ import background from '../../assets/background.jpg';
               onChangeText={setPassword}
               secureTextEntry
               style={styles.input}
-              theme={{ colors: { primary: 'navy' } }}
             />
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 10 }}>
-            <Button onPress={() => navigation.navigate("ForgotPasswordPage") }
+            <Button onPress={() => router.push("/Authentication/ForgotPasswordPage") }
                                         color="navy"
                                         labelStyle={styles.buttonText}>
               Forgot Password?</Button>
-            <Button onPress={() => navigation.navigate("SignUpPage")}
+            <Button onPress={() => router.push("/Authentication/SignUpPage")}
                             color="navy"
                             labelStyle={styles.buttonText}>
                               New user? Sign Up</Button>
@@ -126,7 +125,6 @@ import background from '../../assets/background.jpg';
             </Button>
           </View>
         </SafeAreaView>
-        </ImageBackground>
       </TouchableWithoutFeedback>
     );
   };
@@ -151,33 +149,8 @@ import background from '../../assets/background.jpg';
       alignItems: 'center',
       paddingVertical: 20,
     },
-
-    formContainer: {
-      width: '90%',  
-      maxWidth: 500,
-      backgroundColor: 'rgba(255, 255, 255, 0.85)',
-      padding: 30, 
-      borderRadius: 12,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 6 },
-      shadowOpacity: 0.15,
-      shadowRadius: 8,
-      elevation: 10,
-    },
-    title: {
-      fontSize: 26,
-      fontWeight: '600',
-      marginBottom: 20,
-      textAlign: 'center',
-      color: 'navy', 
-    },
     input: {
       marginBottom: 18,
-    },
-    buttonRow: {
-      flexDirection: 'column', 
-      alignItems: 'center', 
-      marginVertical: 10,
     },
     buttonText: {
       fontSize: 14,

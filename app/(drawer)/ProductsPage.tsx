@@ -163,7 +163,7 @@ const ProductsPage: React.FC = () => {
   }
 
   return (
-    <View style={GlobalStyles.container}>
+    <View>
       <TextInput
         style={GlobalStyles.searchBar}
         placeholder="Search Products"
@@ -176,7 +176,7 @@ const ProductsPage: React.FC = () => {
             data={categories}
             horizontal
             renderItem={({ item }) => (
-              <Button mode={item.id === selectedCategory ? "contained" : "outlined"} onPress={() => setSelectedCategory(item.id)} style={{ marginRight: 3 }}>
+              <Button mode={item.id === selectedCategory ? "contained" : "outlined"} onPress={() => setSelectedCategory(item.id)} style={{ marginRight: 8 }}>
                 {item.name}
               </Button>
             )}

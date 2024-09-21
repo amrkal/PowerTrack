@@ -81,8 +81,7 @@ const SignUpPage: React.FC = () => {
       <ImageBackground source={background} style={styles.background}>
         <SafeAreaView style={styles.safeArea}>
           <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.formContainer}>
-          <Text style={styles.title}>Sign Up</Text>
+          <View style={GlobalStyles.container}>
           <View style={styles.inputRow}>
             <TextInput
               label={ "Name" }
@@ -90,7 +89,7 @@ const SignUpPage: React.FC = () => {
               placeholder="Name"
               value={name}
               onChangeText={setName}
-              style={[{ flex: 1, marginRight: 8 }, GlobalStyles.searchBar]} // Takes up half of the space
+              style={{ flex: 1, marginRight: 8 }} // Takes up half of the space
             />
             <TextInput
               mode="outlined"
@@ -98,7 +97,7 @@ const SignUpPage: React.FC = () => {
               placeholder="Family Name"
               value={familyName}
               onChangeText={setFamilyName}
-              style={[{ flex: 1 }, GlobalStyles.searchBar]} // Takes up the other half of the space
+              style={{ flex: 1 }} // Takes up the other half of the space
             />
             </View>
             <TextInput
@@ -142,8 +141,7 @@ const SignUpPage: React.FC = () => {
               style={styles.inputFull}
             />
             <Button mode= "contained" onPress={handleRegister} style={styles.registerButton}>Register</Button>
-            <Button onPress={() => navigation.navigate("LoginPage")} style={styles.textButton}>Already have account?</Button>
-            <Button onPress={testConnection} style={styles.textButton}>Test Connection</Button>
+            <Button onPress={() => navigation.navigate("LoginPage")}>Already have account?</Button>
           </View>
           </ScrollView>
       </SafeAreaView>
@@ -168,34 +166,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 20,
   },
-  formContainer: {
-    width: '90%',
-    maxWidth: 500,
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',
-    padding: 20,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 10,
-    alignItems: 'center', 
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: '600',
-    marginBottom: 20,
-    textAlign: 'center',
-    color: 'navy',
-  },
   inputRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
     marginBottom: 10,
-  },
-  inputHalf: {
-    flex: 1,
   },
   inputFull: {
     width: '100%',
@@ -204,11 +179,6 @@ const styles = StyleSheet.create({
   registerButton: {
     width: '100%',
     marginTop: 20,
-    backgroundColor: '#003366', 
-  },
-  textButton: {
-    marginTop: 10,
-    color: '#003366', 
   },
 });
 

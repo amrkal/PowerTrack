@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, View,StyleSheet, ImageBackground, SafeAreaView } from "react-native";
+import { Alert, View,StyleSheet, SafeAreaView , ImageBackground} from "react-native";
 import { Text, TextInput, Button } from "react-native-paper";
 import { GlobalStyles } from "../../constants/GlobalStyles";
 import axios from "axios";
@@ -27,19 +27,20 @@ const ForgotPasswordPage: React.FC = () => {
   return (
     <ImageBackground source={background} style={styles.background}>
       <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-      <Text style={styles.text}>
+      <View style={GlobalStyles.container}>
+      <Text style={{ marginBottom: 20, color: 'green' }}>
         Enter your email address.
       </Text>
       <TextInput
-        style={GlobalStyles.searchBar}
+        // style={GlobalStyles.searchBar}
         placeholder="Email"
         value={email}
+        mode="outlined"
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
       />
-        <Button mode="contained" onPress={handlePasswordReset}> {/* Correctly call the function here */}
+        <Button style={{ marginTop: 10 }} mode="contained" onPress={handlePasswordReset}> {/* Correctly call the function here */}
           Reset Password
         </Button>
       </View>
@@ -59,39 +60,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  container: {
-    width: '90%',
-    maxWidth: 400,
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',
-    padding: 20,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 10,
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: '600',
-    marginBottom: 36,
-    textAlign: 'center',
-    color: 'navy',
-  },
-  text: {
-    fontSize: 16,
-    marginBottom: 26,
-    textAlign: 'left', 
-    color: 'navy',
-  },
-  input: {
-    width: '100%',
-    marginBottom: 20,
-  },
-  resetButton: {
-    width: '100%',
-    backgroundColor: '#003366', 
   },
 });
 

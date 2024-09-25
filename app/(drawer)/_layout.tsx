@@ -2,7 +2,7 @@ import React from 'react';
 import { Drawer } from 'expo-router/drawer';
 import { CartProvider } from '../context/CartContext'; 
 import { UserProvider } from '../context/UserContext';
-import { ItemsProvider } from '../context/ItemContext';
+import { ItemsProvider } from '../context/ItemsContext';
 
 export default function Layout() {
   return (

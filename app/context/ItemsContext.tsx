@@ -60,7 +60,7 @@ export const ItemsProvider: React.FC<ItemsProviderProps> = ({ children }) => {
 
   return (
     <ItemsContext.Provider value={{ items, loading }}>
-      {children}  {/* children is now correctly typed */}
+      {children}
     </ItemsContext.Provider>
   );
 };

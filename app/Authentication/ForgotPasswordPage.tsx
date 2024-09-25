@@ -3,9 +3,12 @@ import { Alert, View,StyleSheet, SafeAreaView , ImageBackground} from "react-nat
 import { Text, TextInput, Button } from "react-native-paper";
 import { GlobalStyles } from "../../constants/GlobalStyles";
 import axios from "axios";
+import { MaterialIcons } from "@expo/vector-icons";
 
 // Import the background image
-import background from '../../assets/background.jpg';
+
+
+const background = require('../../assets/images/loginBG.jpg');
 
 const ForgotPasswordPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -39,6 +42,7 @@ const ForgotPasswordPage: React.FC = () => {
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
+        left={<TextInput.Icon icon={() => <MaterialIcons name="email" size={20} />} />} // Icon for username
       />
         <Button style={{ marginTop: 10 }} mode="contained" onPress={handlePasswordReset}> {/* Correctly call the function here */}
           Reset Password

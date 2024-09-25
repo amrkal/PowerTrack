@@ -30,7 +30,7 @@ export default function Index() {
   useEffect(() => {
     if (!isLoading && fontsLoaded) {
       if (isLoggedIn) {
-        router.push('/(drawer)/ProfilePage'); // Navigate to Profile if logged in
+        router.push('/(drawer)/LandingPage'); // Navigate to Profile if logged in
       } else {
         router.push('/Authentication/LoginPage'); // Navigate to Login if not logged in
       }

@@ -1,20 +1,29 @@
 import React, { useState } from "react";
-import { Alert, Keyboard, SafeAreaView, ScrollView, TouchableWithoutFeedback, View, StyleSheet, ImageBackground} from "react-native";
-import { Text, TextInput, Button, } from "react-native-paper";
+import {
+  Alert,
+  Keyboard,
+  SafeAreaView,
+  ScrollView,
+  TouchableWithoutFeedback,
+  View,
+  StyleSheet,
+  ImageBackground,
+} from "react-native";
+import { Text, TextInput, Button } from "react-native-paper";
 import { GlobalStyles } from "../../constants/GlobalStyles";
 import { router, useNavigation } from "expo-router";
 import axios from "axios";
 import { StackNavigationProp } from "@react-navigation/stack";
 import parsePhoneNumberFromString from "libphonenumber-js";
-import { Route } from "expo-router/build/Route";
+import { MaterialIcons } from "@expo/vector-icons";
 
 // Import the background image
-import background from '../../assets/background.jpg';
+const background = require('../../assets/images/loginBG.jpg');
 
 type RootStackParamList = {
   SignUpPage: undefined;
   LoginPage: undefined;
-  VerificationPage:{ phoneNumber: string };
+  VerificationPage: { phoneNumber: string };
 };
 
 type SignUpPageNavigationProp = StackNavigationProp<RootStackParamList, 'SignUpPage'>;
@@ -38,23 +47,26 @@ const SignUpPage: React.FC = () => {
     return phoneNumber?.isValid() || false;
   };
 
-  const testConnection = async () => {
-    try {
-      const response = await axios.get('/');
-      Alert.alert('Connection Successful', response.data.message || 'Connected to server');
-    } catch (error:any) {
-      Alert.alert('Connection Failed', error.message);
-    }
-  };
-
   const handleRegister = async () => {
+    if (!name || !familyName || !username || !email || !password || !phoneNumber) {
+      Alert.alert('Error', 'Please fill in all fields.');
+      return;
+    }
+
     if (!validatePhoneNumber(phoneNumber)) {
       Alert.alert('Error', 'Please enter a valid phone number.');
       return;
     }
 
     try {
-      console.log('Attempting to register with:', { username, password, name, familyName, email, phoneNumber });
+      console.log('Attempting to register with:', {
+        username,
+        password,
+        name,
+        familyName,
+        email,
+        phoneNumber,
+      });
       const response = await axios.post('/auth/register', {
         username,
         password,
@@ -75,77 +87,92 @@ const SignUpPage: React.FC = () => {
     }
   };
 
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ImageBackground source={background} style={styles.background}>
         <SafeAreaView style={styles.safeArea}>
           <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={GlobalStyles.container}>
-          <View style={styles.inputRow}>
-            <TextInput
-              label={ "Name" }
-              mode="outlined"
-              placeholder="Name"
-              value={name}
-              onChangeText={setName}
-              style={{ flex: 1, marginRight: 8 }} // Takes up half of the space
-            />
-            <TextInput
-              mode="outlined"
-              label={ "Family Name" }
-              placeholder="Family Name"
-              value={familyName}
-              onChangeText={setFamilyName}
-              style={{ flex: 1 }} // Takes up the other half of the space
-            />
+            <View style={GlobalStyles.container}>
+              {/* Name and Family Name */}
+              <View style={styles.inputRow}>
+                <TextInput
+                  label="Name"
+                  mode="outlined"
+                  placeholder="Name"
+                  value={name}
+                  onChangeText={setName}
+                  style={{ flex: 1, marginRight: 8 }} // Takes up half of the space
+                  left={<TextInput.Icon icon={() => <MaterialIcons name="account-circle" size={20} />} />} // Icon for name
+                />
+                <TextInput
+                  mode="outlined"
+                  label="Family Name"
+                  placeholder="Family Name"
+                  value={familyName}
+                  onChangeText={setFamilyName}
+                  style={{ flex: 1 }} // Takes up the other half of the space
+                  left={<TextInput.Icon icon={() => <MaterialIcons name="account-circle" size={20} />} />} // Icon for family name
+                />
+              </View>
+
+              {/* Username */}
+              <TextInput
+                label="Username"
+                mode="outlined"
+                placeholder="Username"
+                value={username}
+                onChangeText={setUsername}
+                style={styles.inputFull}
+                left={<TextInput.Icon icon={() => <MaterialIcons name="person" size={20} />} />} // Icon for username
+              />
+
+              {/* Email */}
+              <TextInput
+                mode="outlined"
+                label="Email"
+                placeholder="Email"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                style={styles.inputFull}
+                left={<TextInput.Icon icon={() => <MaterialIcons name="email" size={20} />} />} // Icon for email
+              />
+
+              {/* Password */}
+              <TextInput
+                mode="outlined"
+                label="Password"
+                placeholder="Password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                style={styles.inputFull}
+                left={<TextInput.Icon icon={() => <MaterialIcons name="lock" size={20} />} />} // Changed icon to "lock" for password
+              />
+
+              {/* Phone Number */}
+              <TextInput
+                mode="outlined"
+                label="Phone Number"
+                placeholder="Phone Number"
+                keyboardType="numeric"
+                value={phoneNumber}
+                onChangeText={setPhoneNumber}
+                style={styles.inputFull}
+                left={<TextInput.Icon icon={() => <MaterialIcons name="phone" size={20} />} />} // Icon for phone number
+              />
+
+              {/* Register Button */}
+              <Button mode="contained" onPress={handleRegister} style={styles.registerButton}>
+                Register
+              </Button>
+              <Button onPress={() => navigation.navigate("LoginPage")}>
+                Already have an account?
+              </Button>
             </View>
-            <TextInput
-              //style={GlobalStyles.searchBar}
-              label={ "User Name" }
-              mode="outlined"
-              placeholder="username"
-              value={username}
-              onChangeText={setUsername}
-              style={styles.inputFull}
-            />
-            <TextInput
-              //style={GlobalStyles.searchBar}
-              mode="outlined"
-              label={"Email"}
-              placeholder="Email"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-              style={styles.inputFull}
-            />
-            <TextInput
-              mode="outlined"
-              //style={GlobalStyles.searchBar}
-              label={ "Password" }
-              placeholder="Password"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-              style={styles.inputFull}
-            />
-            <TextInput
-             mode="outlined"
-             //style={GlobalStyles.searchBar}
-             label={"Phone Number"}
-              // style={styles.input}
-              placeholder="Phone Number"
-              keyboardType="numeric"
-              value={phoneNumber}
-              onChangeText={setPhoneNumber}
-              style={styles.inputFull}
-            />
-            <Button mode= "contained" onPress={handleRegister} style={styles.registerButton}>Register</Button>
-            <Button onPress={() => navigation.navigate("LoginPage")}>Already have account?</Button>
-          </View>
           </ScrollView>
-      </SafeAreaView>
-    </ImageBackground>
+        </SafeAreaView>
+      </ImageBackground>
     </TouchableWithoutFeedback>
   );
 };
@@ -181,6 +208,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
-
 
 export default SignUpPage;

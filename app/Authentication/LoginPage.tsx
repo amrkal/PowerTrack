@@ -20,9 +20,9 @@
   import { Color } from '../../constants/Color';
   import { GlobalStyles } from '../../constants/GlobalStyles';
 import { router } from 'expo-router';
-import background from '../../assets/background.jpg';
+import { MaterialIcons } from '@expo/vector-icons';
 
-
+const background = require('../../assets/images/loginBG.jpg');
   
 
   type RootStackParamList = {
@@ -79,7 +79,7 @@ import background from '../../assets/background.jpg';
         }
     
         // Navigate to the Products page after successful login
-        router.push('/(drawer)/ProductsPage');
+        router.push('/(drawer)/LandingPage');
       } catch (error) {
         Alert.alert('Login Failed', 'Invalid username or password');
       }
@@ -87,21 +87,22 @@ import background from '../../assets/background.jpg';
 
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-
+      <ImageBackground source={background} style={styles.background}>
         <SafeAreaView style={styles.safeArea}>
           
           <View style={GlobalStyles.formContainer}>
             <TextInput
               style={styles.input}
-              mode = "outlined"
+              mode = "flat"
               label={"Username"}
               placeholder="Username"
               value={username}
               onChangeText={setUsername}
               autoCapitalize="none"
+              left={<TextInput.Icon icon={() => <MaterialIcons name="person" size={20} />} />} // Icon for username
             />
             <TextInput
-              mode = "outlined"
+              mode = "flat"
               label={"Password"}
               // style={GlobalStyles.searchBar}
               placeholder="Password"
@@ -109,6 +110,7 @@ import background from '../../assets/background.jpg';
               onChangeText={setPassword}
               secureTextEntry
               style={styles.input}
+              left={<TextInput.Icon icon={() => <MaterialIcons name="lock" size={20} />} />}
             />
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 10 }}>
             <Button onPress={() => router.push("/Authentication/ForgotPasswordPage") }
@@ -125,6 +127,7 @@ import background from '../../assets/background.jpg';
             </Button>
           </View>
         </SafeAreaView>
+        </ImageBackground>
       </TouchableWithoutFeedback>
     );
   };

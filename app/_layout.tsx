@@ -20,8 +20,8 @@ import merge from "deepmerge";
 import { Colors } from "../constants/Colors";
 import { useColorScheme } from 'react-native';
 
-const customDarkTheme = { ...MD3DarkTheme, colors: Colors.dark };
-const customLightTheme = { ...MD3LightTheme, colors: Colors.light };
+const customDarkTheme = { ...MD3DarkTheme,};
+const customLightTheme = { ...MD3LightTheme,};
 
 //4. The adaptNavigationTheme function takes an existing React Navigation 
 // theme and returns a React Navigation theme using the colors from 

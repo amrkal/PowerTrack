@@ -100,11 +100,11 @@ const AboutUsPage: React.FC = () => {
         )}
 
         {/* Contact Button */}
-        <View style={styles.buttonContainer}>
+        {/* <View style={styles.buttonContainer}>
           <Button mode="contained" onPress={() => alert('Contact us to learn more!')} style={styles.contactButton}>
             Contact Us
           </Button>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    backgroundColor: '#f0f4f7', // Light background color for the whole page
+    //backgroundColor: '#f0f4f7', // Light background color for the whole page
   },
   container: {
     flexGrow: 1,
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     fontSize: width > 600 ? 36 : 24, // Larger font size for bigger screens
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#1E90FF',
+    //color: '#1E90FF',
     marginBottom: 20, // Extra spacing for a cleaner look
   },
   collapsibleHeader: {
@@ -165,22 +165,22 @@ const styles = StyleSheet.create({
   collapsibleContent: {
     paddingVertical: 10,
     paddingHorizontal: 15,
-    backgroundColor: '#fff',
+    //backgroundColor: '#fff',
     borderRadius: 10,
     marginBottom: 10,
   },
   sectionHeader: {
     fontSize: width > 600 ? 22 : 18, // Adjust font size for different devices
     fontWeight: 'bold',
-    color: '#1E90FF',
+    //color: '#1E90FF',
   },
   boldText: {
     fontWeight: 'bold',
-    color: '#1E90FF',
+    //color: '#1E90FF',
   },
   sectionText: {
     fontSize: 16, // Adjust font size for better readability on mobile
-    color: '#555',
+    //color: '#555',
     lineHeight: 24, // Proper line height for better text clarity
   },
   buttonContainer: {
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     marginVertical: 26,
   },
   contactButton: {
-    backgroundColor: '#1E90FF',
+    //backgroundColor: '#1E90FF',
     paddingVertical: 12,
     borderRadius: 10,
     width: '80%', // Button takes up most of the screen width

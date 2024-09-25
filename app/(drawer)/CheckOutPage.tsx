@@ -77,7 +77,7 @@ const CheckOutPage: React.FC = () => {
           
           {/* Self Collection */}
           <Button
-            style={[styles.optionButton, selectedOption === 'Collection' ? styles.selectedButton : styles.defaultButton]}
+            style={[styles.optionButton, selectedOption === 'Collection']}
             mode="contained"
             onPress={() => setSelectedOption('Collection')}
           >
@@ -86,7 +86,7 @@ const CheckOutPage: React.FC = () => {
 
           {/* Delivery */}
           <Button
-            style={[styles.optionButton, selectedOption === 'Delivery' ? styles.selectedButton : styles.defaultButton]}
+            style={[styles.optionButton, selectedOption === 'Delivery']}
             mode="contained"
             onPress={() => setSelectedOption('Delivery')}
           >
@@ -133,10 +133,10 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: 'center',
-    backgroundColor: '#f0f4f7',
+    //backgroundColor: '#f0f4f7',
   },
   card: {
-    backgroundColor: '#ffffff',
+    //backgroundColor: '#ffffff',
     borderRadius: 10,
     padding: 20,
     elevation: 4,
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1E90FF',
+    //color: '#1E90FF',
     textAlign: 'center',
     marginBottom: 10,
   },
@@ -152,25 +152,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 20,
-    color: '#555',
+    //color: '#555',
   },
   optionButton: {
     marginVertical: 10,
     borderRadius: 10,
     paddingVertical: 10,
   },
-  selectedButton: {
-    backgroundColor: '#1E90FF',
-  },
-  defaultButton: {
-    backgroundColor: 'lightblue',
-  },
   inputContainer: {
     marginTop: 20,
   },
   input: {
     marginVertical: 10,
-    backgroundColor: 'white',
+    //backgroundColor: 'white',
     borderRadius: 10,
     fontSize: 16,
   },
@@ -178,7 +172,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingVertical: 12,
     borderRadius: 10,
-    backgroundColor: '#1E90FF',
+    //backgroundColor: '#1E90FF',
   },
 });
 

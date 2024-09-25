@@ -109,14 +109,14 @@ const styles = StyleSheet.create({
     padding: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f0f4f7',
+    //backgroundColor: '#f0f4f7',
   },
   contactCard: {
     width: width > 600 ? '60%' : '90%',
     padding: 20,
     marginTop: 150, // Move contact container further down
     marginBottom: 10, // Reduce space between contact container and form container
-    backgroundColor: '#fff',
+    //backgroundColor: '#fff',
     borderRadius: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     padding: 20,
     marginTop: 3, // Further reduce the space between form and contact containers
     marginBottom: 150, // Add more space below the form
-    backgroundColor: '#fff',
+    //backgroundColor: '#fff',
     borderRadius: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -146,11 +146,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 7,
     textAlign: 'center',
-    color: '#1E90FF',
+    //color: '#1E90FF',
   },
   subHeader: {
     fontSize: width > 600 ? 26 : 15,
-    color: '#1E90FF',
+    //color: '#1E90FF',
     marginBottom: 15,
     textAlign: 'center',
   },
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   },
   contactText: {
     fontSize: width > 600 ? 18 : 16,
-    color: '#1E90FF',
+    //color: '#1E90FF',
     textDecorationLine: 'underline',
     marginLeft: 6,
   },
@@ -170,16 +170,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginVertical: 14,
     textAlign: 'center',
-    color: '#1E90FF',
+    //color: '#1E90FF',
   },
   input: {
     marginBottom: 15,
     fontSize: width > 600 ? 16 : 14,
-    backgroundColor: '#fff',
+    //backgroundColor: '#fff',
   },
   submitButton: {
     marginTop: 20,
-    backgroundColor: '#1E90FF',
+    //backgroundColor: '#1E90FF',
     borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },

@@ -5,9 +5,11 @@ import { GlobalStyles } from "../../constants/GlobalStyles";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import axios from "axios";
+import { MaterialIcons } from "@expo/vector-icons";
 
 // Import the background image
-import background from '../../assets/background.jpg';
+const background = require('../../assets/images/loginBG.jpg');
+
 
 type RootStackParamList = {
   SignUpPage: undefined;
@@ -68,29 +70,30 @@ const VerificationPage: React.FC = () => {
       <ImageBackground source={background} style={styles.background}>
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.container}>
-            <Text style={styles.title}>Verification</Text>
             <Text style={styles.text}>
-        Please enter the verification code sent to your phone.</Text>
-      <TextInput
-        style={GlobalStyles.searchBar}
-        placeholder="Enter Verification Code"
-        keyboardType="numeric"
-        maxLength={6}
-        value={verificationCode}
-        onChangeText={setVerificationCode}
-      />
-      <View style = {styles.buttonContainer}>
-        <Button mode="outlined" onPress={sendVerificationCode}>
-          Resend Code
-        </Button>
-        <Button mode="contained" onPress={verifyCode}>
-          Verify Code
-        </Button>
-      </View>
-    </View>
-    </SafeAreaView>
+              Verification code sent to your phone.
+            </Text>
+            <TextInput
+              style={GlobalStyles.searchBar}
+              placeholder="Enter Verification Code"
+              keyboardType="numeric"
+              maxLength={6}
+              value={verificationCode}
+              onChangeText={setVerificationCode}
+              left={<TextInput.Icon icon={() => <MaterialIcons name="shield" size={20} />} />} // Icon for username
+            />
+            <View style = {styles.buttonContainer}>
+              <Button mode="outlined" onPress={sendVerificationCode}>
+                Resend Code
+              </Button>
+              <Button mode="contained" onPress={verifyCode}>
+                Verify Code
+              </Button>
+            </View>
+          </View>
+      </SafeAreaView>
     </ImageBackground>
-    </TouchableWithoutFeedback>
+  </TouchableWithoutFeedback>
   );
 };
 const styles = StyleSheet.create({

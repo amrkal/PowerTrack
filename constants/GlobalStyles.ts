@@ -10,8 +10,8 @@ export const GlobalStyles = StyleSheet.create({
   container: {
     padding: Padding.sm,
     borderRadius: Border.base,
-    //backgroundColor: 'rgba(255, 255, 255, 0.85)',
-    //shadowColor: '#000',
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 1,
     shadowRadius: 8,
@@ -24,7 +24,7 @@ export const GlobalStyles = StyleSheet.create({
   formContainer: {
     width: '90%',  
     maxWidth: 500,
-    //backgroundColor: 'rgba(255, 255, 255, 0.85)',
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
     padding: 30, 
     borderRadius: 12,
     shadowColor: '#000',

@@ -21,6 +21,7 @@ const ContactUsPage: React.FC = () => {
   const handleLocationPress = () => {
     Linking.openURL(locationUrl);
   };
+  
 
   return (
     <View style={styles.overlay}>

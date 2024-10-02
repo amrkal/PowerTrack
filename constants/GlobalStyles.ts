@@ -87,14 +87,8 @@ export const GlobalStyles = StyleSheet.create({
   },
 
   categoryButton: {
-    paddingVertical: Gap.sm,
-    paddingHorizontal: 15,
-    borderRadius: Border.base,
    //backgroundColor: Color.light.tabIconDefault,
-    marginRight: Gap.sm,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 35,
+    marginBottom: Gap.sm,
   },
 
   selectedCategoryButton: {
@@ -187,6 +181,8 @@ export const GlobalStyles = StyleSheet.create({
 
   quantityContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
   },
 
 
@@ -410,8 +406,80 @@ export const GlobalStyles = StyleSheet.create({
     //backgroundColor: '#1E90FF',
     paddingVertical: width > 600 ? 15 : 10,
   },
+  
 
 
+
+
+  // container: {
+  //   flex: 1,
+  //   padding: 10,
+  //   backgroundColor: '#f5f5f5',
+  // },
+  // categoryButton: {
+  //   marginBottom: 10,
+  // },
+  categoryList: {
+    paddingHorizontal: 10,
+    paddingTop: 10,
+  },
+  globalCategoryContainer: {
+    marginBottom: 20,
+  },
+  globalCategoryTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  // productContainer: {
+  //   flex: 1,
+  //   margin: 10,
+  //   padding: 10,
+  //   backgroundColor: '#fff',
+  //   borderRadius: 8,
+  //   alignItems: 'center',
+  // },
+  // productName: {
+  //   fontSize: 16,
+  //   fontWeight: 'bold',
+  // },
+  // productPrice: {
+  //   marginTop: 5,
+  //   fontSize: 14,
+  //   color: 'green',
+  // },
+  // productImage: {
+  //   width: 100,
+  //   height: 100,
+  //   marginVertical: 10,
+  // },
+  // quantityContainer: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   marginTop: 10,
+  // },
+  quantityButtonLabel: {
+    fontSize: 18,
+  },
+  addToCartButton: {
+    marginTop: 10,
+  },
+  backButton: {
+    marginBottom: 10,
+  },
+  columnWrapper: {
+    justifyContent: 'space-between',
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  globalCategoryAccordion: {
+    backgroundColor: '#f8f9fa', // Example background color
+    borderRadius: 5,
+    marginHorizontal: 10,
+  },
 
 
 

@@ -9,13 +9,14 @@ export default function Index() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const fontsLoaded = useFonts(); // Load fonts if necessary
 
+  // Check if the user is logged in
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
         // Simulate loading delay for demo purposes
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        const token = await AsyncStorage.getItem('userToken');
+        const token = await AsyncStorage.getItem('accessToken'); // Ensure this matches the key used to store the token
         setIsLoggedIn(!!token); // Check login status
       } catch (e) {
         console.error('Failed to load login status.', e);
@@ -27,8 +28,9 @@ export default function Index() {
     checkLoginStatus();
   }, []);
 
+  // Handle routing based on login status and font loading
   useEffect(() => {
-    if (!isLoading && fontsLoaded) {
+    if (!isLoading && fontsLoaded !== null) { // Added extra check for null condition
       if (isLoggedIn) {
         router.push('/(drawer)/LandingPage'); // Navigate to Profile if logged in
       } else {
@@ -37,10 +39,10 @@ export default function Index() {
     }
   }, [isLoading, isLoggedIn, fontsLoaded]);
 
-  if (isLoading || !fontsLoaded) {
+  // If still loading or fonts are not loaded, show spinner
+  if (isLoading || fontsLoaded === null) {
     return (
-      <View>
-        {/* Show a loading spinner while loading */}
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#11d3ac" />
       </View>
     );
@@ -49,3 +51,11 @@ export default function Index() {
   return null; // When loading finishes, routing will happen, so no need to render anything
 }
 
+// Styles for the loading screen
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

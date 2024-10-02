@@ -3,15 +3,11 @@ import React, { createContext, useState, useContext, ReactNode } from 'react';
 // Define the Product interface (your base item structure)
 interface Product {
   id: string;
-  name: string;
   item_key: string;
   item_name: string; // Keep 'item_name' for consistency
   description: string;
   price: number;
-  currency: string;
-  purch_price: number;
   quantity: number;
-  discount_code: string;
   categoryId?: string;
   image?: string;
 }

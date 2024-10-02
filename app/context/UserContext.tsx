@@ -74,6 +74,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         zip_code: userData.zip_code,
         city: userData.city,
         profileImage: userData.photo,
+        prices_tag: userData.prices_tag,
       });
     } catch (error) {
       console.error('Error fetching profile data:', error);

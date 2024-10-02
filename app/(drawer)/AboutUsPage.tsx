@@ -26,10 +26,7 @@ const AboutUsPage: React.FC = () => {
           />
         </View>
 
-        {/* Header Section */}
-        <View style={styles.headerContainer}>
-          <Text style={styles.header}>About Us</Text>
-        </View>
+
 
         {/* Collapsible Section: Welcome */}
         <TouchableOpacity onPress={() => toggleSection('welcome')}>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Alert, View,StyleSheet, SafeAreaView , ImageBackground} from "react-native";
 import { Text, TextInput, Button } from "react-native-paper";
 import { GlobalStyles } from "../../constants/GlobalStyles";
-import axios from "axios";
+import axiosInstance from '../../services/axiosInstance';
 import { MaterialIcons } from "@expo/vector-icons";
 
 // Import the background image
@@ -15,7 +15,7 @@ const ForgotPasswordPage: React.FC = () => {
 
   const handlePasswordReset = () => {
     if (email) {
-      axios.post('http://192.168.0.153:5000/resetPassword/reset-password', { email })
+      axiosInstance.post('http://192.168.0.153:5000/resetPassword/reset-password', { email })
         .then(response => {
           Alert.alert('Success', response.data.message);
         })

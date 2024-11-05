@@ -483,6 +483,40 @@ export const GlobalStyles = StyleSheet.create({
 
 
 
+  categoryContainer: {
+    marginBottom: 10,
+  },
+  categoryTypeText: {
+    fontSize: 14,
+    color: 'gray',
+    marginBottom: 5,
+  },
+
+
+
+  rectangle: {
+    backgroundColor: '#f0f0f0',
+    padding: 20,
+    margin: 10,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '90%',
+    alignSelf: 'center',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,  // For Android shadow
+  },
+  rectangleText: {
+    fontSize: 18,
+    color: '#333',
+    fontWeight: 'bold',
+  },
 
 });
 

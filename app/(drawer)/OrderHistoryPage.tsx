@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, ActivityIndicator } from 'react-native';
-import axios from 'axios';
+import axiosInstance from '../../services/axiosInstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Define the Item and Order interfaces
@@ -19,8 +19,7 @@ interface Order {
   order_date: string;
 }
 
-const baseURL = 'http://192.168.0.153:5000';
-axios.defaults.baseURL = baseURL;
+
 
 const OrderHistoryPage = () => {
   const [orders, setOrders] = useState<Order[]>([]); // Orders array
@@ -37,7 +36,7 @@ const OrderHistoryPage = () => {
           setLoading(false);
           return;
         }
-        const response = await axios.get('/orders/history', {
+        const response = await axiosInstance.get('/orders/history', {
           headers: {
             Authorization: `Bearer ${accessToken}`,  // Add the token to the header
           },

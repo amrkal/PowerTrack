@@ -12,7 +12,7 @@ import {
   TextInput,
   Button,
 } from 'react-native-paper';
-import axios from 'axios';
+import axiosInstance from '../../services/axiosInstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -22,8 +22,6 @@ import { router } from 'expo-router';
 
 const background = require('../../assets/images/loginBG.jpg');
 
-const baseURL = 'http://192.168.0.153:5000';
-axios.defaults.baseURL = baseURL;
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -32,7 +30,7 @@ const LoginPage: React.FC = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('/users/login', { username, password });
+      const response = await axiosInstance.post('/users/login', { username, password });
       const { access_token } = response.data;
 
       // Save login details and token

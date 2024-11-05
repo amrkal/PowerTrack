@@ -14,5 +14,6 @@ export interface Product {
     globalCategory: string | null;  // Allow for null/undefined values for handling missing categories
     name: string;
     sortGroup: number;
+    type: string;
   }
   

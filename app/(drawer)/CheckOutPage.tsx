@@ -3,14 +3,12 @@ import { View, Alert, StyleSheet, Dimensions } from 'react-native';
 import { GlobalStyles } from '../../constants/GlobalStyles';
 import { useRouter } from 'expo-router';
 import { Button, TextInput, Card, Title, Paragraph } from 'react-native-paper';
-import axios from 'axios';
+import axiosInstance from '../../services/axiosInstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCart } from '../context/CartContext';
 
 const { width } = Dimensions.get('window'); // For responsive layout
 
-const baseURL = 'http://192.168.0.153:5000';
-axios.defaults.baseURL = baseURL;
 
 const CheckOutPage: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<'Collection' | 'Delivery' | null>(null);
@@ -39,7 +37,7 @@ const CheckOutPage: React.FC = () => {
         total_amount: cart.reduce((total, item) => total + item.price * item.quantityInCart, 0),
       };
       console.log('Cart items:', cart);
-      const response = await axios.post('/orders/orders', orderDetails, {
+      const response = await axiosInstance.post('/orders/orders', orderDetails, {
         headers: {
           Authorization: `Bearer ${accessToken}`,  // Use the stored token
         },

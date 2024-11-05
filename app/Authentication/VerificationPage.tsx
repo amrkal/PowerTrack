@@ -4,7 +4,7 @@ import { Text, TextInput, Button } from "react-native-paper";
 import { GlobalStyles } from "../../constants/GlobalStyles";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import axios from "axios";
+import axiosInstance from '../../services/axiosInstance';
 import { MaterialIcons } from "@expo/vector-icons";
 
 // Import the background image
@@ -30,7 +30,7 @@ const VerificationPage: React.FC = () => {
   const sendVerificationCode = async () => {
     try {
       console.log('Sending verification code to:', phoneNumber);
-      const response = await axios.post('/auth/send-code', { phone_number: phoneNumber });
+      const response = await axiosInstance.post('/auth/send-code', { phone_number: phoneNumber });
       console.log('Verification Code Response:', response.data);
       Alert.alert('Verification code sent');
     } catch (err) {
@@ -47,7 +47,7 @@ const VerificationPage: React.FC = () => {
 
     try {
       console.log('Verifying code for:', phoneNumber);
-      const response = await axios.post('/auth/verify-code', {
+      const response = await axiosInstance.post('/auth/verify-code', {
         phone_number: phoneNumber,
         code: verificationCode,
       });

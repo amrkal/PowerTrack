@@ -1,8 +1,6 @@
 import React, { createContext, useState, useEffect, useContext, ReactNode, useCallback } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../services/axiosInstance';
 
-const baseURL = 'http://192.168.0.153:5000';
-axios.defaults.baseURL = baseURL;
 
 // Define the context
 interface ItemsContextProps {
@@ -27,8 +25,7 @@ export const ItemsProvider: React.FC<ItemsProviderProps> = ({ children }) => {
     console.log('loadItems called with prices_tag:', prices_tag);
 
     try {
-      console.log(`Sending request to ${baseURL}/items/items with prices_tag: ${prices_tag}`);
-      const response = await axios.get('/items/items', { params: { prices_tag } });
+      const response = await axiosInstance.get('/items/items', { params: { prices_tag } });
       
       console.log('Response received:', response);
       

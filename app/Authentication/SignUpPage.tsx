@@ -12,10 +12,11 @@ import {
 import { Text, TextInput, Button } from "react-native-paper";
 import { GlobalStyles } from "../../constants/GlobalStyles";
 import { router, useNavigation } from "expo-router";
-import axios from "axios";
+import axiosInstance from '../../services/axiosInstance';
 import { StackNavigationProp } from "@react-navigation/stack";
 import parsePhoneNumberFromString from "libphonenumber-js";
 import { MaterialIcons } from "@expo/vector-icons";
+import axios from 'axios';
 
 // Import the background image
 const background = require('../../assets/images/loginBG.jpg');
@@ -28,8 +29,6 @@ type RootStackParamList = {
 
 type SignUpPageNavigationProp = StackNavigationProp<RootStackParamList, 'SignUpPage'>;
 
-const baseURL = 'http://192.168.0.153:5000';
-axios.defaults.baseURL = baseURL;
 
 const SignUpPage: React.FC = () => {
   const [username, setUsername] = useState<string>('');
@@ -67,7 +66,7 @@ const SignUpPage: React.FC = () => {
         email,
         phoneNumber,
       });
-      const response = await axios.post('/auth/register', {
+      const response = await axiosInstance.post('/auth/register', {
         username,
         password,
         name,

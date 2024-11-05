@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+import axiosInstance from '../../services/axiosInstance';
 import { View, Text } from 'react-native';
 
 // Define the shape of the user data
@@ -58,7 +58,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         return;
       }
 
-      const response = await axios.get('/users/profile', {
+      const response = await axiosInstance.get('/users/profile', {
         headers: {
           Authorization: `Bearer ${accessToken}`, // Send JWT token in headers
         },
@@ -92,7 +92,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         return;
       }
 
-      await axios.put('/users/profile', updatedUser, {
+      await axiosInstance.put('/users/profile', updatedUser, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },

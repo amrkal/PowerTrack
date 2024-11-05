@@ -89,7 +89,7 @@ class Category:
     @staticmethod
     def get_all():
         """ Retrieve all categories with pagination support """
-        return list(db_mongo.categories.find({}, {"_id": 0, "sortGroup": 1, "globalCategory": 1,"name": 1}))
+        return list(db_mongo.categories.find({}, {"_id": 0, "sortGroup": 1, "globalCategory": 1,"name": 1, "type": 1}))
 
     @staticmethod
     def create_category(sortGroup, name, description=None):

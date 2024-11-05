@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import axios from 'axios';
+import axiosInstance from '../../services/axiosInstance';
 
 // Define the structure of the Category type
 interface Category {
@@ -39,7 +39,7 @@ export const CategoriesProvider: React.FC<CategoriesProviderProps> = ({ children
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('/categories/categories'); // Replace with your actual API endpoint
+        const response = await axiosInstance.get('/categories/categories'); // Replace with your actual API endpoint
         setCategories(response.data.categories);
       } catch (error) {
         console.error('Error fetching categories:', error);

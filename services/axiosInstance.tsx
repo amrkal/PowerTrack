@@ -8,6 +8,7 @@ const axiosInstance = axios.create({
   timeout: 10000, // You can set a timeout for requests
 });
 
+
 // Add a request interceptor to automatically attach the JWT token
 axiosInstance.interceptors.request.use(
   async (config) => {

@@ -17,6 +17,8 @@ def update_categories_from_excel():
     # Log the column names to verify that they are correct
     logger.info(f"Excel columns: {data.columns.tolist()}")
 
+
+
     # Convert Excel data to dictionary with SortGroup as key, and include 'Type'
     sort_group_mapping = {
         row["SortGroup"]: {

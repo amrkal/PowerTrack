@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Drawer } from 'expo-router/drawer';
 import { CartProvider } from '../context/CartContext'; 
 import { UserProvider } from '../context/UserContext';
 import { DrawerContentComponentProps } from '@react-navigation/drawer';
+import axiosInstance from '../../services/axiosInstance';
 
 export default function Layout() {
   return (
@@ -16,25 +17,51 @@ export default function Layout() {
           <Drawer.Screen name="ProfilePage" options={{ title: 'Profile' }} />
           <Drawer.Screen name="AboutUsPage" options={{ title: 'About Us' }} />
           <Drawer.Screen name="ContactUsPage" options={{ title: 'Contact Us' }} />
-          <Drawer.Screen name="CheckOutPage" options={{ title: 'Checkout', drawerItemStyle: { display: 'none' } }} />
-          <Drawer.Screen name="OrderHistoryPage" options={{ title: 'Order History', drawerItemStyle: { display: 'none' }, drawerLabel: () => null, drawerIcon: () => null }} />
         </Drawer>
       </CartProvider>
     </UserProvider>
   );
 }
 
-// Custom Drawer Content Component
-
-
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
+  const [mainTypes, setMainTypes] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchMainTypes = async () => {
+      try {
+        const response = await axiosInstance.get('/categories/types');
+        const types = response.data.types || [];
+        console.log("Fetched Types for Drawer:", types); // Log fetched types
+        setMainTypes(types.slice(0, 3)); // Get the top 3 types
+      } catch (error) {
+        console.error("Error fetching main types:", error);
+      }
+    };
+    fetchMainTypes();
+  }, []);
+
   return (
     <View style={styles.drawerContent}>
       <Text style={styles.logo}>B.Tech Tools</Text>
-      {/* Create your custom drawer items */}
-      <TouchableOpacity onPress={() => props.navigation.navigate('ProductsPage')} style={styles.drawerItem}>
-        <Text style={styles.drawerItemText}>Products</Text>
-      </TouchableOpacity>
+
+      {mainTypes.length > 0 ? (
+        mainTypes.map((type, index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={() => {
+              console.log("Navigating to ProductsPage with type:", type); // Log navigation action
+              props.navigation.navigate('ProductsPage', { selectedType: type });
+            }}
+            style={styles.drawerItem}
+          >
+            <Text style={styles.drawerItemText}>{type}</Text>
+          </TouchableOpacity>
+        ))
+      ) : (
+        <Text style={styles.noCategories}>No types available</Text>
+      )}
+
+      {/* Other Drawer Items */}
       <TouchableOpacity onPress={() => props.navigation.navigate('MyCartPage')} style={styles.drawerItem}>
         <Text style={styles.drawerItemText}>Cart</Text>
       </TouchableOpacity>
@@ -51,12 +78,12 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
   );
 };
 
-// Styles for the custom drawer content
+
 const styles = StyleSheet.create({
   drawerContent: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f8f8f8', // Background color for the drawer
+    backgroundColor: '#f8f8f8',
   },
   logo: {
     fontSize: 24,
@@ -69,9 +96,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 5,
     marginVertical: 5,
-    backgroundColor: '#fff', // Background for drawer items
+    backgroundColor: '#fff',
   },
   drawerItemText: {
     fontSize: 16,
+  },
+  noCategories: {
+    fontSize: 14,
+    color: 'grey',
+    textAlign: 'center',
+    marginVertical: 20,
   },
 });

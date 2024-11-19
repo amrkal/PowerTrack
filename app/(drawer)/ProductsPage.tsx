@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, FlatList, Text, TouchableOpacity } from 'react-native';
+import { useRoute, RouteProp } from '@react-navigation/native';
 import axiosInstance from '../../services/axiosInstance';
 import CategoryList from '../../components/CategoryList';
 import ProductList from '../../components/ProductList';
@@ -7,21 +8,33 @@ import SearchBar from '../../components/SearchBar';
 import Loader from '../../components/Loader';
 import { useCart } from '../context/CartContext';
 import { useUser } from '../context/UserContext';
-import { Product, Category } from '../../components/types';  // Import shared types
-import { GlobalStyles } from '../../constants/GlobalStyles'; // Import GlobalStyles for rectangle styling
+import { Product, Category } from '../../components/types';
+import { GlobalStyles } from '../../constants/GlobalStyles';
 import { Button } from "react-native-paper";
+
+// Define the route parameters type
+type ProductsPageRouteParams = {
+  ProductsPage: { selectedType: string | null };
+};
 
 const ProductsPage: React.FC = () => {
   const { user } = useUser();
   const { addToCart } = useCart();
   
   const [groupedCategories, setGroupedCategories] = useState<{ [key: string]: Category[] }>({});
-  const [types, setTypes] = useState<string[]>([]);  // Unique types
-  const [selectedType, setSelectedType] = useState<string | null>(null);  // Selected type
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);  // Selected category (sortGroup)
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const route = useRoute<RouteProp<ProductsPageRouteParams, 'ProductsPage'>>();
+  const selectedType = route.params?.selectedType || null;
   const [items, setItems] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
+
+  console.log("Received Params in ProductsPage:", route.params);
+
+  // Reset selectedCategory whenever selectedType changes
+  useEffect(() => {
+    setSelectedCategory(null);
+  }, [selectedType]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -35,24 +48,18 @@ const ProductsPage: React.FC = () => {
         }
 
         const fetchedCategories: Category[] = data.categories || [];
-
         if (!fetchedCategories.length) {
           console.warn("No categories found in the response");
           return;
         }
 
-        // Extract unique types from the fetched categories
-        const uniqueTypes = Array.from(new Set(fetchedCategories.map((category: Category) => category.type)));
-        setTypes(uniqueTypes);
-
-        // Group categories by global category ensuring unique global category names
         const grouped: { [key: string]: Category[] } = {};
         fetchedCategories.forEach((category: Category) => {
-          const globalCategory = category.globalCategory || "Other"; // Fallback if no global category
+          const globalCategory = category.globalCategory || "Other";
           if (!grouped[globalCategory]) {
-            grouped[globalCategory] = []; // Initialize if it doesn't exist
+            grouped[globalCategory] = [];
           }
-          grouped[globalCategory].push(category); // Push the category to the respective global category
+          grouped[globalCategory].push(category);
         });
 
         setGroupedCategories(grouped);
@@ -64,7 +71,7 @@ const ProductsPage: React.FC = () => {
     };
 
     fetchCategories();
-  }, []);
+  }, [selectedType]);
 
   useEffect(() => {
     if (selectedCategory !== null) {
@@ -92,48 +99,25 @@ const ProductsPage: React.FC = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      {!selectedType ? (
-        <FlatList
-          data={types}  // List of unique types
-          renderItem={({ item: type }) => (
-            <TouchableOpacity 
-              onPress={() => setSelectedType(type)} 
-              style={GlobalStyles.rectangle} // Apply rectangle style
-            >
-              <Text style={GlobalStyles.rectangleText}>{type}</Text>
-            </TouchableOpacity>
-          )}
-          keyExtractor={(item) => item}
-        />
-      ) : null}
-
       {selectedType && !selectedCategory ? (
-              <>
-                <Button 
-                  mode="outlined" 
-                  onPress={() => setSelectedType(null)}  // Reset selectedType to go back to type selection
-                  style={{ margin: 10 }}
-                >
-                  Back to Types
-                </Button>
-                <FlatList
-                  data={Object.keys(groupedCategories)} // Use the keys of the grouped object for global categories
-                  renderItem={({ item: globalCategory }) => {
-                    const filteredCategories = groupedCategories[globalCategory].filter(category => category.type === selectedType);
-
-                    return filteredCategories.length > 0 ? (
-                      <CategoryList
-                        categories={filteredCategories} // Pass the array of filtered categories for the selected type
-                        onSelectCategory={setSelectedCategory}
-                        isMobile={true}
-                        globalCategory={globalCategory} // Pass global category name for display
-                      />
-                    ) : null;
-                  }}
-                  keyExtractor={(item) => item} // Use the global category name as the key
+        <>
+          <FlatList
+            data={Object.keys(groupedCategories)}
+            renderItem={({ item: globalCategory }) => {
+              const filteredCategories = groupedCategories[globalCategory].filter(category => category.type === selectedType);
+              return filteredCategories.length > 0 ? (
+                <CategoryList
+                  categories={filteredCategories}
+                  onSelectCategory={setSelectedCategory}
+                  isMobile={true}
+                  globalCategory={globalCategory}
                 />
-              </>
-            ) : null}
+              ) : null;
+            }}
+            keyExtractor={(item) => item}
+          />
+        </>
+      ) : null}
 
       {selectedCategory ? (
         <>
@@ -143,7 +127,7 @@ const ProductsPage: React.FC = () => {
           <SearchBar searchQuery={searchQuery} onChange={setSearchQuery} />
           <ProductList
             products={items.filter(item => item.item_name.toLowerCase().includes(searchQuery.toLowerCase()))}
-            onAddToCart={handleAddToCart} isMobile={false}          />
+            onAddToCart={handleAddToCart} isMobile={false} />
         </>
       ) : null}
     </View>

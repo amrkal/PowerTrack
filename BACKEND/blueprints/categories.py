@@ -17,20 +17,46 @@ def update_categories():
     update_categories_from_excel()
     return jsonify({"message": "Categories processed successfully"}), 200
 
-# Flask route to return all categories
+@categories_bp.route('/types', methods=['GET'])
+def get_category_types():
+    try:
+        types = Category.get_unique_types()
+        if not types:
+            logger.warning("No types found in database.")
+            return jsonify({"error": "No types found"}), 404
+        logger.info("Types fetched successfully: %s", types)
+        return jsonify({"types": types}), 200
+    except Exception as e:
+        logger.error(f"Error fetching types: {e}")
+        return jsonify({"error": "Failed to fetch types"}), 500
+
 @categories_bp.route('/categories', methods=['GET'])
 def get_categories():
+    category_type = request.args.get('type')  # Get the 'type' parameter from the query string
     try:
-        categories = Category.get_all()  # Fetch categories from the model
-        
-        # Check if categories are fetched correctly
-        if not categories:
-            return jsonify({"error": "No categories found"}), 404
-        
+        if category_type:
+            # Fetch categories filtered by the specified type
+            categories = Category.get_by_type(category_type)
+            if not categories:
+                logger.warning(f"No categories found for type: {category_type}")
+                return jsonify({"error": f"No categories found for type: {category_type}"}), 404
+            logger.info(f"Categories fetched successfully for type '{category_type}': {categories}")
+        else:
+            # Fetch all categories if no type is specified
+            categories = Category.get_all()
+            if not categories:
+                logger.warning("No categories found in database.")
+                return jsonify({"error": "No categories found"}), 404
+            logger.info("Categories fetched successfully: %s", categories)
+
         return jsonify({"categories": categories}), 200
+
     except Exception as e:
         logger.error(f"Error fetching categories: {e}")
         return jsonify({"error": "Failed to fetch categories"}), 500
+
+
+
 
 # Flask route to create a new category
 @categories_bp.route('/create', methods=['POST'])

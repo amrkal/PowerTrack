@@ -1,6 +1,7 @@
+// itemsContext.tsx
+
 import React, { createContext, useState, useEffect, useContext, ReactNode, useCallback } from 'react';
 import axiosInstance from '../../services/axiosInstance';
-
 
 // Define the context
 interface ItemsContextProps {
@@ -17,7 +18,7 @@ interface ItemsProviderProps {
   children: ReactNode;
 }
 
-export const ItemsProvider: React.FC<ItemsProviderProps> = ({ children }) => {
+const ItemsProvider: React.FC<ItemsProviderProps> = ({ children }) => {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -58,7 +59,7 @@ export const ItemsProvider: React.FC<ItemsProviderProps> = ({ children }) => {
 };
 
 // Custom hook to use the context
-export const useItems = (): ItemsContextProps => {
+const useItems = (): ItemsContextProps => {
   const context = useContext(ItemsContext);
   if (!context) {
     throw new Error('useItems must be used within an ItemsProvider');
@@ -66,3 +67,7 @@ export const useItems = (): ItemsContextProps => {
   console.log('useItems hook used');
   return context;
 };
+
+// Export both the context and provider as default exports
+export { ItemsProvider, useItems };
+export default ItemsContext;

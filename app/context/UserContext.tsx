@@ -1,9 +1,10 @@
+// userContext.tsx
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { Text } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../../services/axiosInstance';
-import { View, Text } from 'react-native';
 
-// Define the shape of the user data
 interface User {
   name: string;
   familyName: string;
@@ -15,7 +16,6 @@ interface User {
   prices_tag?: string;
 }
 
-// Define the context type, including both the user and functions to interact with the user state
 interface UserContextType {
   user: User;
   setUser: React.Dispatch<React.SetStateAction<User>>;
@@ -23,7 +23,6 @@ interface UserContextType {
   updateProfileData: (updatedUser: User) => Promise<void>;
 }
 
-// Create a context with undefined as the default value
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const useUser = () => {
@@ -34,7 +33,6 @@ export const useUser = () => {
   return context;
 };
 
-// UserProvider component to wrap the app
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User>({
     name: '',
@@ -45,11 +43,9 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     city: '',
     profileImage: '',
     prices_tag: '',
-
   });
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Function to fetch user profile data from the backend
   const fetchProfileData = async () => {
     try {
       setLoading(true);
@@ -60,7 +56,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       const response = await axiosInstance.get('/users/profile', {
         headers: {
-          Authorization: `Bearer ${accessToken}`, // Send JWT token in headers
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
@@ -83,7 +79,6 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  // Function to update user profile data
   const updateProfileData = async (updatedUser: User) => {
     try {
       setLoading(true);
@@ -98,7 +93,6 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         },
       });
 
-      // Update the user state with the new data
       setUser(updatedUser);
     } catch (error) {
       console.error('Error updating profile data:', error);
@@ -108,20 +102,14 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   useEffect(() => {
-    // Automatically fetch profile data when the component mounts
     fetchProfileData();
   }, []);
 
   return (
     <UserContext.Provider value={{ user, setUser, fetchProfileData, updateProfileData }}>
-      {loading ? (
-        <View>
-          <Text>Loading...</Text>
-        </View>
-      ) : (
-        children
-      )}
+      {loading ? <Text>Loading...</Text> : children}
     </UserContext.Provider>
   );
-  
 };
+
+export default UserContext; // Make sure to export the context as default if necessary

@@ -1,28 +1,24 @@
+// CategoriesContext.tsx
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import axiosInstance from '../../services/axiosInstance';
 
-// Define the structure of the Category type
 interface Category {
   id: string;
   name: string;
   sortGroup: string;
 }
 
-// Define the context type to store categories and loading state
 interface CategoriesContextType {
   categories: Category[];
   loading: boolean;
 }
 
-// Define the props for the CategoriesProvider, which include children
 interface CategoriesProviderProps {
   children: ReactNode;
 }
 
-// Create the context
 const CategoriesContext = createContext<CategoriesContextType | undefined>(undefined);
 
-// Hook to use the CategoriesContext
 export const useCategories = () => {
   const context = useContext(CategoriesContext);
   if (!context) {
@@ -31,7 +27,6 @@ export const useCategories = () => {
   return context;
 };
 
-// CategoriesProvider component which accepts children as props
 export const CategoriesProvider: React.FC<CategoriesProviderProps> = ({ children }) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,3 +52,5 @@ export const CategoriesProvider: React.FC<CategoriesProviderProps> = ({ children
     </CategoriesContext.Provider>
   );
 };
+
+export default CategoriesContext; // Default export

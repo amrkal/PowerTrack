@@ -3,6 +3,8 @@
     "name": "PowerTrack",
     "slug": "PowerTrack",
     "version": "1.0.0",
+    "platforms": ["ios", "android", "web"],
+    "newArchEnabled": true,
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",

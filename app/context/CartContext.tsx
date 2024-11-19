@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
 // Define the Product interface (your base item structure)
 interface Product {
@@ -78,3 +78,6 @@ export const useCart = (): CartContextProps => {
   }
   return context;
 };
+
+// Export the context for any direct use
+export default CartContext;

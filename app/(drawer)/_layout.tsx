@@ -139,6 +139,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginVertical: 5,
     backgroundColor: '#fff',
+    
+    borderColor: '#ffa64d',
+    borderWidth: 2, // Border thickness
+    borderStyle: 'solid', // Solid border (default)
+    color: '#1E90FF',
   },
   drawerItemText: {
     fontSize: 16,

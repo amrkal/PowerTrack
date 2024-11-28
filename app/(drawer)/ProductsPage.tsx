@@ -114,6 +114,7 @@ const ProductsPage: React.FC = () => {
         return;
       }
   
+      
       setLoading(true);
       setIsSearchActive(true); // Enable search mode
       const response = await axiosInstance.get(`/items/search`, {

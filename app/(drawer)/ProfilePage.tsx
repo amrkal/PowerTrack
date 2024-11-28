@@ -8,7 +8,6 @@ import * as ImagePicker from 'expo-image-picker';
 import { ImagePickerResult, ImagePickerAsset } from 'expo-image-picker';
 import { router } from 'expo-router';
 
-
 const ProfilePage: React.FC = () => {
   const { user, updateProfileData } = useUser(); // Get user and updateProfileData from context
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -31,18 +30,17 @@ const ProfilePage: React.FC = () => {
     router.push('/Authentication/LoginPage'); // Redirect to login page
   };
 
-  // Function to select image from gallery or take a new one
   const handleProfileImageEdit = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (!permissionResult.granted) {
-      Alert.alert('Permission Denied', 'You need to allow access to your photos to update the profile picture.');
+      Alert.alert('אין הרשאה', 'עליך לאשר גישה לתמונות שלך כדי לעדכן את תמונת הפרופיל.');
       return;
     }
 
-    const options = ['Pick from Gallery', 'Take a New Photo', 'Cancel'];
+    const options = ['בחר מהגלריה', 'צלם תמונה חדשה', 'ביטול'];
     const choice = await new Promise<string>((resolve) => {
-      Alert.alert('Profile Picture', 'Choose an option', [
+      Alert.alert('תמונת פרופיל', 'בחר אפשרות', [
         { text: options[0], onPress: () => resolve(options[0]) },
         { text: options[1], onPress: () => resolve(options[1]) },
         { text: options[2], onPress: () => resolve(options[2]) },
@@ -52,7 +50,6 @@ const ProfilePage: React.FC = () => {
     let result: ImagePickerResult;
     
     if (choice === options[0]) {
-      // Open the image library
       result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
@@ -60,7 +57,6 @@ const ProfilePage: React.FC = () => {
         quality: 1,
       });
     } else if (choice === options[1]) {
-      // Open the camera
       result = await ImagePicker.launchCameraAsync({
         allowsEditing: true,
         aspect: [4, 3],
@@ -70,10 +66,9 @@ const ProfilePage: React.FC = () => {
       return; // Cancel was selected
     }
 
-    // Handle successful image picking
     if (!result.canceled && result.assets) {
       const imageUri = result.assets[0].uri;
-      setProfileImage(imageUri); // Update profile picture with the selected image's URI
+      setProfileImage(imageUri);
     }
   };
 
@@ -89,7 +84,7 @@ const ProfilePage: React.FC = () => {
           />
           <IconButton
             icon="camera"
-            onPress={handleProfileImageEdit} // Handle profile image editing
+            onPress={handleProfileImageEdit}
             style={GlobalStyles.editIcon}
             disabled={isEditing}
             iconColor="blue"
@@ -99,34 +94,34 @@ const ProfilePage: React.FC = () => {
         <View style={GlobalStyles.profileContainer}>
           {isEditing ? (
             <>
-              <TextInput label="Name" mode="outlined" value={name} onChangeText={setName} style={GlobalStyles.input} />
+              <TextInput label="שם פרטי" mode="outlined" value={name} onChangeText={setName} style={GlobalStyles.input} />
               <TextInput
-                label="Family Name"
+                label="שם משפחה"
                 mode="outlined"
                 value={familyName}
                 onChangeText={setFamilyName}
                 style={GlobalStyles.input}
               />
-              <TextInput label="Email" mode="outlined" value={email} onChangeText={setEmail} style={GlobalStyles.input} />
-              <TextInput label="City" mode="outlined" value={city} onChangeText={setCity} style={GlobalStyles.input} />
+              <TextInput label="אימייל" mode="outlined" value={email} onChangeText={setEmail} style={GlobalStyles.input} />
+              <TextInput label="עיר" mode="outlined" value={city} onChangeText={setCity} style={GlobalStyles.input} />
               <TextInput
-                label="Zip Code"
+                label="מיקוד"
                 mode="outlined"
                 value={zipCode}
                 onChangeText={setZipCode}
                 style={GlobalStyles.input}
                 keyboardType="numeric"
               />
-              <TextInput label="Address" mode="outlined" value={address} onChangeText={setAddress} style={GlobalStyles.input} />
+              <TextInput label="כתובת" mode="outlined" value={address} onChangeText={setAddress} style={GlobalStyles.input} />
             </>
           ) : (
             <>
               <Text style={GlobalStyles.userInfo}>{name}</Text>
               <Text style={GlobalStyles.userInfo}>{familyName}</Text>
               <Text style={GlobalStyles.userEmail}>{email}</Text>
-              <Text style={GlobalStyles.userInfo}>City: {city}</Text>
-              <Text style={GlobalStyles.userInfo}>Zip Code: {zipCode}</Text>
-              <Text style={GlobalStyles.userInfo}>Address: {address}</Text>
+              <Text style={GlobalStyles.userInfo}>עיר: {city}</Text>
+              <Text style={GlobalStyles.userInfo}>מיקוד: {zipCode}</Text>
+              <Text style={GlobalStyles.userInfo}>כתובת: {address}</Text>
             </>
           )}
         </View>
@@ -134,18 +129,18 @@ const ProfilePage: React.FC = () => {
         <View style={GlobalStyles.buttonsContainer}>
           {isEditing ? (
             <Button mode="contained" onPress={handleSaveProfile} style={GlobalStyles.saveButton}>
-              Save
+              שמור
             </Button>
           ) : (
             <Button mode="outlined" onPress={() => setIsEditing(true)} style={GlobalStyles.editButton}>
-              Edit Profile
+              ערוך פרופיל
             </Button>
           )}
           <Button mode="outlined" onPress={handleLogout} style={GlobalStyles.logoutButton}>
-            Log out
+            התנתק
           </Button>
           <Button mode="contained" onPress={() => router.push('/OrderHistoryPage')} style={GlobalStyles.historyButton}>
-            View Order History
+            היסטוריית הזמנות
           </Button>
         </View>
       </View>

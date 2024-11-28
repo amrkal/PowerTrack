@@ -28,12 +28,12 @@ export const Colors = {
     primaryContainer: "#1565C0", // Darker blue container color
     secondary: "#039BE5", // Secondary color, blue shade
     onSecondary: "#E1F5FE",
-    background: "#acb5c2",  // Darker background search text
+    background: "#e3ded8",  // Darker background search text
     surface: "#1E1E1E",  // Darker surfaces
     onSurface: "#212121",
     error: "#EF9A9A",  // Softer error color for dark mode
     onError: "#8B0000",
-    surfaceVariant: "#acb5c2", //background text!
+    surfaceVariant: "#e3ded8", //background text!
     onSurfaceVariant: "#E0E0E0",
     outline: "#757575",
     inverseSurface: "#E0E0E0",

@@ -1,12 +1,14 @@
 import React from 'react';
 import { View, StyleSheet, Linking, Dimensions } from 'react-native';
-import { Text, TextInput, Button, IconButton, Card } from 'react-native-paper';
+import { Text, IconButton, Card } from 'react-native-paper';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 // Get the device width
 const { width } = Dimensions.get('window');
 
 const mailto = 'info@hashmalharama.com';
-const tel = '046981130';
+const tel = '04-6981130';
+const whatsappNumber = '052-4637165';
 const locationUrl = 'https://maps.app.goo.gl/9uJkfanmxPkdifCi7';
 
 const ContactUsPage: React.FC = () => {
@@ -18,10 +20,13 @@ const ContactUsPage: React.FC = () => {
     Linking.openURL(`tel:${tel}`);
   };
 
+  const handleWhatsAppPress = () => {
+    Linking.openURL(`https://wa.me/972${whatsappNumber}`);
+  };
+
   const handleLocationPress = () => {
     Linking.openURL(locationUrl);
   };
-  
 
   return (
     <View style={styles.overlay}>
@@ -31,9 +36,29 @@ const ContactUsPage: React.FC = () => {
           <Text style={styles.header}>Contact Us</Text>
           <Text style={styles.subHeader}>We'd love to hear from you!</Text>
 
+          {/* WhatsApp Contact */}
+          <View style={styles.contactItem}>
+            <IconButton
+              icon={(props) => (
+                <MaterialCommunityIcons name="whatsapp" {...props} color="#25D366" />
+              )}
+              size={24}
+              onPress={handleWhatsAppPress}
+            />
+            <Text style={styles.contactText} onPress={handleWhatsAppPress}>
+              {whatsappNumber}
+            </Text>
+          </View>
+
           {/* Email Contact */}
           <View style={styles.contactItem}>
-            <IconButton icon="email" size={24} onPress={handleEmailPress} />
+            <IconButton
+              icon={(props) => (
+                <MaterialCommunityIcons name="email" {...props} color="#1E90FF" />
+              )}
+              size={24}
+              onPress={handleEmailPress}
+            />
             <Text style={styles.contactText} onPress={handleEmailPress}>
               {mailto}
             </Text>
@@ -41,7 +66,13 @@ const ContactUsPage: React.FC = () => {
 
           {/* Phone Contact */}
           <View style={styles.contactItem}>
-            <IconButton icon="phone" size={24}  onPress={handlePhonePress} />
+            <IconButton
+              icon={(props) => (
+                <MaterialCommunityIcons name="phone" {...props} color="#1E90FF" />
+              )}
+              size={24}
+              onPress={handlePhonePress}
+            />
             <Text style={styles.contactText} onPress={handlePhonePress}>
               {tel}
             </Text>
@@ -49,55 +80,17 @@ const ContactUsPage: React.FC = () => {
 
           {/* Location Contact */}
           <View style={styles.contactItem}>
-            <IconButton icon="map-marker" size={24} onPress={handleLocationPress} />
+            <IconButton
+              icon={(props) => (
+                <MaterialCommunityIcons name="map-marker" {...props} color="#FF5733" />
+              )}
+              size={24}
+              onPress={handleLocationPress}
+            />
             <Text style={styles.contactText} onPress={handleLocationPress}>
               איזור תעשייה, Majdal Shams, IL
             </Text>
           </View>
-        </Card.Content>
-      </Card>
-
-      {/* Contact Form Section */}
-      <Card style={styles.formCard}>
-        <Card.Content>
-          <Text style={styles.formHeader}>Send Us a Message</Text>
-
-          {/* Name Input */}
-          <TextInput
-            label="Your Name"
-            mode="outlined"
-            style={styles.input}
-            theme={{ colors: { primary: '#1E90FF' } }}
-          />
-
-          {/* Email Input */}
-          <TextInput
-            label="Your Email"
-            mode="outlined"
-            keyboardType="email-address"
-            style={styles.input}
-            theme={{ colors: { primary: '#1E90FF' } }}
-          />
-
-          {/* Message Input */}
-          <TextInput
-            label="Message"
-            mode="outlined"
-            multiline
-            numberOfLines={4}
-            style={styles.input}
-            theme={{ colors: { primary: '#1E90FF' } }}
-          />
-
-          {/* Submit Button */}
-          <Button
-            mode="contained"
-            onPress={() => alert('Message Sent!')}
-            style={styles.submitButton}
-            contentStyle={{ paddingVertical: 8 }}
-          >
-            Send Message
-          </Button>
         </Card.Content>
       </Card>
     </View>
@@ -108,31 +101,15 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     padding: 15,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    //backgroundColor: '#f0f4f7',
   },
   contactCard: {
     width: width > 600 ? '60%' : '90%',
     padding: 20,
-    marginTop: 150, // Move contact container further down
-    marginBottom: 10, // Reduce space between contact container and form container
-    //backgroundColor: '#fff',
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 10,
-    borderColor: '#1E90FF',
-    borderWidth: 2,
-  },
-  formCard: {
-    width: width > 600 ? '60%' : '90%',
-    padding: 20,
-    marginTop: 3, // Further reduce the space between form and contact containers
-    marginBottom: 150, // Add more space below the form
-    //backgroundColor: '#fff',
+    marginTop: 150,
+    marginBottom: 10,
+    backgroundColor: '#fff',
     borderRadius: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -147,47 +124,25 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 7,
     textAlign: 'center',
-    //color: '#1E90FF',
+    color: '#1E90FF',
   },
   subHeader: {
     fontSize: width > 600 ? 26 : 15,
-    //color: '#1E90FF',
+    color: '#ffa64d',
     marginBottom: 15,
     textAlign: 'center',
   },
   contactItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 1,
+    marginBottom: 10,
   },
   contactText: {
     fontSize: width > 600 ? 18 : 16,
-    //color: '#1E90FF',
+    color: '#1E90FF',
     textDecorationLine: 'underline',
     marginLeft: 6,
   },
-  formHeader: {
-    fontSize: width > 600 ? 24 : 18,
-    fontWeight: 'bold',
-    marginVertical: 14,
-    textAlign: 'center',
-    //color: '#1E90FF',
-  },
-  input: {
-    marginBottom: 15,
-    fontSize: width > 600 ? 16 : 14,
-    //backgroundColor: '#fff',
-  },
-  submitButton: {
-    marginTop: 20,
-    //backgroundColor: '#1E90FF',
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3,
-  },
 });
-
 
 export default ContactUsPage;

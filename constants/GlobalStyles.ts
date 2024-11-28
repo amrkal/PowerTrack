@@ -11,13 +11,15 @@ export const GlobalStyles = StyleSheet.create({
     padding: Padding.sm,
     borderRadius: Border.base,
     backgroundColor: 'rgba(255, 255, 255, 0.85)',
-    shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 1,
     shadowRadius: 8,
     elevation: 10,
     width: '90%',
     alignSelf: 'center',
+    borderColor: '#ffa64d',
+    borderWidth: 2, // Border thickness
+    borderStyle: 'solid', // Solid border (default)
 
 
   },
@@ -301,11 +303,13 @@ export const GlobalStyles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     paddingVertical: 20,
+    borderColor: '#1E90FF',
   },
   header: {
     alignItems: 'center',
     position: 'relative',
     marginBottom: 20,
+    borderColor: '#1E90FF',
   },
   profileImage: {
     width: width > 600 ? 200 : 150,
@@ -323,11 +327,11 @@ export const GlobalStyles = StyleSheet.create({
   profileContainer: {
     width: width > 600 ? '50%' : '90%',
     alignSelf: 'center',
+    borderColor: '#1E90FF',
   },
   userInfo: {
     fontSize: width > 600 ? 24 : 18,
     marginVertical: 5,
-    color: 'black',
     textAlign: 'center',
   },
   userEmail: {
@@ -360,14 +364,24 @@ export const GlobalStyles = StyleSheet.create({
   editButton: {
     marginVertical: 10,
     paddingVertical: width > 600 ? 15 : 10,
+    borderColor: '#ffa64d',
+    borderWidth: 2, // Border thickness
+    borderStyle: 'solid', // Solid border (default)
   },
   saveButton: {
     marginVertical: 10,
     paddingVertical: width > 600 ? 15 : 10,
+    borderColor: '#ffa64d',
+    borderWidth: 2, // Border thickness
+    borderStyle: 'solid', // Solid border (default)
   },
   logoutButton: {
     marginVertical: 10,
     paddingVertical: width > 600 ? 15 : 10,
+    borderColor: '#ffa64d',
+    borderWidth: 2, // Border thickness
+    borderStyle: 'solid', // Solid border (default)
+
   },
   historyButton: {
     marginVertical: 10,
@@ -460,6 +474,9 @@ card: {
   shadowOffset: { width: 0, height: 4 },
   shadowOpacity: 0.3,
   shadowRadius: 8,
+  borderColor:'#ffa64d',
+  borderWidth: 2, // Border thickness
+  borderStyle: 'solid', // Solid border (default)
 },
 
 image: {
@@ -471,6 +488,9 @@ image: {
 infoContainer: {
   flex: 1,
   justifyContent: 'space-between',
+  borderColor:'#1E90FF'
+  
+  
 },
 name: {
   fontSize: 16,

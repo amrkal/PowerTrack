@@ -3,13 +3,13 @@ import { MD3LightTheme as DefaultTheme, MD3DarkTheme as DarkTheme } from 'react-
 export const Colors = {
   light: {
     ...DefaultTheme.colors,  // Extend the default light theme
-    primary: "#FF5722", // Vibrant primary color (orange-red) for electric tools theme
-    onPrimary: "#FFFFFF",
-    primaryContainer: "#FFCCBC", 
-    secondary: "#0277BD", // A blue shade for secondary actions
+    primary: "#1E3A8A", // Primary blue color for light mode
+    onPrimary: "#FFFFFF", // Text on primary color (white)
+    primaryContainer: "#E0F2FE", // Light blue container color
+    secondary: "#0277BD", // Secondary color, blue shade
     onSecondary: "#FFFFFF",
-    background: "#F5F5F5",  // Neutral background
-    surface: "#FFFFFF",  // Surfaces like cards and sheets
+    background: "#FFFFFF",  // White background for light mode
+    surface: "#FFFFFF",  // White surfaces like cards and sheets
     onSurface: "#212121",
     error: "#D32F2F",  // Strong error color
     onError: "#FFFFFF",
@@ -19,26 +19,83 @@ export const Colors = {
     outline: "#BDBDBD",
     inverseSurface: "#212121",
     inverseOnSurface: "#E0E0E0",
+
   },
   dark: {
     ...DarkTheme.colors,  // Extend the default dark theme
-    primary: "#FF8A65", // A lighter orange for dark mode
-    onPrimary: "#3E2723",
-    primaryContainer: "#BF360C",
-    secondary: "#039BE5", // A vibrant blue that works on dark surfaces
+    primary: "#1E3A8A", // Primary blue color for dark mode
+    onPrimary: "#FFFFFF", // Text on primary color (white)
+    primaryContainer: "#1565C0", // Darker blue container color
+    secondary: "#039BE5", // Secondary color, blue shade
     onSecondary: "#E1F5FE",
-    background: "#121212",  // Darker background for electric tools shopping context
+    background: "#acb5c2",  // Darker background search text
     surface: "#1E1E1E",  // Darker surfaces
-    onSurface: "#E0E0E0",
+    onSurface: "#212121",
     error: "#EF9A9A",  // Softer error color for dark mode
     onError: "#8B0000",
-    surfaceVariant: "#424242", 
+    surfaceVariant: "#acb5c2", //background text!
     onSurfaceVariant: "#E0E0E0",
     outline: "#757575",
     inverseSurface: "#E0E0E0",
     inverseOnSurface: "#212121",
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import { MD3LightTheme as DefaultTheme, MD3DarkTheme as DarkTheme } from 'react-native-paper';
+
+// export const Colors = {
+//   light: {
+//     ...DefaultTheme.colors,  // Extend the default light theme
+//     primary: "#FF5722", // Vibrant primary color (orange-red) for electric tools theme
+//     onPrimary: "#FFFFFF",
+//     primaryContainer: "#FFCCBC", 
+//     secondary: "#0277BD", // A blue shade for secondary actions
+//     onSecondary: "#FFFFFF",
+//     background: "#F5F5F5",  // Neutral background
+//     surface: "#FFFFFF",  // Surfaces like cards and sheets
+//     onSurface: "#212121",
+//     error: "#D32F2F",  // Strong error color
+//     onError: "#FFFFFF",
+//     // More custom colors
+//     surfaceVariant: "#E0E0E0", 
+//     onSurfaceVariant: "#424242",
+//     outline: "#BDBDBD",
+//     inverseSurface: "#212121",
+//     inverseOnSurface: "#E0E0E0",
+//   },
+//   dark: {
+//     ...DarkTheme.colors,  // Extend the default dark theme
+//     primary: "#FF8A65", // A lighter orange for dark mode
+//     onPrimary: "#3E2723",
+//     primaryContainer: "#BF360C",
+//     secondary: "#039BE5", // A vibrant blue that works on dark surfaces
+//     onSecondary: "#E1F5FE",
+//     background: "#121212",  // Darker background for electric tools shopping context
+//     surface: "#1E1E1E",  // Darker surfaces
+//     onSurface: "#E0E0E0",
+//     error: "#EF9A9A",  // Softer error color for dark mode
+//     onError: "#8B0000",
+//     surfaceVariant: "#424242", 
+//     onSurfaceVariant: "#E0E0E0",
+//     outline: "#757575",
+//     inverseSurface: "#E0E0E0",
+//     inverseOnSurface: "#212121",
+//   }
+// };
 
 
 

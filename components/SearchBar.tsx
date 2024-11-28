@@ -1,21 +1,36 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import { TextInput } from 'react-native-paper';
-import { GlobalStyles } from '../constants/GlobalStyles';
 
 interface Props {
   searchQuery: string;
   onChange: (query: string) => void;
+  onSearch: () => void;
 }
 
-const SearchBar: React.FC<Props> = ({ searchQuery, onChange }) => {
+const SearchBar: React.FC<Props> = ({ searchQuery, onChange, onSearch }) => {
   return (
     <TextInput
-      style={GlobalStyles.searchBar}
-      placeholder="Search Products"
+      mode="outlined"
+      placeholder="Search"
       value={searchQuery}
       onChangeText={onChange}
+      style={styles.input}
+      right={
+        <TextInput.Icon
+          icon="magnify"
+          onPress={onSearch}
+        />
+      }
     />
   );
 };
+
+const styles = StyleSheet.create({
+  input: {
+    height: 40,
+    marginBottom: 10,
+  },
+});
 
 export default SearchBar;

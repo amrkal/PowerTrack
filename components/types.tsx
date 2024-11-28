@@ -15,6 +15,7 @@ export interface Product {
     name: string;
     sortGroup: number;
     type: string;
+    image?: string;
   }
 
   

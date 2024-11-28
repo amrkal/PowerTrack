@@ -7,26 +7,22 @@ import {
   TouchableWithoutFeedback,
   StyleSheet,
   ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
-import {
-  TextInput,
-  Button,
-} from 'react-native-paper';
-import axiosInstance from '../../services/axiosInstance';
+import { TextInput, Button, useTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { GlobalStyles } from '../../constants/GlobalStyles';
 import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import axiosInstance from '../../services/axiosInstance';
+import { GlobalStyles } from '@/constants/GlobalStyles';
 
 const background = require('../../assets/images/loginBG.jpg');
-
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
+  const theme = useTheme(); // Access React Native Paper theme
 
   const handleLogin = async () => {
     try {
@@ -51,49 +47,56 @@ const LoginPage: React.FC = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ImageBackground source={background} style={styles.background}>
-        <SafeAreaView style={styles.safeArea}>
+        <KeyboardAvoidingView
+          style={styles.safeArea}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
           <View style={GlobalStyles.formContainer}>
             <TextInput
-              style={styles.input}
-              mode="flat"
+              mode="outlined"
               label="Username"
-              placeholder="Username"
+              placeholder="Enter your username"
               value={username}
               onChangeText={setUsername}
               autoCapitalize="none"
-              left={<TextInput.Icon icon={() => <MaterialIcons name="person" size={20} />} />}
+              style={styles.input}
+              left={<TextInput.Icon icon="account" />}
             />
             <TextInput
-              mode="flat"
+              mode="outlined"
               label="Password"
-              placeholder="Password"
+              placeholder="Enter your password"
               value={password}
               onChangeText={setPassword}
               secureTextEntry
               style={styles.input}
-              left={<TextInput.Icon icon={() => <MaterialIcons name="lock" size={20} />} />}
+              left={<TextInput.Icon icon="lock" />}
             />
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 10 }}>
+            <View style={styles.actionButtons}>
               <Button
                 onPress={() => router.push("/Authentication/ForgotPasswordPage")}
-                color="navy"
+                textColor={theme.colors.primary}
                 labelStyle={styles.buttonText}
               >
                 Forgot Password?
               </Button>
               <Button
                 onPress={() => router.push("/Authentication/SignUpPage")}
-                color="navy"
+                textColor={theme.colors.primary}
                 labelStyle={styles.buttonText}
               >
                 New user? Sign Up
               </Button>
             </View>
-            <Button mode="contained" onPress={handleLogin} style={styles.loginButton}>
+            <Button
+              mode="contained"
+              onPress={handleLogin}
+              //buttonColor={theme.colors.primary}
+            >
               Login
             </Button>
           </View>
-        </SafeAreaView>
+        </KeyboardAvoidingView>
       </ImageBackground>
     </TouchableWithoutFeedback>
   );
@@ -113,16 +116,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   input: {
-    marginBottom: 18,
+    marginBottom: 16,
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
   buttonText: {
     fontSize: 14,
-    textAlign: 'center',
-  },
-  loginButton: {
-    paddingVertical: 10,
-    borderRadius: 8,
-    marginTop: 10,
   },
 });
 

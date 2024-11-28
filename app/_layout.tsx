@@ -26,6 +26,15 @@ const customDarkTheme = {
     regular: { fontFamily: 'Roboto-Regular' },
     medium: { fontFamily: 'Roboto-Bold' },
   },
+  components: {
+    TextInput: {
+      contentStyle: {
+        textAlign: 'center', // Center text horizontally
+        paddingVertical: 0, // Remove vertical padding
+        paddingHorizontal: 0, // Remove horizontal padding
+      },
+    },
+  },
 };
 
 const customLightTheme = {
@@ -38,6 +47,15 @@ const customLightTheme = {
     ...MD3LightTheme.fonts,
     regular: { fontFamily: 'Roboto-Regular' },
     medium: { fontFamily: 'Roboto-Bold' },
+  },
+  components: {
+    TextInput: {
+      contentStyle: {
+        textAlign: 'center', // Center text horizontally
+        paddingVertical: 0, // Remove vertical padding
+        paddingHorizontal: 0, // Remove horizontal padding
+      },
+    },
   },
 };
 
@@ -63,9 +81,9 @@ export default function RootLayout() {
   return (
     <PaperProvider theme={paperTheme}>
       <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="Authentication" options={{ headerShown: false }} />
-        <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+        <Stack.Screen name="index" options={{ headerShown: false, gestureEnabled: false }} />
+        <Stack.Screen name="Authentication" options={{ headerShown: false, gestureEnabled: false }} />
+        <Stack.Screen name="(drawer)" options={{ headerShown: false, gestureEnabled: false }} />
       </Stack>
     </PaperProvider>
   );

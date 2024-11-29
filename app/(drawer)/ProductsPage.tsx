@@ -21,7 +21,7 @@ const ProductsPage: React.FC = () => {
   const { addToCart } = useCart();
 
   const route = useRoute<RouteProp<ProductsPageRouteParams, "ProductsPage">>();
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const selectedTypeFromRoute = route.params?.selectedType || null;
 
   const [groupedCategories, setGroupedCategories] = useState<{ [key: string]: Category[] }>({});
@@ -32,6 +32,7 @@ const ProductsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isSearchActive, setIsSearchActive] = useState(false);
   const flatListRef = useRef<FlatList>(null);
+  const [types, setTypes] = useState<string[]>([]);
 
   const [numColumns, setNumColumns] = useState(2);
 
@@ -47,6 +48,33 @@ const ProductsPage: React.FC = () => {
     const subscription = Dimensions.addEventListener("change", calculateColumns);
     return () => subscription?.remove();
   }, []);
+
+  useEffect(() => {
+    const fetchTypesAndNavigate = async () => {
+      try {
+        setLoading(true);
+        const response = await axiosInstance.get("/categories/types");
+        const fetchedTypes: string[] = response.data.types || [];
+        setTypes(fetchedTypes);
+  
+        if (fetchedTypes.length > 0) {
+          const firstType = fetchedTypes[0];
+          setSelectedType(firstType);
+  
+          // Correctly pass the selectedType to ProductsPage
+          navigation.navigate("ProductsPage" as never, { selectedType: firstType } as never);
+        }
+      } catch (error) {
+        console.error("Error fetching types:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchTypesAndNavigate();
+  }, []);
+  
+
 
   // Handle focus and reset states
   useFocusEffect(

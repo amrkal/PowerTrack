@@ -23,19 +23,6 @@ export const GlobalStyles = StyleSheet.create({
 
 
   },
-  formContainer: {
-    width: '90%',  
-    maxWidth: 500,
-    padding: 30, 
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 10,
-    position: 'absolute', // Make the formContainer positioned relative to its parent
-    bottom: '15%', // Push the container 25% of the height of the screen up from the bottom
-  },
   
   title: {
     fontSize: FontSize['3xl'],

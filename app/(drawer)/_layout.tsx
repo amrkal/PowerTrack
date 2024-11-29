@@ -16,10 +16,6 @@ export default function Layout() {
           initialRouteName="LandingPage"
           drawerContent={(props) => <CustomDrawerContent {...props} />}
         >
-          <Drawer.Screen
-            name="LandingPage"
-            options={{ title: 'Welcome', drawerItemStyle: { display: 'none' } }}
-          />
           <Drawer.Screen name="ProductsPage" options={{ title: 'Products' }} />
           <Drawer.Screen name="MyCartPage" options={{ title: 'My Cart' }} />
           <Drawer.Screen name="ProfilePage" options={{ title: 'Profile' }} />

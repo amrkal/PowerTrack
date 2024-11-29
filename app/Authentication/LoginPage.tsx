@@ -16,6 +16,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import axiosInstance from '../../services/axiosInstance';
 import { GlobalStyles } from '@/constants/GlobalStyles';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const background = require('../../assets/images/loginBG.jpg');
 
@@ -23,7 +24,7 @@ const LoginPage: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const theme = useTheme(); // Access React Native Paper theme
-
+  
   const handleLogin = async () => {
     try {
       const response = await axiosInstance.post('/users/login', { username, password });
@@ -47,11 +48,13 @@ const LoginPage: React.FC = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ImageBackground source={background} style={styles.background}>
-        <KeyboardAvoidingView
-          style={styles.safeArea}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      <KeyboardAwareScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          extraScrollHeight={150} // Minimal scroll adjustment
+          enableOnAndroid={true}
         >
-          <View style={GlobalStyles.formContainer}>
+          <View style={styles.formContainer}>
             <TextInput
               mode="outlined"
               label="Username"
@@ -96,13 +99,26 @@ const LoginPage: React.FC = () => {
               Login
             </Button>
           </View>
-        </KeyboardAvoidingView>
+          </KeyboardAwareScrollView>
       </ImageBackground>
     </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
+  formContainer: {
+    width: '90%',  
+    maxWidth: 500,
+    padding: 30, 
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 10,
+    position: 'absolute', // Make the formContainer positioned relative to its parent
+    bottom: '15%', // Push the container 25% of the height of the screen up from the bottom
+  },
   background: {
     flex: 1,
     width: '100%',
@@ -125,6 +141,13 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 14,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'flex-start', // Align content to the top
+    paddingHorizontal: 20,
+    paddingTop: Platform.OS === 'ios' ? 60 : 40, // Add some space from the top
+    alignItems: 'center',
   },
 });
 

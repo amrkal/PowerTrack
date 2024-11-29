@@ -4,8 +4,27 @@ from models import Item
 
 items_bp = Blueprint('items', __name__)
 
-# Route to get all items by category (sortGroup) and price list number
+
+# Route to get all items by category (sortGroup) and price list number new with price from same database
 @items_bp.route('/items/price/<sortGroup>', methods=['GET'])
+def get_items_by_same_category_price(sortGroup):
+    try:
+        # Get the PriceListNumber from the request's query parameters (default to 1 if not provided)
+        price_list_number = request.args.get('priceListNumber', default=1, type=int)
+        print(f"Received sortGroup: {sortGroup}, PriceListNumber: {price_list_number}")
+
+        # Pass both sortGroup and PriceListNumber to the method
+        items = Item.get_all_items_by_same_category_price(sortGroup, price_list_number)
+        return jsonify({"items": items}), 200
+    except Exception as e:
+        print(f"Error fetching items by category: {e}")
+        return jsonify({'error': str(e)}), 500
+    
+
+
+
+# Route to get all items by category (sortGroup) and price list number olddddddddddddddddddddddddddddd
+@items_bp.route('/items/priceold/<sortGroup>', methods=['GET'])
 def get_items_by_category_price(sortGroup):
     try:
         # Get the PriceListNumber from the request's query parameters (default to 1 if not provided)
@@ -58,6 +77,41 @@ def get_items():
     except Exception as e:
         print(f"Error fetching items: {e}")
         return jsonify({'error': 'Internal server error occurred'}), 500
+    
+@items_bp.route('/items/priceof/<item_key>', methods=['GET'])
+def get_item_price_by_key(item_key):
+    try:
+        prices_tag = request.args.get('prices_tag', type=int)
+        print(f"Received item_key: {item_key}, prices_tag: {prices_tag}")
+
+        if not prices_tag:
+            print("Missing prices_tag")
+            return jsonify({"error": "prices_tag is required"}), 400
+
+        # Fetch the item
+        item = Item.find_by_item_key(item_key)
+        if not item:
+            print(f"Item not found for item_key: {item_key}")
+            return jsonify({"error": "Item not found"}), 404
+
+        # Fetch the price
+        price = Item.get_price_by_item_and_tag(item_key, prices_tag)
+        print(f"Price for item_key {item_key}: {price}")
+        if price is None:
+            return jsonify({"error": "Price not found"}), 404
+
+        return jsonify({
+            "item_key": item_key,
+            "price": price,
+            "item_name": item.get("ItemName"),
+            "description": item.get("description", ""),
+            "quantity": item.get("Quantity", 0),
+        }), 200
+    except Exception as e:
+        print(f"Error in get_item_price_by_key: {e}")
+        return jsonify({"error": "Internal server error occurred"}), 500
+
+
 
 # Route to fetch all items with pagination and optional search
 @items_bp.route('/itemss', methods=['GET'])

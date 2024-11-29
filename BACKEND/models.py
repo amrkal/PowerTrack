@@ -155,6 +155,10 @@ class Item:
         # Regular expression to match the pattern "**-***"
         pattern = r'^\d{2}-\d{3}$'
         return list(db_mongo.items.find({"ItemKey": {"$regex": pattern}}))
+   
+    @staticmethod
+    def find_by_item_key(item_key):
+        return db_mongo.items.find_one({"ItemKey": item_key})
 
     @staticmethod
     def get_all_items_by_category(sortGroup):
@@ -193,6 +197,47 @@ class Item:
         except Exception as e:
             print(f"Error fetching items for sortGroup {sortGroup}: {str(e)}")
             return []
+
+    @staticmethod
+    def get_all_items_by_same_category_price(sortGroup, PriceListNumber):
+        """Fetch all items belonging to a specific category by sortGroup"""
+        sortGroup = (int(sortGroup))
+        try:
+            # Query MongoDB to find items by the category's sortGroup
+            items = list(db_mongo.items.find(
+                {"SortGroup": sortGroup}, 
+                {
+                    "_id": 1,  # We need _id to convert to string later
+                    "ItemKey": 1,
+                    "ItemName": 1,
+                    "description": 1,
+                    "Quantity": 1,
+                    "SortGroup": 1
+                }
+            ))
+
+            # Modify each item before returning
+            formatted_items = [
+                {
+                    'id': str(item['_id']),
+                    'item_key': item.get('ItemKey'),
+                    'item_name': item.get('ItemName'),
+                    'description': item.get('description', ''),
+                    'price': item.get('Price', 0),  # Fetch price
+                    'quantity': item.get('Quantity', 0),
+                    'sortGroup': item.get('SortGroup', 'others')
+                }
+                for item in items
+            ]
+            
+            return formatted_items
+        except Exception as e:
+            print(f"Error fetching items for sortGroup {sortGroup}: {str(e)}")
+            return []
+
+
+
+
 
 
     @staticmethod
@@ -254,7 +299,27 @@ class Item:
         # Step 3: Return 0 if no price is found at all
         return 0
 
+    @staticmethod
+    def get_price_by_tag(item_key, PriceListNumber):
+        # Step 1: Check the prices collection for the most recent price based on ItemKey and PriceListNumber
+        price_data = db_mongo.PriceLists.find_one(
+            {
+                'ItemKey': item_key,
+                'PriceListNumber': PriceListNumber
+            },
+            sort=[('DatF', -1)]  # Sort by DatF in descending order to get the most recent price
+        )
 
+        if price_data and 'Price' in price_data:
+            return price_data['Price']  # Return the most recent price if found
+
+        # Step 2: If no adjusted price is found, fallback to the price in the items collection
+        item_data = db_mongo.items.find_one({'ItemKey': item_key})
+        if item_data and 'Price' in item_data:
+            return item_data['Price']  # Return the original item price if found
+
+        # Step 3: Return 0 if no price is found at all
+        return 0
         
 
     @staticmethod

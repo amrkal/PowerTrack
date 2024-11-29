@@ -1,21 +1,55 @@
 import React, { useState } from 'react';
-import { View, Image,StyleSheet } from 'react-native';
-import { Text, TextInput, Button } from 'react-native-paper';
+import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, TextInput, Button, ActivityIndicator } from 'react-native-paper';
 import { Product } from './types';
 import { GlobalStyles } from '../constants/GlobalStyles';
-
+import axiosInstance from '@/services/axiosInstance';
 
 interface Props {
   item: Product;
   onAddToCart: (item: Product, quantity: number) => void;
-  onScrollToTop: () => void; // New prop
+  pricesTag?: string;
+  onScrollToTop: () => void; // Include this in Props
 }
 
-const ProductItem: React.FC<Props> = ({ item, onAddToCart , onScrollToTop}) => {
-  const [quantityInCart, setQuantityInCart] = useState<string>('1'); // Allow string for the input
+const ProductItem: React.FC<Props> = ({ item, onAddToCart, pricesTag, onScrollToTop }) => {
+  const [quantityInCart, setQuantityInCart] = useState<string>('1');
+  const [price, setPrice] = useState<string | null>(null);
+  const [loadingPrice, setLoadingPrice] = useState(false);
+
+  const fetchPrice = async () => {
+    console.log("Fetching price for item:", item.item_name, "with pricesTag:", pricesTag);
+
+    if (!pricesTag) {
+      console.error("Price tag is missing in fetchPrice.");
+      alert('Price tag is missing. Unable to fetch price.');
+      return;
+    }
+
+    setLoadingPrice(true);
+    try {
+      const response = await axiosInstance.get(`/items/items/priceof/${item.item_key}`, {
+        params: { prices_tag: pricesTag }, // Match the query parameter name from Flask
+      });
+
+      if (response.data?.price) {
+        console.log("Price fetched successfully:", response.data.price);
+        setPrice(parseFloat(response.data.price).toFixed(2));
+      } else {
+        console.warn("Price not found for this item.");
+        alert('Price not found for this item.');
+        setPrice(null); // Handle case where price is not returned
+      }
+    } catch (error) {
+      console.error('Error fetching price:', error);
+      alert('Failed to fetch price. Please try again later.');
+    } finally {
+      setLoadingPrice(false);
+    }
+  };
 
   const increaseQuantity = () => {
-    const currentQuantity = parseInt(quantityInCart, 10) || 1; // Default to 1 if empty
+    const currentQuantity = parseInt(quantityInCart, 10) || 1;
     setQuantityInCart((currentQuantity + 1).toString());
   };
 
@@ -35,19 +69,6 @@ const ProductItem: React.FC<Props> = ({ item, onAddToCart , onScrollToTop}) => {
     onAddToCart(item, quantity);
   };
 
-  const handleQuantityChange = (text: string) => {
-    if (/^\d*$/.test(text)) {
-      setQuantityInCart(text); // Allow numeric input or empty string
-    }
-  };
-
-  const handleQuantityBlur = () => {
-    // Reset to 1 if the input is empty
-    if (quantityInCart.trim() === '') {
-      setQuantityInCart('1');
-    }
-  };
-
   return (
     <View style={GlobalStyles.card}>
       <Image
@@ -56,9 +77,16 @@ const ProductItem: React.FC<Props> = ({ item, onAddToCart , onScrollToTop}) => {
       />
       <View style={GlobalStyles.infoContainer}>
         <Text style={GlobalStyles.name}>{item.item_name}</Text>
-        <Text style={GlobalStyles.price}>{`₪ ${item.price.toFixed(2)}`}</Text>
+        <View style={styles.priceContainer}>
+          <TouchableOpacity onPress={fetchPrice} style={styles.priceButton}>
+            {loadingPrice ? (
+              <ActivityIndicator animating={true} size="small" />
+            ) : (
+              <Text style={styles.priceText}>{price ? `₪ ${price}` : '?'}</Text>
+            )}
+          </TouchableOpacity>
+        </View>
         <Text style={GlobalStyles.description}>{item.description || 'No description available.'}</Text>
-
         <View style={GlobalStyles.quantityContainer}>
           <Button mode="contained" onPress={decreaseQuantity} compact style={GlobalStyles.quantityButton}>
             -
@@ -67,14 +95,13 @@ const ProductItem: React.FC<Props> = ({ item, onAddToCart , onScrollToTop}) => {
             style={GlobalStyles.quantityInput}
             keyboardType="numeric"
             value={quantityInCart}
-            onChangeText={handleQuantityChange}
-            onBlur={handleQuantityBlur} // Reset on blur if empty
+            onChangeText={(text) => /^\d*$/.test(text) && setQuantityInCart(text)}
+            onBlur={() => quantityInCart.trim() === '' && setQuantityInCart('1')}
           />
           <Button mode="contained" onPress={increaseQuantity} compact style={GlobalStyles.quantityButton}>
             +
           </Button>
         </View>
-
         <Button mode="contained" onPress={handleAddToCart} style={GlobalStyles.addToCartButton}>
           Add to Cart
         </Button>
@@ -82,5 +109,25 @@ const ProductItem: React.FC<Props> = ({ item, onAddToCart , onScrollToTop}) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  priceContainer: {
+    marginVertical: 10,
+    alignItems: 'center',
+  },
+  priceButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+    backgroundColor: '#ddd',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  priceText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+});
 
 export default ProductItem;

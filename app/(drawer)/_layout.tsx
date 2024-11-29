@@ -41,7 +41,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
       try {
         const response = await axiosInstance.get('/categories/types');
         const types = response.data.types || [];
-        setMainTypes(types.slice(0, 3)); // Get the top 3 types
+        setMainTypes(types); // Fetch and set all types without slicing
       } catch (error) {
         console.error('Error fetching main types:', error);
       }

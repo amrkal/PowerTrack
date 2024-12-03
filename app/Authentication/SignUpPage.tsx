@@ -17,8 +17,9 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import parsePhoneNumberFromString from "libphonenumber-js";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from 'axios';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-// Import the background image
+// תמונת הרקע
 const background = require('../../assets/images/loginBG.jpg');
 
 type RootStackParamList = {
@@ -28,7 +29,6 @@ type RootStackParamList = {
 };
 
 type SignUpPageNavigationProp = StackNavigationProp<RootStackParamList, 'SignUpPage'>;
-
 
 const SignUpPage: React.FC = () => {
   const [username, setUsername] = useState<string>('');
@@ -48,12 +48,12 @@ const SignUpPage: React.FC = () => {
 
   const handleRegister = async () => {
     if (!name || !familyName || !username || !email || !password || !phoneNumber) {
-      Alert.alert('Error', 'Please fill in all fields.');
+      Alert.alert('שגיאה', 'אנא מלאו את כל השדות.');
       return;
     }
 
     if (!validatePhoneNumber(phoneNumber)) {
-      Alert.alert('Error', 'Please enter a valid phone number.');
+      Alert.alert('שגיאה', 'אנא הזינו מספר טלפון חוקי.');
       return;
     }
 
@@ -79,118 +79,121 @@ const SignUpPage: React.FC = () => {
     } catch (err) {
       console.error('Registration Error:', err);
       if (axios.isAxiosError(err)) {
-        Alert.alert('Error', err.response?.data?.error || 'Failed to register user');
+        Alert.alert('שגיאה', err.response?.data?.error || 'הרישום נכשל');
       } else {
-        Alert.alert('Error', 'An unexpected error occurred');
+        Alert.alert('שגיאה', 'אירעה שגיאה לא צפויה');
       }
     }
   };
 
   return (
+    <KeyboardAwareScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          extraScrollHeight={100}
+          enableOnAndroid={true}
+          //scrollEnabled={false} // Disable user scroll gestures
+        >
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ImageBackground source={background} style={styles.background}>
-        <SafeAreaView style={styles.safeArea}>
-          <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <View style={GlobalStyles.container}>
-              {/* Name and Family Name */}
+            <View style={styles.container}>
+              {/* שם פרטי ושם משפחה */}
               <View style={styles.inputRow}>
                 <TextInput
-                  label="Name"
+                  label="שם פרטי"
                   mode="outlined"
-                  placeholder="Name"
+                  placeholder="שם פרטי"
                   value={name}
                   onChangeText={setName}
-                  style={{ flex: 1, marginRight: 8 }} // Takes up half of the space
-                  left={<TextInput.Icon icon={() => <MaterialIcons name="account-circle" size={20} />} />} // Icon for name
+                  style={{ flex: 1, marginRight: 8 }} // תופס חצי מהשטח
+                  left={<TextInput.Icon icon={() => <MaterialIcons name="account-circle" size={20} />} />}
                 />
                 <TextInput
                   mode="outlined"
-                  label="Family Name"
-                  placeholder="Family Name"
+                  label="שם משפחה"
+                  placeholder="שם משפחה"
                   value={familyName}
                   onChangeText={setFamilyName}
-                  style={{ flex: 1 }} // Takes up the other half of the space
-                  left={<TextInput.Icon icon={() => <MaterialIcons name="account-circle" size={20} />} />} // Icon for family name
+                  style={{ flex: 1 }} // תופס את החצי השני
+                  left={<TextInput.Icon icon={() => <MaterialIcons name="account-circle" size={20} />} />}
                 />
               </View>
 
-              {/* Username */}
+              {/* שם משתמש */}
               <TextInput
-                label="Username"
+                label="שם משתמש"
                 mode="outlined"
-                placeholder="Username"
+                placeholder="שם משתמש"
                 value={username}
                 onChangeText={setUsername}
                 style={styles.inputFull}
-                left={<TextInput.Icon icon={() => <MaterialIcons name="person" size={20} />} />} // Icon for username
+                left={<TextInput.Icon icon={() => <MaterialIcons name="person" size={20} />} />}
               />
 
-              {/* Email */}
+              {/* אימייל */}
               <TextInput
                 mode="outlined"
-                label="Email"
-                placeholder="Email"
+                label="אימייל"
+                placeholder="אימייל"
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 style={styles.inputFull}
-                left={<TextInput.Icon icon={() => <MaterialIcons name="email" size={20} />} />} // Icon for email
+                left={<TextInput.Icon icon={() => <MaterialIcons name="email" size={20} />} />}
               />
 
-              {/* Password */}
+              {/* סיסמה */}
               <TextInput
                 mode="outlined"
-                label="Password"
-                placeholder="Password"
+                label="סיסמה"
+                placeholder="סיסמה"
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
                 style={styles.inputFull}
-                left={<TextInput.Icon icon={() => <MaterialIcons name="lock" size={20} />} />} // Changed icon to "lock" for password
+                left={<TextInput.Icon icon={() => <MaterialIcons name="lock" size={20} />} />}
               />
 
-              {/* Phone Number */}
+              {/* מספר טלפון */}
               <TextInput
                 mode="outlined"
-                label="Phone Number"
-                placeholder="Phone Number"
+                label="מספר טלפון"
+                placeholder="מספר טלפון"
                 keyboardType="numeric"
                 value={phoneNumber}
                 onChangeText={setPhoneNumber}
                 style={styles.inputFull}
-                left={<TextInput.Icon icon={() => <MaterialIcons name="phone" size={20} />} />} // Icon for phone number
+                left={<TextInput.Icon icon={() => <MaterialIcons name="phone" size={20} />} />}
               />
 
-              {/* Register Button */}
+              {/* כפתור הרשמה */}
               <Button mode="contained" onPress={handleRegister} style={styles.registerButton}>
-                Register
+                הרשמה
               </Button>
               <Button onPress={() => navigation.navigate("LoginPage")}>
-                Already have an account?
+                כבר יש לך חשבון?
               </Button>
             </View>
-          </ScrollView>
-        </SafeAreaView>
       </ImageBackground>
     </TouchableWithoutFeedback>
+        </KeyboardAwareScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   background: {
-    flex: 1,
+    flexGrow: 1,
     width: '100%',
     height: '100%',
-    resizeMode: 'cover',
+    justifyContent: 'center',    
   },
   safeArea: {
-    flex: 1,
+    flexGrow: 1,
   },
   scrollContainer: {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 20,
   },
   inputRow: {
     flexDirection: 'row',
@@ -201,10 +204,30 @@ const styles = StyleSheet.create({
   inputFull: {
     width: '100%',
     marginBottom: 15,
+    color:'#07090'
   },
   registerButton: {
     width: '100%',
     marginTop: 20,
+  },
+  container: {
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.60)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 8,
+    elevation: 10,
+    width: '90%',
+    alignSelf: 'center',
+    borderColor: '#ffa64d',
+    borderWidth: 2,
+    borderStyle: 'solid',
+  },
+  scrollContent: {
+    flexGrow: 1,
+    alignItems: 'center',
+    textAlign:'center',
   },
 });
 

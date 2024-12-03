@@ -470,18 +470,18 @@ image: {
   width: 80,
   height: 80,
   borderRadius: 10,
-  marginRight: 15,
+  alignSelf:'center',
 },
 infoContainer: {
   flex: 1,
   justifyContent: 'space-between',
   borderColor:'#1E90FF'
-  
-  
 },
 name: {
   fontSize: 16,
   fontWeight: 'bold',
+  alignSelf:'center',
+  textAlign:'right',
   color: '#333',
 },
 price: {
@@ -499,32 +499,40 @@ quantityContainer: {
   alignItems: 'center',
   flex: 1,
   marginTop: 10,
+  alignSelf:'center',
 },
 quantityButton: {
   width: '30%',
-  height: '90%',
+  height: '80%',
   justifyContent: 'center',
+  borderColor: '#1E3A8A', // Match the border to the text color
+  backgroundColor: 'transparent',
   alignItems: 'center',
   borderRadius: 20,
 },
 quantityInput: {
-  width: '38%', // Ensure the width accommodates numbers comfortably
+  width: '30%', // Ensure the width accommodates numbers comfortably
   height: 40, // Maintain height
-  borderRadius: 5, // Add rounded corners
+  borderRadius: 5, // Rounded corners
   textAlign: 'center', // Center text horizontally
   textAlignVertical: 'center', // Center text vertically (for Android)
   fontSize: 16, // Maintain readability
   marginHorizontal: '2%', // Space around the input
-  paddingVertical: 0, // Remove vertical 
-  paddingLeft: 0, // Remove horizontal padding
-  paddingRight: 0, // Remove horizontal padding
-  paddingHorizontal: 0, // Slight padding for edge clearance
-  borderWidth: 1, // Optional border width
-  overflow: 'hidden', // Ensure no overflow
+  paddingVertical: 0, // Remove vertical padding
+  paddingHorizontal: 0, // Remove horizontal padding
+  borderWidth: 0, // No border to make it clear
+  backgroundColor: 'transparent', // Transparent background
+  color: '#000', // Set text color for readability
+  alignSelf: 'center', // Align in the center of its container
 },
 
+
+
 addToCartButton: {
-  marginTop: 10,
+  marginTop:15,
+  margin: 10,
+  borderColor:'#1E3A8A'
+  
 },
 feedback: {
   marginTop: 5,

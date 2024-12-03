@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, TouchableOpacity, Image, SafeAreaView } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Image, SafeAreaView, LayoutAnimation } from 'react-native';
 import { Text } from 'react-native-paper';
 import { Drawer } from 'expo-router/drawer';
 import { CartProvider } from '../context/CartContext'; 
@@ -7,6 +7,7 @@ import { UserProvider } from '../context/UserContext';
 import { DrawerContentComponentProps } from '@react-navigation/drawer';
 import axiosInstance from '../../services/axiosInstance';
 import SearchBar from '../../components/SearchBar';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function Layout() {
   return (
@@ -16,6 +17,7 @@ export default function Layout() {
           initialRouteName="LandingPage"
           drawerContent={(props) => <CustomDrawerContent {...props} />}
         >
+          <Drawer.Screen name="HomePage" options={{ title: 'HomePage' }} />
           <Drawer.Screen name="ProductsPage" options={{ title: 'Products' }} />
           <Drawer.Screen name="MyCartPage" options={{ title: 'My Cart' }} />
           <Drawer.Screen name="ProfilePage" options={{ title: 'Profile' }} />
@@ -31,6 +33,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
   const [mainTypes, setMainTypes] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [isProductsExpanded, setProductsExpanded] = useState(false); // Toggle state for products section
 
   useEffect(() => {
     const fetchMainTypes = async () => {
@@ -65,6 +68,10 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
       console.error('Error during search:', error);
     }
   };
+  const toggleProductsSection = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setProductsExpanded(!isProductsExpanded);
+  };
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -80,22 +87,49 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
           onChange={handleSearchChange}
           onSearch={handleSearchSubmit}
         />
+        <TouchableOpacity onPress={() => props.navigation.navigate('HomePage')} style={styles.drawerItem}>
+          <Text style={styles.drawerItemText}>דף הבית</Text>
+        </TouchableOpacity>
 
-        {mainTypes.length > 0 ? (
-          mainTypes.map((type, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => props.navigation.navigate('ProductsPage', { selectedType: type })}
-              style={styles.drawerItem}
-            >
-              <Text style={styles.drawerItemText}>{type}</Text>
-            </TouchableOpacity>
-          ))
-        ) : (
-          <Text style={styles.noCategories}>No types available</Text>
+        {/* Products Section */}
+        <TouchableOpacity
+          style={styles.drawerItem}
+          onPress={toggleProductsSection}
+        >
+          <View style={styles.row}>
+            <Text style={styles.drawerItemText}>המוצרים שלנו</Text>
+            <MaterialIcons
+              name={isProductsExpanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
+              size={24}
+              color="#555"
+              style={styles.arrowIcon}
+            />
+          </View>
+        </TouchableOpacity>
+
+
+        {isProductsExpanded && (
+          <View style={styles.subMenu}>
+            {mainTypes.length > 0 ? (
+              mainTypes.map((type, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() =>
+                    props.navigation.navigate('ProductsPage', { selectedType: type })
+                  }
+                  style={styles.subMenuItem}
+                >
+                  <Text style={styles.subMenuItemText}>{type}</Text>
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text style={styles.noCategories}>אין קטגוריות זמינות</Text>
+            )}
+          </View>
         )}
 
         {/* Other Drawer Items */}
+
         <TouchableOpacity onPress={() => props.navigation.navigate('MyCartPage')} style={styles.drawerItem}>
           <Text style={styles.drawerItemText}>עגלת קניות</Text>
         </TouchableOpacity>
@@ -124,6 +158,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignSelf: 'center',
   },
+  arrowIcon: {
+    marginLeft: 10, // Add spacing between text and icon
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   drawerContent: {
     flex: 1,
     padding: 20,
@@ -148,5 +190,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     marginVertical: 20,
+  },
+  subMenu: {
+    paddingLeft: 20, // Indent submenu items
+  },
+  subMenuItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    marginVertical: 5,
+    backgroundColor: '#e8e8e8',
+    borderRadius: 5,
+  },
+  subMenuItemText: {
+    fontSize: 14,
+    color: '#555',
   },
 });

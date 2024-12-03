@@ -77,6 +77,8 @@ const styles = StyleSheet.create({
     elevation: 3,
     alignItems: 'center',
     justifyContent: 'center',
+    borderColor: '#ffa64d', // Corrected the hex value for black
+    borderWidth: 2, // Add this to make the border visible
     padding: 10,
   },
   categoryImage: {

@@ -12,15 +12,15 @@ export default function Layout() {
       />
       <Stack.Screen
         name="ForgotPasswordPage"
-        options={{ title: '' }}
+        options={{ title: '', headerShown: false  }}
       />
       <Stack.Screen
         name="SignUpPage"
-        options={{ title: '' }}
+        options={{ title: '' , headerShown: false }}
       />
       <Stack.Screen
         name="VerificationPage"
-        options={{ title: ''}}
+        options={{ title: '', headerShown: false }}
       />
     </Stack>
   );

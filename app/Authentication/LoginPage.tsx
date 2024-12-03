@@ -47,33 +47,32 @@ const LoginPage: React.FC = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ImageBackground source={background} style={styles.background}>
       <KeyboardAwareScrollView
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
-          extraScrollHeight={150} // Minimal scroll adjustment
+          extraScrollHeight={220} // Minimal scroll adjustment
           enableOnAndroid={true}
+          //scrollEnabled={false} // Disable user scroll gestures
         >
-          <View style={styles.formContainer}>
+      <ImageBackground source={background} style={styles.background}>
+          <View style={styles.container}>
             <TextInput
               mode="outlined"
-              label="Username"
-              placeholder="Enter your username"
+              label="שם משתמש"
               value={username}
               onChangeText={setUsername}
               autoCapitalize="none"
               style={styles.input}
-              left={<TextInput.Icon icon="account" />}
+              left={<TextInput.Icon icon="account" color="blue" />}
             />
             <TextInput
               mode="outlined"
-              label="Password"
-              placeholder="Enter your password"
+              label="סיסמה"
               value={password}
               onChangeText={setPassword}
               secureTextEntry
               style={styles.input}
-              left={<TextInput.Icon icon="lock" />}
+              left={<TextInput.Icon icon="lock" color="blue"/>}
             />
             <View style={styles.actionButtons}>
               <Button
@@ -81,14 +80,14 @@ const LoginPage: React.FC = () => {
                 textColor={theme.colors.primary}
                 labelStyle={styles.buttonText}
               >
-                Forgot Password?
+                שכחתי סיסמה?
               </Button>
               <Button
                 onPress={() => router.push("/Authentication/SignUpPage")}
                 textColor={theme.colors.primary}
                 labelStyle={styles.buttonText}
               >
-                New user? Sign Up
+                משתמש חדש? להרשמה
               </Button>
             </View>
             <Button
@@ -96,28 +95,31 @@ const LoginPage: React.FC = () => {
               onPress={handleLogin}
               //buttonColor={theme.colors.primary}
             >
-              Login
+              כניסה
             </Button>
           </View>
-          </KeyboardAwareScrollView>
       </ImageBackground>
+      </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
-  formContainer: {
-    width: '90%',  
-    maxWidth: 500,
-    padding: 30, 
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.15,
+  container: {
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.60)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
     shadowRadius: 8,
     elevation: 10,
-    position: 'absolute', // Make the formContainer positioned relative to its parent
-    bottom: '15%', // Push the container 25% of the height of the screen up from the bottom
+    width: '90%',
+    alignSelf: 'center',
+    borderColor: '#ffa64d',
+    borderWidth: 2,
+    borderStyle: 'solid',
+    position: 'absolute',
+    bottom: '15%',
   },
   background: {
     flex: 1,
@@ -125,6 +127,7 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'cover',
     justifyContent: 'center',
+    alignItems:'center'
   },
   safeArea: {
     flex: 1,
@@ -144,10 +147,8 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    justifyContent: 'flex-start', // Align content to the top
-    paddingHorizontal: 20,
-    paddingTop: Platform.OS === 'ios' ? 60 : 40, // Add some space from the top
     alignItems: 'center',
+    textAlign:'center',
   },
 });
 

@@ -47,33 +47,29 @@ const MyCartPage: React.FC = () => {
 
               <View style={GlobalStyles.quantityContainer}>
                 <Button
-                  mode="contained"
+                  mode="outlined"
                   onPress={() => handleDecreaseQuantity(item.id)}
-                  style={{ marginRight: 5, minWidth: 5 }}
+                  style={GlobalStyles.quantityButton}
                 >
                   -
                 </Button>
-                <Text variant="titleLarge" style={{ marginTop: 5 }}>
+                <Text variant="titleLarge" style={{ margin: 5 }}>
                   {item.quantityInCart}
                 </Text>
                 <Button
-                  mode="contained"
+                  mode="outlined"
                   onPress={() => handleIncreaseQuantity(item.id)}
-                  style={{ marginLeft: 5, minWidth: 5 }}
+                  style={GlobalStyles.quantityButton}
                 >
                   +
                 </Button>
               </View>
             </View>
             <Button
-              style={GlobalStyles.deleteButton}
-              labelStyle={{ fontSize: 16, lineHeight: 17 }}
               mode="contained"
+              icon="trash-can" // Use the trash icon here
               buttonColor="red"
-              onPress={() => handleDelete(item.id)}
-            >
-              Delete
-            </Button>
+              onPress={() => handleDelete(item.id)} children={undefined}            />
           </View>
         )}
         style={GlobalStyles.cartList}

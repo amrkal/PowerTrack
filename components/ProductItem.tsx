@@ -16,9 +16,14 @@ const ProductItem: React.FC<Props> = ({ item, onAddToCart, pricesTag, onScrollTo
   const [quantityInCart, setQuantityInCart] = useState<string>('1');
   const [price, setPrice] = useState<string | null>(null);
   const [loadingPrice, setLoadingPrice] = useState(false);
+  const [showPrice, setShowPrice] = useState(false); // State to toggle price visibility
 
   const fetchPrice = async () => {
     console.log("Fetching price for item:", item.item_name, "with pricesTag:", pricesTag);
+    if (showPrice) {
+      setShowPrice(false); // Hide the price if it's already shown
+      return;
+    }
 
     if (!pricesTag) {
       console.error("Price tag is missing in fetchPrice.");
@@ -40,6 +45,7 @@ const ProductItem: React.FC<Props> = ({ item, onAddToCart, pricesTag, onScrollTo
         alert('Price not found for this item.');
         setPrice(null); // Handle case where price is not returned
       }
+      setShowPrice(true); // Show the price after fetching
     } catch (error) {
       console.error('Error fetching price:', error);
       alert('Failed to fetch price. Please try again later.');
@@ -71,6 +77,16 @@ const ProductItem: React.FC<Props> = ({ item, onAddToCart, pricesTag, onScrollTo
 
   return (
     <View style={GlobalStyles.card}>
+        <View style={styles.priceContainer}>
+          <TouchableOpacity onPress={fetchPrice} style={styles.priceDot}>
+            {loadingPrice ? (
+              <ActivityIndicator animating={true} size="small" color="#fff" />
+            ) : (
+              <Text style={styles.priceText}>{showPrice && price ? `₪ ${price}` : ''}</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+
       <Image
         source={item.image ? { uri: item.image } : require('../assets/images/icon.png')}
         style={GlobalStyles.image}
@@ -78,19 +94,17 @@ const ProductItem: React.FC<Props> = ({ item, onAddToCart, pricesTag, onScrollTo
       <View style={GlobalStyles.infoContainer}>
         <Text style={GlobalStyles.name}>{item.item_name}</Text>
         <View style={styles.priceContainer}>
-          <TouchableOpacity onPress={fetchPrice} style={styles.priceButton}>
-            {loadingPrice ? (
-              <ActivityIndicator animating={true} size="small" />
-            ) : (
-              <Text style={styles.priceText}>{price ? `₪ ${price}` : '?'}</Text>
-            )}
-          </TouchableOpacity>
         </View>
         <Text style={GlobalStyles.description}>{item.description || 'No description available.'}</Text>
         <View style={GlobalStyles.quantityContainer}>
-          <Button mode="contained" onPress={decreaseQuantity} compact style={GlobalStyles.quantityButton}>
-            -
-          </Button>
+        <Button
+          mode="outlined"
+          onPress={decreaseQuantity}
+          compact
+          style={GlobalStyles.quantityButton}
+        >
+          -
+        </Button>
           <TextInput
             style={GlobalStyles.quantityInput}
             keyboardType="numeric"
@@ -98,12 +112,17 @@ const ProductItem: React.FC<Props> = ({ item, onAddToCart, pricesTag, onScrollTo
             onChangeText={(text) => /^\d*$/.test(text) && setQuantityInCart(text)}
             onBlur={() => quantityInCart.trim() === '' && setQuantityInCart('1')}
           />
-          <Button mode="contained" onPress={increaseQuantity} compact style={GlobalStyles.quantityButton}>
-            +
-          </Button>
+        <Button
+          mode="outlined"
+          onPress={decreaseQuantity}
+          compact
+          style={GlobalStyles.quantityButton}
+        >
+          +
+        </Button>
         </View>
-        <Button mode="contained" onPress={handleAddToCart} style={GlobalStyles.addToCartButton}>
-          Add to Cart
+        <Button mode="outlined" onPress={handleAddToCart} style={GlobalStyles.addToCartButton}>
+          הוספה לסל
         </Button>
       </View>
     </View>
@@ -112,21 +131,24 @@ const ProductItem: React.FC<Props> = ({ item, onAddToCart, pricesTag, onScrollTo
 
 const styles = StyleSheet.create({
   priceContainer: {
-    marginVertical: 10,
-    alignItems: 'center',
+    position: 'relative', // Allows positioning of the dot
+    alignSelf: 'flex-end', // Aligns the container to the right
+    marginRight: 10, // Adds spacing from the right edge
   },
-  priceButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 5,
-    backgroundColor: '#ddd',
-    justifyContent: 'center',
-    alignItems: 'center',
+  priceDot: {
+    width: 30, // Dot size
+    height: 30,
+    borderRadius: 15, // Makes it a circle
+    backgroundColor: '#ffa11d', // Orange color
+    justifyContent: 'center', // Centers the content
+    alignItems: 'center', // Centers the content
+    elevation: 5, // Adds a shadow for better visibility
+    marginTop:5,
   },
   priceText: {
-    fontSize: 16,
+    fontSize: 10, // Smaller font size to fit inside the dot
     fontWeight: 'bold',
-    color: '#000',
+    color: '#fff', // White text for better contrast
   },
 });
 

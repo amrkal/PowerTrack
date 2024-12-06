@@ -1,54 +1,51 @@
 import React, { useState } from 'react';
 import { View, Alert, StyleSheet, Dimensions } from 'react-native';
-import { GlobalStyles } from '../../constants/GlobalStyles';
-import { useRouter } from 'expo-router';
-import { Button, TextInput, Card, Title, Paragraph } from 'react-native-paper';
+import { Text, Button, TextInput, Card, Title, Paragraph } from 'react-native-paper';
 import axiosInstance from '../../services/axiosInstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 import { useCart } from '../context/CartContext';
 
 const { width } = Dimensions.get('window'); // For responsive layout
-
 
 const CheckOutPage: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<'Collection' | 'Delivery' | null>(null);
   const [city, setCity] = useState('');
   const [address, setAddress] = useState('');
-  const { cart } = useCart();  // Access cart from the context
+  const { cart } = useCart(); // Access cart from the context
   const router = useRouter();
 
-  
   const handleOrderCompletion = async () => {
     try {
       const accessToken = await AsyncStorage.getItem('accessToken');
       if (!accessToken) {
-        console.error('No access token found');
+        console.error('לא נמצא טוקן גישה');
         return;
       }
-      
+
       const orderDetails = {
         items: cart.map(item => ({
           id: item.id,
-          item_key: item.item_key,  // Ensure item_key is sent along with other details
+          item_key: item.item_key,
           name: item.name,
           quantity: item.quantityInCart,
           price_per_unit: item.price,
-        })), // Map items from the cart
+        })),
         total_amount: cart.reduce((total, item) => total + item.price * item.quantityInCart, 0),
       };
-      console.log('Cart items:', cart);
+
       const response = await axiosInstance.post('/orders/orders', orderDetails, {
         headers: {
-          Authorization: `Bearer ${accessToken}`,  // Use the stored token
+          Authorization: `Bearer ${accessToken}`,
         },
       });
-  
+
       if (response.status === 201) {
-        Alert.alert('Success', 'Your order has been completed!');
+        Alert.alert('הצלחה', 'ההזמנה הושלמה בהצלחה!');
         router.push('/ProductsPage');
       }
     } catch (error) {
-      Alert.alert('Error', 'Something went wrong while completing your order.');
+      Alert.alert('שגיאה', 'משהו השתבש בהשלמת ההזמנה.');
     }
   };
 
@@ -59,90 +56,82 @@ const CheckOutPage: React.FC = () => {
       if (city && address) {
         handleOrderCompletion();
       } else {
-        Alert.alert('Error', 'Please fill in both city and address.');
+        Alert.alert('שגיאה', 'יש למלא עיר וכתובת.');
       }
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Card style={styles.card}>
-        <Card.Content>
-          <Title style={styles.title}>Checkout Options</Title>
-          <Paragraph style={styles.paragraph}>
-            Choose how you'd like to receive your order.
-          </Paragraph>
-          
-          {/* Self Collection */}
-          <Button
-            style={[styles.optionButton, selectedOption === 'Collection']}
-            mode="contained"
-            onPress={() => setSelectedOption('Collection')}
-          >
-            Self Collection
-          </Button>
+    <View style={styles.card}>
+      <Card.Content>
+        <Title style={styles.title}>בחרו כיצד תרצו לקבל את ההזמנה שלכם.
+        </Title>
 
-          {/* Delivery */}
-          <Button
-            style={[styles.optionButton, selectedOption === 'Delivery']}
-            mode="contained"
-            onPress={() => setSelectedOption('Delivery')}
-          >
-            Delivery
-          </Button>
+        <Button
+          style={[
+            styles.optionButton,
+            selectedOption === 'Collection' && styles.selectedButton,
+          ]}
+          mode="outlined"
+          onPress={() => setSelectedOption('Collection')}
+        >
+          איסוף עצמי
+        </Button>
 
-          {/* Delivery Fields */}
-          {selectedOption === 'Delivery' && (
-            <View style={styles.inputContainer}>
-              <TextInput
-                label="City"
-                mode="outlined"
-                value={city}
-                onChangeText={setCity}
-                style={styles.input}
-              />
-              <TextInput
-                label="Address"
-                mode="outlined"
-                value={address}
-                onChangeText={setAddress}
-                style={styles.input}
-              />
-            </View>
-          )}
+        <Button
+          style={[
+            styles.optionButton,
+            selectedOption === 'Delivery' && styles.selectedButton,
+          ]}
+          mode="outlined"
+          onPress={() => setSelectedOption('Delivery')}
+        >
+          משלוח
+        </Button>
 
-          {/* Next Button */}
-          <Button
-            style={styles.nextButton}
-            disabled={!selectedOption}
-            mode='contained'
-            onPress={handleNextPress}
-          >
-            Next
-          </Button>
-        </Card.Content>
-      </Card>
+        {selectedOption === 'Delivery' && (
+          <View style={styles.inputContainer}>
+            <TextInput
+              label="עיר"
+              mode="outlined"
+              value={city}
+              onChangeText={setCity}
+              style={styles.input}
+            />
+            <TextInput
+              label="כתובת"
+              mode="outlined"
+              value={address}
+              onChangeText={setAddress}
+              style={styles.input}
+            />
+          </View>
+        )}
+
+        <Button
+          style={styles.nextButton}
+          disabled={!selectedOption}
+          mode="contained"
+          onPress={handleNextPress}
+        >
+          הבא
+        </Button>
+      </Card.Content>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'center',
-    //backgroundColor: '#f0f4f7',
-  },
   card: {
-    //backgroundColor: '#ffffff',
-    borderRadius: 10,
+    flex: 1,
+    justifyContent: 'center',
     padding: 20,
+    borderRadius: 10,
     elevation: 4,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    //color: '#1E90FF',
     textAlign: 'center',
     marginBottom: 10,
   },
@@ -150,19 +139,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 20,
-    //color: '#555',
   },
   optionButton: {
     marginVertical: 10,
     borderRadius: 10,
     paddingVertical: 10,
   },
+  selectedButton: {
+    backgroundColor: '#ff7600', // Highlighted orange color
+  },
   inputContainer: {
     marginTop: 20,
   },
   input: {
     marginVertical: 10,
-    //backgroundColor: 'white',
     borderRadius: 10,
     fontSize: 16,
   },
@@ -170,7 +160,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     paddingVertical: 12,
     borderRadius: 10,
-    //backgroundColor: '#1E90FF',
   },
 });
 

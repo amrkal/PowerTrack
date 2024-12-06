@@ -79,11 +79,11 @@ const ProductItem: React.FC<Props> = ({ item, onAddToCart, pricesTag, onScrollTo
     <View style={GlobalStyles.card}>
         <View style={styles.priceContainer}>
           <TouchableOpacity onPress={fetchPrice} style={styles.priceDot}>
-            {loadingPrice ? (
-              <ActivityIndicator animating={true} size="small" color="#fff" />
-            ) : (
-              <Text style={styles.priceText}>{showPrice && price ? `₪ ${price}` : ''}</Text>
-            )}
+          {loadingPrice ? (
+            <ActivityIndicator animating={true} size="small" color="#fff" />
+          ) : (
+            <View style={{ width: 10, height: 10 }} /> 
+          )}
           </TouchableOpacity>
         </View>
 
@@ -96,6 +96,9 @@ const ProductItem: React.FC<Props> = ({ item, onAddToCart, pricesTag, onScrollTo
         <View style={styles.priceContainer}>
         </View>
         <Text style={GlobalStyles.description}>{item.description || 'No description available.'}</Text>
+        {showPrice && price && (
+          <Text style={styles.priceDisplay}>₪ {price}</Text> // Price displayed below description
+        )}
         <View style={GlobalStyles.quantityContainer}>
         <Button
           mode="outlined"
@@ -114,7 +117,7 @@ const ProductItem: React.FC<Props> = ({ item, onAddToCart, pricesTag, onScrollTo
           />
         <Button
           mode="outlined"
-          onPress={decreaseQuantity}
+          onPress={increaseQuantity}
           compact
           style={GlobalStyles.quantityButton}
         >
@@ -149,6 +152,11 @@ const styles = StyleSheet.create({
     fontSize: 10, // Smaller font size to fit inside the dot
     fontWeight: 'bold',
     color: '#fff', // White text for better contrast
+  },
+  priceDisplay: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 10,
   },
 });
 

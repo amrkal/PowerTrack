@@ -14,6 +14,7 @@ interface Product {
 
 // Define CartItem, extending from Product and adding cart-specific fields
 interface CartItem extends Product {
+  name: any;
   quantityInCart: number; // How many of this item is in the cart
 }
 

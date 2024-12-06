@@ -19,11 +19,7 @@ const ProfilePage: React.FC = () => {
   const [address, setAddress] = useState<string>(user.address);
   const [profileImage, setProfileImage] = useState<string>(user.profileImage); // Handle profile image
 
-  const handleSaveProfile = async () => {
-    const updatedUser = { ...user, name, familyName, email, city, zip_code: zipCode, address, profileImage };
-    await updateProfileData(updatedUser);
-    setIsEditing(false); // Stay on profile page after saving
-  };
+
 
   const handleLogout = async () => {
     await AsyncStorage.clear(); // Clear user data from storage
@@ -72,6 +68,14 @@ const ProfilePage: React.FC = () => {
     }
   };
 
+  
+  const handleSaveProfile = async () => {
+    const updatedUser = { ...user, name, familyName, email, city, zip_code: zipCode, address, profileImage };
+    await updateProfileData(updatedUser);
+    setIsEditing(false); // Exit editing mode
+    // No need for navigation; the component will render the initial state
+  };
+  
   return (
     <ScrollView contentContainerStyle={GlobalStyles.scrollContainer}>
       <View style={GlobalStyles.container}>
@@ -82,37 +86,25 @@ const ProfilePage: React.FC = () => {
               uri: profileImage || 'https://i.pinimg.com/originals/07/33/ba/0733ba760b29378474dea0fdbcb97107.png', // Default image if no profile picture is set
             }}
           />
-          <IconButton
-            icon="camera"
-            onPress={handleProfileImageEdit}
-            style={GlobalStyles.editIcon}
-            disabled={isEditing}
-            iconColor="blue"
-          />
+          {!isEditing && (
+            <IconButton
+              icon="camera"
+              onPress={handleProfileImageEdit}
+              style={GlobalStyles.editIcon}
+              iconColor="blue"
+            />
+          )}
         </View>
-
+  
         <View style={GlobalStyles.profileContainer}>
           {isEditing ? (
             <>
-              <TextInput label="שם פרטי" mode="outlined" value={name} onChangeText={setName} style={GlobalStyles.input} />
-              <TextInput
-                label="שם משפחה"
-                mode="outlined"
-                value={familyName}
-                onChangeText={setFamilyName}
-                style={GlobalStyles.input}
-              />
-              <TextInput label="אימייל" mode="outlined" value={email} onChangeText={setEmail} style={GlobalStyles.input} />
-              <TextInput label="עיר" mode="outlined" value={city} onChangeText={setCity} style={GlobalStyles.input} />
-              <TextInput
-                label="מיקוד"
-                mode="outlined"
-                value={zipCode}
-                onChangeText={setZipCode}
-                style={GlobalStyles.input}
-                keyboardType="numeric"
-              />
-              <TextInput label="כתובת" mode="outlined" value={address} onChangeText={setAddress} style={GlobalStyles.input} />
+              <TextInput label="שם פרטי" mode="flat" value={name} onChangeText={setName}  />
+              <TextInput label="שם משפחה" mode="flat" value={familyName} onChangeText={setFamilyName}/>
+              <TextInput label="אימייל" mode="flat" value={email} onChangeText={setEmail}  />
+              <TextInput label="עיר" mode="flat" value={city} onChangeText={setCity}  />
+              <TextInput label="מיקוד" mode="flat" value={zipCode} onChangeText={setZipCode} keyboardType="numeric"/>
+              <TextInput label="כתובת" mode="flat" value={address} onChangeText={setAddress} />
             </>
           ) : (
             <>
@@ -125,27 +117,33 @@ const ProfilePage: React.FC = () => {
             </>
           )}
         </View>
-
+  
         <View style={GlobalStyles.buttonsContainer}>
           {isEditing ? (
-            <Button mode="contained" onPress={handleSaveProfile} style={GlobalStyles.saveButton}>
+            <Button
+              mode="outlined"
+              onPress={handleSaveProfile}
+            >
               שמור
             </Button>
           ) : (
-            <Button mode="outlined" onPress={() => setIsEditing(true)} style={GlobalStyles.editButton}>
-              ערוך פרופיל
-            </Button>
+            <>
+              <Button mode="outlined" onPress={() => setIsEditing(true)} style={GlobalStyles.editButton}>
+                ערוך פרופיל
+              </Button>
+              <Button mode="outlined" onPress={handleLogout} style={GlobalStyles.logoutButton}>
+                התנתק
+              </Button>
+              <Button mode="contained" onPress={() => router.push('/OrderHistoryPage')} style={GlobalStyles.historyButton}>
+                היסטוריית הזמנות
+              </Button>
+            </>
           )}
-          <Button mode="outlined" onPress={handleLogout} style={GlobalStyles.logoutButton}>
-            התנתק
-          </Button>
-          <Button mode="contained" onPress={() => router.push('/OrderHistoryPage')} style={GlobalStyles.historyButton}>
-            היסטוריית הזמנות
-          </Button>
         </View>
       </View>
     </ScrollView>
   );
+  
 };
 
 export default ProfilePage;

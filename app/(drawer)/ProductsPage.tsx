@@ -11,18 +11,22 @@ import { useCart } from "../context/CartContext";
 import { useUser } from "../context/UserContext";
 import { Product, Category } from "../../components/types";
 import { GlobalStyles } from "../../constants/GlobalStyles";
+import { Badge } from "react-native-paper";
 
 type ProductsPageRouteParams = {
-  ProductsPage: { selectedType: string | null; items?: Product[] };
+  ProductsPage: { selectedType: string | null; items?: Product[]; searchQuery?: string };
 };
 
 const ProductsPage: React.FC = () => {
   const { user } = useUser();
   const { addToCart } = useCart();
+  const { cart } = useCart(); // Access cart from context
 
   const route = useRoute<RouteProp<ProductsPageRouteParams, "ProductsPage">>();
   const navigation = useNavigation<any>();
   const selectedTypeFromRoute = route.params?.selectedType || null;
+  const searchQueryFromRoute = route.params?.searchQuery || "";
+  const searchItemsFromRoute = route.params?.items || null;
 
   const [groupedCategories, setGroupedCategories] = useState<{ [key: string]: Category[] }>({});
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -94,7 +98,7 @@ const ProductsPage: React.FC = () => {
     setItems([]);
   };
 
-  // Set dynamic header with back and menu icons
+  // Set dynamic header with back, menu, profile, and cart icons
   useEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
@@ -116,8 +120,40 @@ const ProductsPage: React.FC = () => {
           />
         </View>
       ),
+      headerRight: () => (
+        <View style={{ flexDirection: "row", alignItems: "center", marginRight: 15 }}>
+          <MaterialIcons
+            name="account-circle"
+            size={24}
+            color="black"
+            style={{ marginRight: 15 }}
+            onPress={() => navigation.navigate("ProfilePage" as never)}
+          />
+          <View>
+            <MaterialIcons
+              name="shopping-cart"
+              size={24}
+              color="black"
+              onPress={() => navigation.navigate("MyCartPage" as never)}
+            />
+            {cart.length > 0 && ( // Display badge only if there are items in the cart
+              <Badge
+                style={{
+                  position: "absolute",
+                  top: -4,
+                  right: -10,
+                  backgroundColor: "red",
+                  color: "white",
+                }}
+              >
+                {cart.reduce((total, item) => total + item.quantityInCart, 0)}
+              </Badge>
+            )}
+          </View>
+        </View>
+      ),
     });
-  }, [navigation, selectedCategory]);
+  }, [navigation, selectedCategory, cart]);
 
   // Fetch categories
   useEffect(() => {
@@ -170,34 +206,95 @@ const ProductsPage: React.FC = () => {
     }
   }, [selectedCategory, user.prices_tag, isSearchActive]);
 
+  // Fetch items when `searchQuery` changes
+  useEffect(() => {
+    const fetchSearchResults = async () => {
+      if (searchQuery.trim().length < 3) {
+        setIsSearchActive(false);
+        setItems([]);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const response = await axiosInstance.get("/items/search", { params: { query: searchQuery.trim() } });
+        setItems(response.data.items || []);
+        setIsSearchActive(true);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSearchResults();
+  }, [searchQuery]);
+
+
+
+  useEffect(() => {
+    console.log("Route params:", route.params);
+    if (searchItemsFromRoute) {
+      console.log("Search items received:", searchItemsFromRoute);
+      setItems(searchItemsFromRoute);
+      setIsSearchActive(true);
+    }
+  }, [searchItemsFromRoute]);
+
   const handleSearch = async () => {
     if (!searchQuery.trim()) {
-      handleClearSearch();
+      setIsSearchActive(false);
       return;
     }
 
     setLoading(true);
-    setIsSearchActive(true);
     try {
       const response = await axiosInstance.get("/items/search", { params: { query: searchQuery.trim() } });
+      console.log("Search results:", response.data.items);
       setItems(response.data.items || []);
+      setIsSearchActive(true);
     } catch (error) {
-      console.error("Error searching items:", error);
+      console.error("Error fetching search results:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleAddToCart = (item: Product, quantity: number) => {
-    addToCart({ ...item, quantityInCart: quantity, image: item.image || "../../assets/images/icon.png" });
+  const handleAddToCart = async (item: Product, quantity: number) => {
+    try {
+      // Fetch the latest details for the item
+      const response = await axiosInstance.get(`/items/items/priceof/${item.item_key}`, {
+        params: { prices_tag: user.prices_tag }, // Pass the user's price tag as a parameter
+      });
+  
+      const fetchedItem = response.data;
+  
+      if (!fetchedItem || !fetchedItem.price || !fetchedItem.item_name) {
+        alert("Unable to fetch item details. Please try again.");
+        return;
+      }
+  
+      // Add the item to the cart with the fetched details
+      addToCart({
+        ...item,
+        quantityInCart: quantity,
+        price: fetchedItem.price,
+        item_name: fetchedItem.item_name,
+        image: fetchedItem.image || item.image || "../../assets/images/icon.png",
+        name: undefined
+      });
+    } catch (error) {
+      console.error("Error fetching item details:", error);
+      alert("Failed to fetch item details. Please try again.");
+    }
   };
-
+  
   const handleScrollToTop = () => flatListRef.current?.scrollToOffset({ animated: true, offset: 0 });
 
   const handleClearSearch = () => {
-    setIsSearchActive(false);
     setSearchQuery("");
-    setSelectedCategory(null);
+    setIsSearchActive(false);
+    setItems([]);
   };
 
   if (loading) return <Loader />;

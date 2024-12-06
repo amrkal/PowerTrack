@@ -148,20 +148,6 @@ export const GlobalStyles = StyleSheet.create({
     color: Color.light.primary,
   },
 
-  totalContainer: {
-    marginBottom: Padding.base,
-    alignItems: 'center',
-  },
-
-  totalText: {
-    fontSize: FontSize.lg,
-    fontFamily: FontFamily.bold,
-    color: Color.light.text,
-  },
-
-
-
-
 
   quantityText: {
     alignItems: 'center',
@@ -169,11 +155,6 @@ export const GlobalStyles = StyleSheet.create({
     fontSize: FontSize.base,
     fontFamily: FontFamily.bold,
     color: Color.light.text,
-  },
-
-  deleteButton: {
-    alignItems: 'center',
-    maxHeight :70,
   },
 
   deleteButtonText: {
@@ -526,8 +507,6 @@ quantityInput: {
   alignSelf: 'center', // Align in the center of its container
 },
 
-
-
 addToCartButton: {
   marginTop:15,
   margin: 10,
@@ -541,7 +520,32 @@ feedback: {
 },
 
 
+//-----------------------------------------------------------cart
 
+deleteButton: {
+  width: 40, // Circle width
+  height: 40, // Circle height
+  borderRadius: 20, // Half of width/height for a perfect circle
+  paddingLeft:12,
+  justifyContent: 'center', // Center content vertically
+  alignItems: 'center', // Center content horizontally
+  padding: 0, // Remove any additional padding
+  margin: 0, // Remove any margin to ensure precise alignment
+  backgroundColor: 'red', // Optional background for visibility
+},
+
+
+  totalContainer: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    elevation: 3,
+    marginBottom: 20,
+  },
+  totalText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
 
 
 

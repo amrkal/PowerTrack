@@ -18,7 +18,7 @@ def create_order():
         items = data.get('items')
         total_amount = data.get('total_amount')
 
-        if not items or not total_amount:
+        if not items:
             return jsonify({"error": "Items and total amount are required"}), 400
 
         # Validate each item

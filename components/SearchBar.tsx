@@ -13,12 +13,14 @@ const SearchBar: React.FC<Props> = ({ searchQuery, onChange, onSearch }) => {
     <TextInput
       mode="outlined"
       placeholder="Search"
+      placeholderTextColor="#000" 
       value={searchQuery}
       onChangeText={onChange}
       style={styles.input}
       right={
         <TextInput.Icon
           icon="magnify"
+          color={'#000'}
           onPress={onSearch}
         />
       }
@@ -28,6 +30,7 @@ const SearchBar: React.FC<Props> = ({ searchQuery, onChange, onSearch }) => {
 
 const styles = StyleSheet.create({
   input: {
+    color:'#000',
     height: 40,
     marginBottom: 10,
   },

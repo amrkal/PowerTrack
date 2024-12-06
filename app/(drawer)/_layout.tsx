@@ -57,10 +57,13 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
       const response = await axiosInstance.get('/items/search', {
         params: { query: searchQuery },
       });
-
+  
       if (response.data.items) {
         setSearchResults(response.data.items); // Set the search results
-        props.navigation.navigate('ProductsPage', { items: response.data.items });
+        console.log('Search Results:', response.data.items);
+  
+        // Navigate to ProductsPage with search results
+        props.navigation.navigate('ProductsPage', { items: response.data.items, searchQuery });
       } else {
         console.error('No items found');
       }
@@ -68,6 +71,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
       console.error('Error during search:', error);
     }
   };
+  
   const toggleProductsSection = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setProductsExpanded(!isProductsExpanded);

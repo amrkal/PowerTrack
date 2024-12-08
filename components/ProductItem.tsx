@@ -77,8 +77,8 @@ const ProductItem: React.FC<Props> = ({ item, onAddToCart, pricesTag, onScrollTo
 
   return (
     <View style={GlobalStyles.card}>
-        <View style={styles.priceContainer}>
-          <TouchableOpacity onPress={fetchPrice} style={styles.priceDot}>
+        <View style={GlobalStyles.productPriceContainer}>
+          <TouchableOpacity onPress={fetchPrice} style={GlobalStyles.productPriceDot}>
           {loadingPrice ? (
             <ActivityIndicator animating={true} size="small" color="#fff" />
           ) : (
@@ -93,11 +93,11 @@ const ProductItem: React.FC<Props> = ({ item, onAddToCart, pricesTag, onScrollTo
       />
       <View style={GlobalStyles.infoContainer}>
         <Text style={GlobalStyles.name}>{item.item_name}</Text>
-        <View style={styles.priceContainer}>
+        <View style={GlobalStyles.productPriceContainer}>
         </View>
         <Text style={GlobalStyles.description}>{item.description || 'No description available.'}</Text>
         {showPrice && price && (
-          <Text style={styles.priceDisplay}>₪ {price}</Text> // Price displayed below description
+          <Text style={GlobalStyles.productPriceDisplay}>₪ {price}</Text> // Price displayed below description
         )}
         <View style={GlobalStyles.quantityContainer}>
         <Button
@@ -133,31 +133,8 @@ const ProductItem: React.FC<Props> = ({ item, onAddToCart, pricesTag, onScrollTo
 };
 
 const styles = StyleSheet.create({
-  priceContainer: {
-    position: 'relative', // Allows positioning of the dot
-    alignSelf: 'flex-end', // Aligns the container to the right
-    marginRight: 10, // Adds spacing from the right edge
-  },
-  priceDot: {
-    width: 30, // Dot size
-    height: 30,
-    borderRadius: 15, // Makes it a circle
-    backgroundColor: '#ffa11d', // Orange color
-    justifyContent: 'center', // Centers the content
-    alignItems: 'center', // Centers the content
-    elevation: 5, // Adds a shadow for better visibility
-    marginTop:5,
-  },
-  priceText: {
-    fontSize: 10, // Smaller font size to fit inside the dot
-    fontWeight: 'bold',
-    color: '#fff', // White text for better contrast
-  },
-  priceDisplay: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 10,
-  },
+
 });
+
 
 export default ProductItem;

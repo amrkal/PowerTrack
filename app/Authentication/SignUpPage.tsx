@@ -88,17 +88,17 @@ const SignUpPage: React.FC = () => {
 
   return (
     <KeyboardAwareScrollView
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={GlobalStyles.authScrollContent}
           keyboardShouldPersistTaps="handled"
           extraScrollHeight={100}
           enableOnAndroid={true}
           //scrollEnabled={false} // Disable user scroll gestures
         >
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ImageBackground source={background} style={styles.background}>
-            <View style={styles.container}>
+      <ImageBackground source={background} style={GlobalStyles.authBackground}>
+            <View style={GlobalStyles.authContainer}>
               {/* שם פרטי ושם משפחה */}
-              <View style={styles.inputRow}>
+              <View style={GlobalStyles.authRow}>
                 <TextInput
                   label="שם פרטי"
                   mode="outlined"
@@ -126,7 +126,7 @@ const SignUpPage: React.FC = () => {
                 placeholder="שם משתמש"
                 value={username}
                 onChangeText={setUsername}
-                style={styles.inputFull}
+                style={GlobalStyles.authInput}
                 left={<TextInput.Icon icon={() => <MaterialIcons name="person" size={20} />} />}
               />
 
@@ -138,7 +138,7 @@ const SignUpPage: React.FC = () => {
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
-                style={styles.inputFull}
+                style={GlobalStyles.authInput}
                 left={<TextInput.Icon icon={() => <MaterialIcons name="email" size={20} />} />}
               />
 
@@ -150,7 +150,7 @@ const SignUpPage: React.FC = () => {
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry
-                style={styles.inputFull}
+                style={GlobalStyles.authInput}
                 left={<TextInput.Icon icon={() => <MaterialIcons name="lock" size={20} />} />}
               />
 
@@ -162,12 +162,12 @@ const SignUpPage: React.FC = () => {
                 keyboardType="numeric"
                 value={phoneNumber}
                 onChangeText={setPhoneNumber}
-                style={styles.inputFull}
+                style={GlobalStyles.authInput}
                 left={<TextInput.Icon icon={() => <MaterialIcons name="phone" size={20} />} />}
               />
 
               {/* כפתור הרשמה */}
-              <Button mode="contained" onPress={handleRegister} style={styles.registerButton}>
+              <Button mode="contained" onPress={handleRegister}>
                 הרשמה
               </Button>
               <Button onPress={() => navigation.navigate("LoginPage")}>
@@ -180,55 +180,5 @@ const SignUpPage: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  background: {
-    flexGrow: 1,
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',    
-  },
-  safeArea: {
-    flexGrow: 1,
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  inputRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-    marginBottom: 10,
-  },
-  inputFull: {
-    width: '100%',
-    marginBottom: 15,
-    color:'#07090'
-  },
-  registerButton: {
-    width: '100%',
-    marginTop: 20,
-  },
-  container: {
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.60)',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 10,
-    width: '90%',
-    alignSelf: 'center',
-    borderColor: '#ffa64d',
-    borderWidth: 2,
-    borderStyle: 'solid',
-  },
-  scrollContent: {
-    flexGrow: 1,
-    alignItems: 'center',
-    textAlign:'center',
-  },
-});
 
 export default SignUpPage;

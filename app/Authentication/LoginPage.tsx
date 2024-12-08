@@ -48,21 +48,21 @@ const LoginPage: React.FC = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAwareScrollView
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={GlobalStyles.authScrollContent}
           keyboardShouldPersistTaps="handled"
           extraScrollHeight={220} // Minimal scroll adjustment
           enableOnAndroid={true}
           //scrollEnabled={false} // Disable user scroll gestures
         >
-      <ImageBackground source={background} style={styles.background}>
-          <View style={styles.container}>
+      <ImageBackground source={background} style={GlobalStyles.authBackground}>
+          <View style={GlobalStyles.authContainer}>
             <TextInput
               mode="outlined"
               label="שם משתמש"
               value={username}
               onChangeText={setUsername}
               autoCapitalize="none"
-              style={styles.input}
+              style={GlobalStyles.authInput}
               left={<TextInput.Icon icon="account" color="blue" />}
             />
             <TextInput
@@ -71,21 +71,17 @@ const LoginPage: React.FC = () => {
               value={password}
               onChangeText={setPassword}
               secureTextEntry
-              style={styles.input}
+              style={GlobalStyles.authInput}
               left={<TextInput.Icon icon="lock" color="blue"/>}
             />
-            <View style={styles.actionButtons}>
+            <View style={GlobalStyles.authRow}>
               <Button
                 onPress={() => router.push("/Authentication/ForgotPasswordPage")}
-                textColor={theme.colors.primary}
-                labelStyle={styles.buttonText}
               >
                 שכחתי סיסמה?
               </Button>
               <Button
                 onPress={() => router.push("/Authentication/SignUpPage")}
-                textColor={theme.colors.primary}
-                labelStyle={styles.buttonText}
               >
                 משתמש חדש? להרשמה
               </Button>
@@ -93,7 +89,6 @@ const LoginPage: React.FC = () => {
             <Button
               mode="contained"
               onPress={handleLogin}
-              //buttonColor={theme.colors.primary}
             >
               כניסה
             </Button>
@@ -103,53 +98,5 @@ const LoginPage: React.FC = () => {
     </TouchableWithoutFeedback>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.60)',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 8,
-    elevation: 10,
-    width: '90%',
-    alignSelf: 'center',
-    borderColor: '#ffa64d',
-    borderWidth: 2,
-    borderStyle: 'solid',
-    position: 'absolute',
-    bottom: '15%',
-  },
-  background: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-    justifyContent: 'center',
-    alignItems:'center'
-  },
-  safeArea: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  input: {
-    marginBottom: 16,
-  },
-  actionButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  buttonText: {
-    fontSize: 14,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    alignItems: 'center',
-    textAlign:'center',
-  },
-});
 
 export default LoginPage;

@@ -67,10 +67,10 @@ const VerificationPage: React.FC = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ImageBackground source={background} style={styles.background}>
-        <SafeAreaView style={styles.safeArea}>
-          <View style={styles.container}>
-            <Text style={styles.text}>
+      <ImageBackground source={background} style={GlobalStyles.authBackground}>
+        <SafeAreaView style={GlobalStyles.authSafeArea}>
+          <View style={GlobalStyles.authContainer}>
+            <Text style={GlobalStyles.authInstructionText}>
               Verification code sent to your phone.
             </Text>
             <TextInput
@@ -82,7 +82,7 @@ const VerificationPage: React.FC = () => {
               onChangeText={setVerificationCode}
               left={<TextInput.Icon icon={() => <MaterialIcons name="shield" size={20} />} />} // Icon for username
             />
-            <View style = {styles.buttonContainer}>
+            <View style = {GlobalStyles.authRow}>
               <Button mode="outlined" onPress={sendVerificationCode}>
                 Resend Code
               </Button>
@@ -96,59 +96,8 @@ const VerificationPage: React.FC = () => {
   </TouchableWithoutFeedback>
   );
 };
-const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-    justifyContent: 'center',
-  },
-  safeArea: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  container: {
-    width: '90%',
-    maxWidth: 400,
-    backgroundColor: 'rgba(255, 255, 255, 0.85)',
-    padding: 20,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 10,
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: '600',
-    marginBottom: 28,
-    textAlign: 'center',
-    color: 'navy',
-  },
-  text: {
-    fontSize: 16,
-    marginBottom: 26,
-    textAlign: 'left', 
-    color: 'navy',
-  },
-  input: {
-    width: '100%',
-    marginBottom: 20,
-  },
-  buttonContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  button: {
-    marginVertical: 10,
-    marginTop: 10,
-    width: '48%', 
-  },
-});
+
+
 
 
 

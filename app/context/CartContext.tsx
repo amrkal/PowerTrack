@@ -1,10 +1,11 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// Define the Product interface (your base item structure)
+// Define the Product and CartItem interfaces
 interface Product {
   id: string;
   item_key: string;
-  item_name: string; // Keep 'item_name' for consistency
+  item_name: string;
   description: string;
   price: number;
   quantity: number;
@@ -12,45 +13,72 @@ interface Product {
   image?: string;
 }
 
-// Define CartItem, extending from Product and adding cart-specific fields
 interface CartItem extends Product {
   name: any;
-  quantityInCart: number; // How many of this item is in the cart
+  quantityInCart: number;
 }
 
-// Define the CartContextProps interface
+// Define CartContextProps interface
 interface CartContextProps {
   cart: CartItem[];
   addToCart: (item: CartItem) => void;
   updateCartItem: (id: string, quantityInCart: number) => void;
   removeFromCart: (id: string) => void;
+  clearCart: () => void;
 }
 
 // Create the CartContext
 const CartContext = createContext<CartContextProps | undefined>(undefined);
 
-// Create the CartProvider component
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  // Add an item to the cart
+  // Persist the cart in AsyncStorage
+  const saveCartToStorage = async (updatedCart: CartItem[]) => {
+    try {
+      await AsyncStorage.setItem('cart', JSON.stringify(updatedCart));
+    } catch (error) {
+      console.error('Failed to save cart to storage:', error);
+    }
+  };
+
+  // Load the cart from AsyncStorage on initialization
+  const loadCartFromStorage = async () => {
+    try {
+      const savedCart = await AsyncStorage.getItem('cart');
+      if (savedCart) {
+        setCart(JSON.parse(savedCart));
+      }
+    } catch (error) {
+      console.error('Failed to load cart from storage:', error);
+    }
+  };
+
+  useEffect(() => {
+    loadCartFromStorage();
+  }, []);
+
+  // Update storage whenever the cart changes
+  useEffect(() => {
+    saveCartToStorage(cart);
+  }, [cart]);
+
+  // Add item to the cart
   const addToCart = (item: CartItem) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((cartItem) => cartItem.id === item.id);
       if (existingItem) {
-        // If the item already exists in the cart, increase the quantityInCart
         return prevCart.map((cartItem) =>
           cartItem.id === item.id
             ? { ...cartItem, quantityInCart: cartItem.quantityInCart + item.quantityInCart }
             : cartItem
         );
       }
-      // Add new item to the cart
       return [...prevCart, item];
     });
   };
 
-  // Update the quantity of an item in the cart
+  // Update item quantity in the cart
   const updateCartItem = (id: string, quantityInCart: number) => {
     setCart((prevCart) =>
       prevCart.map((item) =>
@@ -59,19 +87,25 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     );
   };
 
-  // Remove an item from the cart
+  // Remove item from the cart
   const removeFromCart = (id: string) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== id));
   };
 
+  // Clear the cart after purchase
+  const clearCart = async () => {
+    setCart([]);
+    await AsyncStorage.removeItem('cart');
+  };
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, updateCartItem, removeFromCart }}>
+    <CartContext.Provider value={{ cart, addToCart, updateCartItem, removeFromCart, clearCart }}>
       {children}
     </CartContext.Provider>
   );
 };
 
-// Create a custom hook to use the CartContext
+// Create a custom hook for CartContext
 export const useCart = (): CartContextProps => {
   const context = useContext(CartContext);
   if (!context) {
@@ -80,5 +114,4 @@ export const useCart = (): CartContextProps => {
   return context;
 };
 
-// Export the context for any direct use
 export default CartContext;

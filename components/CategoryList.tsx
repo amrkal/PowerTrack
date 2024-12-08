@@ -15,7 +15,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ categories, onSelectCategor
   return (
     <View style={{ flex: 1, padding: 10 }}>
       {/* Global Category Card */}
-      <View style={styles.globalCategoryCard}>
+      <View style={GlobalStyles.globalCategoryCard}>
         <Button mode = "contained" style={GlobalStyles.globalCategoryTitle}>
           {globalCategory}
         </Button>
@@ -27,13 +27,13 @@ const CategoryList: React.FC<CategoryListProps> = ({ categories, onSelectCategor
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => onSelectCategory(item.sortGroup)}
-            style={styles.categoryCard}
+            style={GlobalStyles.categoryCard}
           >
             <Image
               source={{ uri: item.image || '../../assets/images/logo.png' }}
-              style={styles.categoryImage}
+              style={GlobalStyles.categoryImage}
             />
-            <Text style={styles.categoryName}>{item.name}</Text>
+            <Text style={GlobalStyles.categoryName}>{item.name}</Text>
           </TouchableOpacity>
         )}
         keyExtractor={(item) => item.sortGroup.toString()}
@@ -44,54 +44,5 @@ const CategoryList: React.FC<CategoryListProps> = ({ categories, onSelectCategor
   );
 };
 
-const styles = StyleSheet.create({
-  globalCategoryCard: {
-    width: '100%',
-    marginBottom: 20,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 10,
-    padding: 15,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    shadowOffset: { width: 0, height: 5 },
-    elevation: 3,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  globalCategoryTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  categoryCard: {
-    width: '45%',
-    height: 150,
-    marginBottom: 20,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    shadowOffset: { width: 0, height: 5 },
-    elevation: 3,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: '#ffa64d', // Corrected the hex value for black
-    borderWidth: 2, // Add this to make the border visible
-    padding: 10,
-  },
-  categoryImage: {
-    width: '100%',
-    height: '70%',
-    resizeMode: 'contain',
-    marginBottom: 10,
-  },
-  categoryName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-});
 
 export default CategoryList;

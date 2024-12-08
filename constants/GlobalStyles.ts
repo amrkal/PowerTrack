@@ -93,6 +93,8 @@ export const GlobalStyles = StyleSheet.create({
     borderWidth: 1,
   },
 
+  
+
   productImage: {
     width: 100,
     height: 100,
@@ -111,42 +113,12 @@ export const GlobalStyles = StyleSheet.create({
     marginBottom: Padding.base,
   },
 
-  cartList: {
-    marginBottom: Padding.base,
-  },
 
-  cartItem: {
-    flexDirection: 'row',
-    marginBottom: Padding.base,
-    padding: Padding.base,
-    borderRadius: Border.base,
-    borderColor: Color.light.grayLight,
-    borderWidth: 1,
-    alignItems: 'center',
-  },
 
-  cartItemImage: {
-    width: 100,
-    height: 100,
-    borderRadius: Border.base,
-    marginRight: Gap.base,
-  },
 
-  cartItemDetails: {
-    flex: 1,
-  },
 
-  cartItemName: {
-    fontSize: FontSize.lg,
-    fontFamily: FontFamily.bold,
-    marginBottom: Gap.xs,
-  },
 
-  cartItemPrice: {
-    fontSize: FontSize.base,
-    fontFamily: FontFamily.regular,
-    color: Color.light.primary,
-  },
+
 
 
   quantityText: {
@@ -273,41 +245,9 @@ export const GlobalStyles = StyleSheet.create({
     paddingVertical: 20,
     borderColor: '#1E90FF',
   },
-  header: {
-    alignItems: 'center',
-    position: 'relative',
-    marginBottom: 20,
-    borderColor: '#1E90FF',
-  },
-  profileImage: {
-    width: width > 600 ? 200 : 150,
-    height: width > 600 ? 200 : 150,
-    borderRadius: width > 600 ? 100 : 75,
-    borderWidth: 3,
-    borderColor: '#1E90FF',
-    marginBottom: 10,
-  },
-  editIcon: {
-    position: 'absolute',
-    top: 0,
-    right: 10,
-  },
-  profileContainer: {
-    width: width > 600 ? '50%' : '90%',
-    alignSelf: 'center',
-    borderColor: '#1E90FF',
-  },
-  userInfo: {
-    fontSize: width > 600 ? 24 : 18,
-    marginVertical: 5,
-    textAlign: 'center',
-  },
-  userEmail: {
-    fontSize: width > 600 ? 20 : 16,
-    marginVertical: 5,
-    color: 'gray',
-    textAlign: 'center',
-  },
+
+
+
 
   input: {
     borderColor: Color.light.grayLight,
@@ -324,38 +264,7 @@ export const GlobalStyles = StyleSheet.create({
     height: width > 600 ? 60 : 50,
   },
   
-  buttonsContainer: {
-    width: width > 600 ? '50%' : '90%',
-    alignSelf: 'center',
-    marginTop: 20,
-  },
-  editButton: {
-    marginVertical: 10,
-    paddingVertical: width > 600 ? 15 : 10,
-    borderColor: '#ffa64d',
-    borderWidth: 2, // Border thickness
-    borderStyle: 'solid', // Solid border (default)
-  },
-  saveButton: {
-    marginVertical: 10,
-    paddingVertical: width > 600 ? 15 : 10,
-    borderColor: '#ffa64d',
-    borderWidth: 2, // Border thickness
-    borderStyle: 'solid', // Solid border (default)
-  },
-  logoutButton: {
-    marginVertical: 10,
-    paddingVertical: width > 600 ? 15 : 10,
-    borderColor: '#ffa64d',
-    borderWidth: 2, // Border thickness
-    borderStyle: 'solid', // Solid border (default)
 
-  },
-  historyButton: {
-    marginVertical: 10,
-
-    paddingVertical: width > 600 ? 15 : 10,
-  },
   
 
 
@@ -432,6 +341,74 @@ export const GlobalStyles = StyleSheet.create({
   },
 
 
+//categorylist------------------------------------------------------------------------------------------------------
+
+globalCategoryCard: {
+  width: '100%',
+  marginBottom: 20,
+  backgroundColor: '#f5f5f5',
+  borderRadius: 10,
+  padding: 15,
+  shadowColor: '#000',
+  shadowOpacity: 0.1,
+  shadowRadius: 5,
+  shadowOffset: { width: 0, height: 5 },
+  elevation: 3,
+  alignItems: 'center',
+  justifyContent: 'center',
+},
+categoryCard: {
+  width: '45%',
+  height: 150,
+  marginBottom: 20,
+  backgroundColor: '#fff',
+  borderRadius: 10,
+  shadowColor: '#000',
+  shadowOpacity: 0.1,
+  shadowRadius: 5,
+  shadowOffset: { width: 0, height: 5 },
+  elevation: 3,
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderColor: '#ffa64d', // Corrected the hex value for black
+  borderWidth: 2, // Add this to make the border visible
+  padding: 10,
+},
+categoryImage: {
+  width: '100%',
+  height: '70%',
+  resizeMode: 'contain',
+  marginBottom: 10,
+},
+categoryName: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  textAlign: 'center',
+},
+
+//productitem------------------------------------------------------------------------------------------------------
+
+
+productPriceContainer: {
+  position: 'relative', // Allows positioning of the dot
+  alignSelf: 'flex-end', // Aligns the container to the right
+  marginRight: 10, // Adds spacing from the right edge
+},
+productPriceDot: {
+  width: 30, // Dot size
+  height: 30,
+  borderRadius: 15, // Makes it a circle
+  backgroundColor: '#ffa11d', // Orange color
+  justifyContent: 'center', // Centers the content
+  alignItems: 'center', // Centers the content
+  elevation: 5, // Adds a shadow for better visibility
+  marginTop:5,
+},
+productPriceDisplay: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  marginTop: 10,
+},
 
 //productslist------------------------------------------------------------------------------------------------------
 
@@ -534,22 +511,283 @@ deleteButton: {
   backgroundColor: 'red', // Optional background for visibility
 },
 
+cartItem: {
+  flexDirection: 'row',
+  marginBottom: Padding.base,
+  padding: Padding.base,
+  borderRadius: Border.base,
+  borderColor: Color.light.grayLight,
+  borderWidth: 1,
+  alignItems: 'center',
+},
 
-  totalContainer: {
-    backgroundColor: '#fff',
+totalContainer: {
+  backgroundColor: '#fff',
+  borderRadius: 10,
+  elevation: 3,
+  marginBottom: 20,
+},
+
+totalText: {
+  fontSize: 18,
+  fontWeight: 'bold',
+  textAlign: 'center',
+},
+
+cartItemImage: {
+  width: 100,
+  height: 100,
+  borderRadius: Border.base,
+  marginRight: Gap.base,
+},
+
+cartItemDetails: {
+  flex: 1,
+},
+
+cartItemName: {
+  fontSize: FontSize.lg,
+  fontFamily: FontFamily.bold,
+  marginBottom: Gap.xs,
+},
+
+cartItemPrice: {
+  fontSize: FontSize.base,
+  fontFamily: FontFamily.regular,
+  color: Color.light.primary,
+},
+
+cartList: {
+  marginBottom: Padding.base,
+},
+
+
+
+
+
+  //authentification------------------------------------------------------------------------------------------------------
+
+  authBackground: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+
+  authContainer: {
+    maxWidth: 500,
+    padding: 10,
     borderRadius: 10,
-    elevation: 3,
-    marginBottom: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.60)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 8,
+    elevation: 10,
+    width: '90%',
+    alignSelf: 'center',
+    borderColor: '#ffa64d',
+    borderWidth: 2,
+    borderStyle: 'solid',
+    position: 'absolute',
+    bottom: '15%',
   },
-  totalText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
+
+
+  authScrollContent: {
+    flexGrow: 1,
+    alignItems: 'center',
+    textAlign:'center',
+  },
+
+  authInput: {
+    marginBottom: 15,
+  },
+
+  authBackButton: {
+    position: 'absolute',
+    top: 60,
+    left: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 20,
+    elevation: 5,
+  },
+
+  authRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+
+  authSafeArea: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  authInstructionText: {
+    marginBottom: 10,
+    textAlign: 'right',
+    fontSize: 16,
   },
 
 
 
+// profile------------------------------------------------------------------------------------------------------
 
+profileContainer: {
+  maxWidth: 500,
+  alignSelf: 'center',
+  width: '100%',
+  padding: 20,
+  flexGrow: 1,
+},
+
+profileHeader: {
+  flexDirection: "row", // Align elements horizontally
+  alignItems: "center", // Center vertically
+  marginBottom: 20,
+  padding: 10,
+  backgroundColor: "#ffffff", // Optional card-style background
+  borderRadius: 10,
+  elevation: 5, // Shadow for elevation
+},
+profileButton: {
+  marginVertical: 10,
+  width: '100%',
+  borderStyle: 'solid', // Solid border (default)
+},
+
+settingsItem: {
+  flexDirection: "row",
+  alignItems: "center",
+  paddingVertical: 10,
+},
+
+profileUserName: {
+  fontSize: 18,
+  fontWeight: "bold",
+  marginBottom: 5,
+  flex: 1, // Take the remaining space
+  marginLeft: 15, // Add spacing between avatar and text
+  alignItems: "center", // Align text to the left
+},
+
+profileEditIcon: {
+  position: "absolute",
+  bottom: 0,
+  right: -10,
+  borderRadius: 50,
+  padding: 5,
+},
+
+
+
+//aboutus------------------------------------------------------------------------------------------------------
+
+logoImage: {
+  alignSelf: 'center',
+  resizeMode: 'contain',
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 5 },
+  shadowOpacity: 0.3,
+  shadowRadius: 10,
+},
+collapsibleHeader: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  paddingVertical: 10,
+  borderBottomWidth: 1,
+  borderColor: '#1E90FF',
+  backgroundColor: '#fff',
+  borderRadius: 10,
+  marginVertical: 5,
+  paddingHorizontal: 10,
+},
+collapsibleContent: {
+  paddingVertical: 10,
+  paddingHorizontal: 15,
+  borderRadius: 10,
+  marginBottom: 10,
+},
+sectionHeader: {
+  fontSize: width > 600 ? 22 : 18,
+  fontWeight: 'bold',
+},
+boldText: {
+  fontWeight: 'bold',
+},
+
+
+//contactus------------------------------------------------------------------------------------------------------
+
+contactCard: {
+  width: width > 600 ? '60%' : '90%',
+  padding: 20,
+  marginTop: 150,
+  marginBottom: 10,
+  backgroundColor: '#fff',
+  borderRadius: 20,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.3,
+  shadowRadius: 5,
+  elevation: 10,
+  borderColor: '#1E90FF',
+  borderWidth: 2,
+  alignSelf: 'center',
+},
+header: {
+  fontSize: width > 600 ? 32 : 24,
+  fontWeight: 'bold',
+  marginBottom: 7,
+  textAlign: 'center',
+  color: '#1E90FF',
+},
+subHeader: {
+  fontSize: width > 600 ? 26 : 15,
+  color: '#ffa64d',
+  marginBottom: 15,
+  textAlign: 'center',
+},
+contactItem: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginBottom: 10,
+},
+contactText: {
+  fontSize: width > 600 ? 18 : 16,
+  color: '#1E90FF',
+  textDecorationLine: 'underline',
+  marginLeft: 6,
+},
+
+  
+//checkout------------------------------------------------------------------------------------------------------
+
+checkoutCard: {
+  flex: 1,
+  justifyContent: 'center',
+  padding: 20,
+  backgroundColor: '#ffffff',
+  borderRadius: 10,
+  elevation: 4,
+},
+checkoutTitle: {
+  fontSize: 24,
+  fontWeight: 'bold',
+  textAlign: 'center',
+  marginBottom: 20,
+},
+checkoutOptionButton: {
+  height: 50,
+  backgroundColor: '#cccccc', // Default disabled color
+},
+filledButton: {
+  backgroundColor: '#6200ee', // Selected button color
+},
+
+enabledNextButton: {
+  backgroundColor: '#6200ee', // Active color for enabled button
+},
 
 });
 

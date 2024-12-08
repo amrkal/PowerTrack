@@ -48,7 +48,7 @@ const MyCartPage: React.FC = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View>
             <FlatList
         data={cart}
         keyExtractor={(item) => item.id}
@@ -104,8 +104,8 @@ const MyCartPage: React.FC = () => {
         style={GlobalStyles.cartList}
       />
 
-      <View style={GlobalStyles.totalContainer}>
-        <Text style={GlobalStyles.totalText}>סה"כ: ₪{totalPrice.toFixed(2)}</Text>
+      <View>
+        <Text>סה"כ: ₪{totalPrice.toFixed(2)}</Text>
       </View>
 
       <Button mode="outlined" onPress={() => router.push('/CheckOutPage')}>
@@ -115,47 +115,7 @@ const MyCartPage: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 15,
-    backgroundColor: '#f9f9f9',
-  },
-  card: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    marginBottom: 15,
-    padding: 10,
-    alignItems: 'center',
-    elevation: 3,
-  },
-  image: {
-    width: 60,
-    height: 60,
-    borderRadius: 8,
-    marginRight: 15,
-  },
-  infoContainer: {
-    flex: 1,
-  },
-  name: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    alignSelf:'center',
-    marginBottom: 5,
-  },
-  price: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 5,
-  },
-  description: {
-    fontSize: 12,
-    color: '#777',
-    marginBottom: 10,
-  },
 
-});
+
 
 export default MyCartPage;

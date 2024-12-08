@@ -8,6 +8,7 @@ import axiosInstance from '../../services/axiosInstance';
 interface User {
   name: string;
   familyName: string;
+  phone_number?: string;
   email: string;
   address: string;
   zip_code: string;
@@ -81,25 +82,27 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const updateProfileData = async (updatedUser: User) => {
     try {
-      setLoading(true);
       const accessToken = await AsyncStorage.getItem('accessToken');
       if (!accessToken) {
+        console.error('No access token found');
         return;
       }
-
+  
+      // Send updated data to the backend
       await axiosInstance.put('/users/profile', updatedUser, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-
-      setUser(updatedUser);
+  
+      // Do not immediately update the user state here
+      console.log('Profile updated successfully!');
     } catch (error) {
-      console.error('Error updating profile data:', error);
-    } finally {
-      setLoading(false);
+      console.error('Error updating profile:', error);
     }
   };
+  
+  
 
   useEffect(() => {
     fetchProfileData();

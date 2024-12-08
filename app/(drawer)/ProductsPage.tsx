@@ -33,10 +33,13 @@ const ProductsPage: React.FC = () => {
   const [selectedType, setSelectedType] = useState<string | null>(selectedTypeFromRoute);
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<Product[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>("");
   const [isSearchActive, setIsSearchActive] = useState(false);
   const flatListRef = useRef<FlatList>(null);
   const [types, setTypes] = useState<string[]>([]);
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
 
   const [numColumns, setNumColumns] = useState(2);
 
@@ -242,23 +245,27 @@ const ProductsPage: React.FC = () => {
   }, [searchItemsFromRoute]);
 
   const handleSearch = async () => {
-    if (!searchQuery.trim()) {
-      setIsSearchActive(false);
+    if (searchQuery.trim().length < 3) {
+      setIsSearching(false);
+      setSearchResults([]);
       return;
     }
-
+  
+    setIsSearching(true);
     setLoading(true);
+  
     try {
-      const response = await axiosInstance.get("/items/search", { params: { query: searchQuery.trim() } });
-      console.log("Search results:", response.data.items);
-      setItems(response.data.items || []);
-      setIsSearchActive(true);
+      const response = await axiosInstance.get("/items/search", {
+        params: { query: searchQuery.trim() },
+      });
+      setSearchResults(response.data.items || []);
     } catch (error) {
       console.error("Error fetching search results:", error);
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleAddToCart = async (item: Product, quantity: number) => {
     try {
@@ -305,7 +312,7 @@ const ProductsPage: React.FC = () => {
   return (
     <View style={{ flex: 1 }}>
       <SearchBar searchQuery={searchQuery} onChange={setSearchQuery} onSearch={handleSearch} />
-      {isSearchActive ? (
+      {isSearching  ? (
         user.prices_tag ? ( // Check if prices_tag is available
           <ProductList
             products={items}

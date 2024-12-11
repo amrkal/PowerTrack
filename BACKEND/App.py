@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from flask_pymongo import PyMongo
 from flask_cors import CORS
@@ -46,6 +46,10 @@ app.register_blueprint(resetPassword_bp, url_prefix='/resetPassword')
 app.register_blueprint(orders_bp, url_prefix='/orders')
 app.register_blueprint(categories_bp, url_prefix='/categories')  # Corrected URL prefix
 app.register_blueprint(admin_bp, url_prefix='/admin')  # Your admin routes
+
+@app.route('/privacy-policy', methods=['GET'])
+def get_privacy_policy():
+    return jsonify({"policy": "This is your app's privacy policy content."})
 
 # Call the function to update categories from Excel at app startup
 def create_app():

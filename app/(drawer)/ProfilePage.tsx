@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -14,12 +14,19 @@ import {
   Avatar,
   Divider,
   IconButton,
+  Switch,
 } from "react-native-paper";
 import * as ImagePicker from "expo-image-picker";
 import { useUser } from "../context/UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { GlobalStyles } from "@/constants/GlobalStyles";
+import { MaterialIcons } from "@expo/vector-icons";
+import { DrawerActions } from "@react-navigation/native";
+import { colors } from "react-native-elements";
+import { Colors } from "@/constants/Colors";
+
+
 
 const ProfilePage: React.FC = () => {
   const { user, updateProfileData } = useUser();
@@ -31,7 +38,27 @@ const ProfilePage: React.FC = () => {
   const [email, setEmail] = useState(user.email);
   const [phoneNumber, setPhoneNumber] = useState(user.phone_number);
   const [profileImage, setProfileImage] = useState(user.profileImage);
+    // App Preferences
+    const [isDarkMode, setIsDarkMode] = useState(false);
+    const [language, setLanguage] = useState("English");
 
+
+    
+  const navigation = useNavigation<any>();
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <MaterialIcons
+          name="menu"
+          size={24}
+          color={Colors.dark.primary}
+          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+        />
+      ),
+      headerLeft: () => null, // Hide the default header
+    });
+  }, [navigation]);
+  
   const handleProfileImageEdit = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
@@ -76,7 +103,15 @@ const ProfilePage: React.FC = () => {
     }
   };
   
-  
+  const toggleDarkMode = async () => {
+    setIsDarkMode(!isDarkMode);
+    await AsyncStorage.setItem("darkMode", JSON.stringify(!isDarkMode));
+  };
+
+  const changeLanguage = async (selectedLanguage: string) => {
+    setLanguage(selectedLanguage);
+    await AsyncStorage.setItem("language", selectedLanguage);
+  };
 
   const handleLogout = async () => {
     await AsyncStorage.clear();
@@ -101,7 +136,7 @@ const ProfilePage: React.FC = () => {
           style={GlobalStyles.profileEditIcon}
           onPress={handleProfileImageEdit}
         >
-          <IconButton icon="camera" size={10} />
+          <MaterialIcons name="camera" size={24} color={Colors.dark.primary} />
         </TouchableOpacity>
       </View>
 
@@ -168,16 +203,69 @@ const ProfilePage: React.FC = () => {
       {/* Settings Section */}
       {!isEditing && (
         <View>
-          <TouchableOpacity style={GlobalStyles.settingsItem} onPress={() => router.push('/OrderHistoryPage')}>
-            <IconButton icon="calendar" />
-            <Text variant="titleMedium">order history</Text>
-            
+           <TouchableOpacity
+            style={GlobalStyles.settingsItem}
+            onPress={() => router.push("../Profile/OrderHistoryPage")}
+          >
+            <IconButton icon="history" />
+            <Text variant="titleMedium">Order History</Text>
           </TouchableOpacity>
           <Divider />
-          <TouchableOpacity style={GlobalStyles.settingsItem}>
-            <IconButton icon="logout" />
-            <Text variant="titleMedium" onPress={handleLogout}>Log Out</Text>
+
+
+          <TouchableOpacity
+            style={GlobalStyles.settingsItem}
+            onPress={() => router.push("../Profile/PrivacyPolicyPage")}
+          >
+            <IconButton icon="file-document" />
+            <Text variant="titleMedium">Privacy Policy</Text>
           </TouchableOpacity>
+          <Divider />
+
+          <TouchableOpacity
+            style={GlobalStyles.settingsItem}
+            onPress={() => router.push("../Profile/PrivacySettingsPage")}
+          >
+            <IconButton icon="security" />
+            <Text variant="titleMedium">Privacy Settings</Text>
+          </TouchableOpacity>
+          <Divider />
+
+          <TouchableOpacity
+            style={GlobalStyles.settingsItem}
+            onPress={toggleDarkMode}
+          >
+            <IconButton icon={isDarkMode ? "brightness-3" : "brightness-7"} />
+            <Text variant="titleMedium">
+              Dark Mode: {isDarkMode ? "On" : "Off"}
+            </Text>
+
+            <Switch
+              value={isDarkMode}
+              onValueChange={toggleDarkMode}
+              style={{ marginLeft: "auto" }}
+            />
+          </TouchableOpacity>
+          <Divider />
+
+          <TouchableOpacity
+            style={GlobalStyles.settingsItem}
+            onPress={() =>
+              changeLanguage(language === "Hebrew" ? "English" : "Hebrew")
+            }
+          >
+            <IconButton icon="web" />
+            <Text variant="titleMedium">Language: {language}</Text>
+          </TouchableOpacity>
+          <Divider />
+                    <TouchableOpacity
+            style={GlobalStyles.settingsItem}
+            onPress={handleLogout}
+          >
+            <IconButton icon="logout" />
+            <Text variant="titleMedium">Log Out</Text>
+          </TouchableOpacity>
+          <Divider />
         </View>
       )}
     </ScrollView>
@@ -185,3 +273,26 @@ const ProfilePage: React.FC = () => {
 };
 
 export default ProfilePage;
+
+
+
+
+
+// <MaterialIcons name="logout" size={24} color={Colors.dark.primary} />.
+// <MaterialIcons name="language" size={24} color={Colors.dark.primary} />
+
+// <MaterialIcons icon={isDarkMode ? "brightness-3" : "brightness-7"} />
+
+// <MaterialIcons name="security" size={24} color={Colors.dark.primary} />
+
+// <MaterialIcons name="description" size={24} color={Colors.dark.primary} />
+
+// <MaterialIcons name="history" size={24} color={Colors.dark.primary} />
+// <MaterialIcons name="camera" size={24} color={Colors.dark.primary} />
+
+//         <MaterialIcons
+//           name="menu"
+//           size={24}
+//           color="#1E3A8A"
+//           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+//         />

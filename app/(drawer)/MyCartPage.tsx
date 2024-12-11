@@ -1,14 +1,33 @@
-import React, { useState } from 'react';
-import { View, Image, StyleSheet, ScrollView, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Image, StyleSheet, ScrollView, FlatList, KeyboardAvoidingView, Platform } from 'react-native';
 import { Text, Button, TextInput } from 'react-native-paper';
-import { useRouter } from 'expo-router'; // Import useRouter
+import { useNavigation, useRouter } from 'expo-router'; // Import useRouter
 import { useCart } from '../context/CartContext'; // Import CartContext
 import { GlobalStyles } from '@/constants/GlobalStyles';
+import { MaterialIcons } from '@expo/vector-icons';
+import { DrawerActions } from '@react-navigation/native';
+
+
 
 const MyCartPage: React.FC = () => {
   const router = useRouter();
   const { cart, updateCartItem, removeFromCart } = useCart();
 
+  const navigation = useNavigation<any>();
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <MaterialIcons
+          name="menu"
+          size={24}
+          color="#1E3A8A"
+          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+        />
+      ),
+      headerLeft: () => null, // Hide the default header
+    });
+  }, [navigation]);
+  
   const handleDelete = (id: string) => {
     removeFromCart(id); // Remove item from cart using CartContext
   };
@@ -48,7 +67,7 @@ const MyCartPage: React.FC = () => {
   }
 
   return (
-    <View>
+    <View style ={GlobalStyles.CartGLobal}>
             <FlatList
         data={cart}
         keyExtractor={(item) => item.id}
@@ -104,13 +123,26 @@ const MyCartPage: React.FC = () => {
         style={GlobalStyles.cartList}
       />
 
-      <View>
-        <Text>סה"כ: ₪{totalPrice.toFixed(2)}</Text>
+    <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+    <View style={GlobalStyles.cartSummaryContainer}>
+      <View style={GlobalStyles.cartTotalSection}>
+        <Text style={GlobalStyles.cartTotalLabel}>סה"כ</Text>
+        <Text style={GlobalStyles.cartTotalPrice}>₪{totalPrice.toFixed(2)}</Text>
       </View>
-
-      <Button mode="outlined" onPress={() => router.push('/CheckOutPage')}>
+      
+      <Button
+        mode="contained"
+        onPress={() => router.push('/CheckOutPage')}
+        contentStyle={{ padding: 10 }}
+        labelStyle={GlobalStyles.checkoutButtonLabel}
+        style={GlobalStyles.checkoutButton}
+      >
         המשך לתשלום
       </Button>
+    </View>
+    </KeyboardAvoidingView>
     </View>
   );
 };

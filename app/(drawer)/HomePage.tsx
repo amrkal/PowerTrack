@@ -1,58 +1,63 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
-
-// Sample Data for New Items and Discounts
-const newItems = [
-  { id: '1', name: 'New Item 1', image: 'https://via.placeholder.com/100', price: '$20' },
-  { id: '2', name: 'New Item 2', image: 'https://via.placeholder.com/100', price: '$30' },
-];
-
-const discountItems = [
-  { id: '1', name: 'Discount Item 1', image: 'https://via.placeholder.com/100', price: '$10', oldPrice: '$20' },
-  { id: '2', name: 'Discount Item 2', image: 'https://via.placeholder.com/100', price: '$15', oldPrice: '$30' },
-];
+import { MaterialIcons } from '@expo/vector-icons';
+import { DrawerActions, useNavigation } from '@react-navigation/native';
+import axiosInstance from '../../services/axiosInstance';
+import { Product } from '../../components/types'; // Use your existing Product type
 
 const HomePage: React.FC = () => {
-  const renderNewItem = ({ item }: { item: typeof newItems[0] }) => (
-    <TouchableOpacity style={styles.card}>
-      <Image source={{ uri: item.image }} style={styles.image} />
-      <Text style={styles.name}>{item.name}</Text>
-      <Text style={styles.price}>{item.price}</Text>
-    </TouchableOpacity>
-  );
+  const navigation = useNavigation<any>();
+  const [latestItems, setLatestItems] = useState<Product[]>([]); 
 
-  const renderDiscountItem = ({ item }: { item: typeof discountItems[0] }) => (
+  useEffect(() => {
+    const fetchLatestItems = async () => {
+      try {
+        const response = await axiosInstance.get<{ items: Product[] }>('/items/items/latest?limit=10');
+        setLatestItems(response.data.items || []);
+      } catch (error) {
+        console.error('Error fetching latest items:', error);
+      }
+    };
+
+    fetchLatestItems();
+  }, []);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <MaterialIcons
+          name="menu"
+          size={24}
+          color="#1E3A8A"
+          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+        />
+      ),
+      headerLeft: () => null, 
+    });
+  }, [navigation]);
+
+  const renderItem = ({ item }: { item: Product }) => (
     <TouchableOpacity style={styles.card}>
-      <Image source={{ uri: item.image }} style={styles.image} />
-      <Text style={styles.name}>{item.name}</Text>
-      <View style={styles.priceContainer}>
-        <Text style={styles.discountedPrice}>{item.price}</Text>
-        <Text style={styles.oldPrice}>{item.oldPrice}</Text>
-      </View>
+      <Image source={{ uri: item.image || 'https://via.placeholder.com/150' }} style={styles.image} />
+      <Text style={styles.name}>{item.item_name}</Text>
     </TouchableOpacity>
   );
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.sectionTitle}>New Items</Text>
-      <FlatList
-        data={newItems}
-        renderItem={renderNewItem}
-        keyExtractor={(item) => item.id}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.list}
-      />
-
-      <Text style={styles.sectionTitle}>Discount Items</Text>
-      <FlatList
-        data={discountItems}
-        renderItem={renderDiscountItem}
-        keyExtractor={(item) => item.id}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.list}
-      />
+      <Text style={styles.sectionTitle}>Latest Items</Text>
+      {latestItems.length > 0 ? (
+        <FlatList
+          data={latestItems}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.list}
+        />
+      ) : (
+        <Text style={styles.noItemsText}>No latest items found.</Text>
+      )}
     </ScrollView>
   );
 };
@@ -60,14 +65,15 @@ const HomePage: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#f5f5f5',
     padding: 10,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginVertical: 10,
+    marginVertical: 15,
     color: '#333',
+    textAlign: 'center',
   },
   list: {
     paddingHorizontal: 5,
@@ -86,38 +92,22 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 100,
+    height: 150,
+    resizeMode: 'cover',
   },
   name: {
     fontSize: 16,
-    fontWeight: 'bold',
-    margin: 5,
+    fontWeight: '600',
+    marginVertical: 8,
+    textAlign: 'center',
     color: '#333',
   },
-  price: {
-    fontSize: 14,
-    color: '#1E90FF',
-    marginHorizontal: 5,
-    marginBottom: 5,
-  },
-  priceContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 5,
-    marginBottom: 5,
-  },
-  discountedPrice: {
-    fontSize: 14,
-    color: '#1E90FF',
-    fontWeight: 'bold',
-    marginRight: 5,
-  },
-  oldPrice: {
-    fontSize: 12,
+  noItemsText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
     color: '#999',
-    textDecorationLine: 'line-through',
   },
 });
-
 
 export default HomePage;

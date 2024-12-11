@@ -1,5 +1,8 @@
 import { GlobalStyles } from '@/constants/GlobalStyles';
-import React from 'react';
+import { MaterialIcons } from '@expo/vector-icons';
+import { DrawerActions } from '@react-navigation/native';
+import { useNavigation } from 'expo-router';
+import React, { useEffect } from 'react';
 import { View, StyleSheet, Linking, Dimensions } from 'react-native';
 import { Text, IconButton, Card } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -9,7 +12,25 @@ const tel = '04-6981130';
 const whatsappNumber = '052-4637165';
 const locationUrl = 'https://maps.app.goo.gl/9uJkfanmxPkdifCi7';
 
+
+
 const ContactUsPage: React.FC = () => {
+
+  const navigation = useNavigation<any>();
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <MaterialIcons
+          name="menu"
+          size={24}
+          color="#1E3A8A"
+          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+        />
+      ),
+      headerLeft: () => null, // Hide the default header
+    });
+  }, [navigation]);
+  
   const handleEmailPress = () => {
     Linking.openURL(`mailto:${mailto}`);
   };

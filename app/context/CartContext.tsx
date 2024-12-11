@@ -1,8 +1,9 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axiosInstance from '../../services/axiosInstance';
 
 // Define the Product and CartItem interfaces
-interface Product {
+export interface Product {
   id: string;
   item_key: string;
   item_name: string;
@@ -13,8 +14,7 @@ interface Product {
   image?: string;
 }
 
-interface CartItem extends Product {
-  name: any;
+export interface CartItem extends Product {
   quantityInCart: number;
 }
 
@@ -22,6 +22,7 @@ interface CartItem extends Product {
 interface CartContextProps {
   cart: CartItem[];
   addToCart: (item: CartItem) => void;
+  addToCartAsync: (item: Product, quantity: number, pricesTag: string) => Promise<void>;
   updateCartItem: (id: string, quantityInCart: number) => void;
   removeFromCart: (id: string) => void;
   clearCart: () => void;
@@ -78,6 +79,35 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   };
 
+  // Async function to fetch product details and add to cart
+  const addToCartAsync = async (item: Product, quantity: number, pricesTag: string) => {
+    try {
+      const response = await axiosInstance.get(`/items/items/priceof/${item.item_key}`, {
+        params: { prices_tag: pricesTag },
+      });
+
+      const fetchedItem = response.data;
+
+      if (!fetchedItem || !fetchedItem.price || !fetchedItem.item_name) {
+        alert('Unable to fetch item details. Please try again.');
+        return;
+      }
+
+      const cartItem: CartItem = {
+        ...item,
+        quantityInCart: quantity,
+        price: fetchedItem.price,
+        item_name: fetchedItem.item_name,
+        image: fetchedItem.image || item.image || '../../assets/images/icon.png',
+      };
+
+      addToCart(cartItem);
+    } catch (error) {
+      console.error('Error fetching item details:', error);
+      alert('Failed to fetch item details. Please try again.');
+    }
+  };
+
   // Update item quantity in the cart
   const updateCartItem = (id: string, quantityInCart: number) => {
     setCart((prevCart) =>
@@ -99,7 +129,16 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, updateCartItem, removeFromCart, clearCart }}>
+    <CartContext.Provider
+      value={{
+        cart,
+        addToCart,
+        addToCartAsync,
+        updateCartItem,
+        removeFromCart,
+        clearCart,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

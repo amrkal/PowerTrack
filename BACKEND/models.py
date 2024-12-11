@@ -429,6 +429,44 @@ class Item:
         return db_mongo.items.delete_one({"_id": item_id})
     
 
+    
+    @staticmethod
+    def get_latest_items(limit=10, PriceListNumber=None):
+        try:
+            # Fetch the latest items based on the creation date or item ID
+            items = list(db_mongo.items.find(
+                {}, 
+                {
+                    "_id": 1,
+                    "ItemKey": 1,
+                    "ItemName": 1,
+                    "description": 1,
+                    "Quantity": 1,
+                    "SortGroup": 1,
+                    "DatF": 1,  # Date field for sorting
+                }
+            ).sort("DatF", -1).limit(limit))
+
+            # Format the items and attach prices
+            formatted_items = [
+                {
+                    'id': str(item['_id']),
+                    'item_key': item.get('ItemKey'),
+                    'item_name': item.get('ItemName'),
+                    'description': item.get('description', ''),
+                    'price': Item.get_price_by_item_and_tag(item.get('ItemKey'), PriceListNumber),
+                    'quantity': item.get('Quantity', 0),
+                    'sortGroup': item.get('SortGroup', 'others'),
+                    'added_date': item.get('DatF', datetime.now().isoformat())
+                }
+                for item in items
+            ]
+
+            return formatted_items
+        except Exception as e:
+            print(f"Error fetching latest items: {str(e)}")
+            return []
+
 
 
 

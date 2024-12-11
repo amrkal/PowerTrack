@@ -1,5 +1,8 @@
 import { GlobalStyles } from '@/constants/GlobalStyles';
-import React, { useState } from 'react';
+import { MaterialIcons } from '@expo/vector-icons';
+import { DrawerActions } from '@react-navigation/native';
+import { useNavigation } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Dimensions, PixelRatio, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { Text, Button, IconButton } from 'react-native-paper';
 
@@ -11,6 +14,21 @@ const AboutUsPage: React.FC = () => {
   const toggleSection = (section: string) => {
     setExpandedSection(expandedSection === section ? null : section);
   };
+  const navigation = useNavigation<any>();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <MaterialIcons
+          name="menu"
+          size={24}
+          color="#1E3A8A"
+          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+        />
+      ),
+      headerLeft: () => null, // Hide the default header
+    });
+  }, [navigation]);
 
   return (
     <View>

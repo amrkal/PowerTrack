@@ -21,6 +21,21 @@ def get_items_by_same_category_price(sortGroup):
         return jsonify({'error': str(e)}), 500
     
 
+# Route to get the latest items
+@items_bp.route('/items/latest', methods=['GET'])
+def get_latest_items():
+    try:
+        # Limit the number of latest items returned
+        limit = int(request.args.get('limit', 10))
+        PriceListNumber = request.args.get('prices_tag', type=int)
+
+        # Fetch the latest items using the Item model
+        latest_items = Item.get_latest_items(limit, PriceListNumber)
+        return jsonify({"items": latest_items}), 200
+    except Exception as e:
+        print(f"Error fetching latest items: {e}")
+        return jsonify({'error': str(e)}), 500
+
 
 
 # Route to get all items by category (sortGroup) and price list number olddddddddddddddddddddddddddddd

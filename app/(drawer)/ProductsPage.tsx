@@ -19,13 +19,11 @@ type ProductsPageRouteParams = {
 
 const ProductsPage: React.FC = () => {
   const { user } = useUser();
-  const { addToCart } = useCart();
-  const { cart } = useCart(); // Access cart from context
+  const { cart, addToCartAsync } = useCart();
 
   const route = useRoute<RouteProp<ProductsPageRouteParams, "ProductsPage">>();
   const navigation = useNavigation<any>();
   const selectedTypeFromRoute = route.params?.selectedType || null;
-  const searchQueryFromRoute = route.params?.searchQuery || "";
   const searchItemsFromRoute = route.params?.items || null;
 
   const [groupedCategories, setGroupedCategories] = useState<{ [key: string]: Category[] }>({});
@@ -35,26 +33,70 @@ const ProductsPage: React.FC = () => {
   const [items, setItems] = useState<Product[]>([]);
   const [isSearchActive, setIsSearchActive] = useState(false);
   const flatListRef = useRef<FlatList>(null);
-  const [types, setTypes] = useState<string[]>([]);
-  const [searchResults, setSearchResults] = useState<Product[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [searchQuery, setSearchQuery] = useState<string>("");
 
 
-  const [numColumns, setNumColumns] = useState(2);
-
-  // Adjust columns dynamically based on screen width
+  // Set dynamic header with back, menu, profile, and cart icons
   useEffect(() => {
-    const calculateColumns = () => {
-      const screenWidth = Dimensions.get("window").width;
-      const itemWidth = 160;
-      setNumColumns(Math.max(1, Math.floor(screenWidth / itemWidth)));
-    };
+    navigation.setOptions({
+      headerRight: () => (
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <MaterialIcons
+            name="menu"
+            size={24}
+            color="#13A8A"
+            onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+          />
+        </View>
+      ),
+      headerLeft: () => (
+        <View style={{ flexDirection: "row", alignItems: "center", marginRight: 15 }}>
+            {selectedCategory !== null && (
+            <MaterialIcons
+              name="arrow-back"
+              size={24}
+              color="#1E3A8A"
+              style={{ marginRight: 10 }}
+              onPress={() => setSelectedCategory(null)}
+            />
+          )}
+          <MaterialIcons
+            name="account-circle"
+            size={24}
+            color="#1E3A8A"
+            style={{ marginRight: 15 }}
+            onPress={() => navigation.navigate("ProfilePage" as never)}
+          />
+          <View>
+            <MaterialIcons
+              name="shopping-cart"
+              size={24}
+              color="#1E3A8A"
+              onPress={() => navigation.navigate("MyCartPage" as never)}
+            />
+            {cart.length > 0 && ( // Display badge only if there are items in the cart
+              <Badge
+                style={{
+                  position: "absolute",
+                  top: -4,
+                  right: -10,
+                  backgroundColor: "red",
+                  color: "white",
+                }}
+              >
+                {cart.reduce((total, item) => total + item.quantityInCart, 0)}
+              </Badge>
+            )}
+          </View>
+        </View>
+      ),
+    });
+  }, [navigation, selectedCategory, cart]);
 
-    calculateColumns();
-    const subscription = Dimensions.addEventListener("change", calculateColumns);
-    return () => subscription?.remove();
-  }, []);
+
+
+
+
 
   useEffect(() => {
     const fetchTypesAndNavigate = async () => {
@@ -62,7 +104,7 @@ const ProductsPage: React.FC = () => {
         setLoading(true);
         const response = await axiosInstance.get("/categories/types");
         const fetchedTypes: string[] = response.data.types || [];
-        setTypes(fetchedTypes);
+
   
         if (fetchedTypes.length > 0) {
           const firstType = fetchedTypes[0];
@@ -101,62 +143,6 @@ const ProductsPage: React.FC = () => {
     setItems([]);
   };
 
-  // Set dynamic header with back, menu, profile, and cart icons
-  useEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => (
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          {selectedCategory !== null && (
-            <MaterialIcons
-              name="arrow-back"
-              size={24}
-              color="black"
-              style={{ marginRight: 10 }}
-              onPress={() => setSelectedCategory(null)}
-            />
-          )}
-          <MaterialIcons
-            name="menu"
-            size={24}
-            color="black"
-            onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-          />
-        </View>
-      ),
-      headerRight: () => (
-        <View style={{ flexDirection: "row", alignItems: "center", marginRight: 15 }}>
-          <MaterialIcons
-            name="account-circle"
-            size={24}
-            color="black"
-            style={{ marginRight: 15 }}
-            onPress={() => navigation.navigate("ProfilePage" as never)}
-          />
-          <View>
-            <MaterialIcons
-              name="shopping-cart"
-              size={24}
-              color="black"
-              onPress={() => navigation.navigate("MyCartPage" as never)}
-            />
-            {cart.length > 0 && ( // Display badge only if there are items in the cart
-              <Badge
-                style={{
-                  position: "absolute",
-                  top: -4,
-                  right: -10,
-                  backgroundColor: "red",
-                  color: "white",
-                }}
-              >
-                {cart.reduce((total, item) => total + item.quantityInCart, 0)}
-              </Badge>
-            )}
-          </View>
-        </View>
-      ),
-    });
-  }, [navigation, selectedCategory, cart]);
 
   // Fetch categories
   useEffect(() => {
@@ -209,32 +195,6 @@ const ProductsPage: React.FC = () => {
     }
   }, [selectedCategory, user.prices_tag, isSearchActive]);
 
-  // Fetch items when `searchQuery` changes
-  useEffect(() => {
-    const fetchSearchResults = async () => {
-      if (searchQuery.trim().length < 3) {
-        setIsSearchActive(false);
-        setItems([]);
-        return;
-      }
-
-      setLoading(true);
-      try {
-        const response = await axiosInstance.get("/items/search", { params: { query: searchQuery.trim() } });
-        setItems(response.data.items || []);
-        setIsSearchActive(true);
-      } catch (error) {
-        console.error("Error fetching search results:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSearchResults();
-  }, [searchQuery]);
-
-
-
   useEffect(() => {
     console.log("Route params:", route.params);
     if (searchItemsFromRoute) {
@@ -244,74 +204,39 @@ const ProductsPage: React.FC = () => {
     }
   }, [searchItemsFromRoute]);
 
-  const handleSearch = async () => {
-    if (searchQuery.trim().length < 3) {
-      setIsSearching(false);
-      setSearchResults([]);
-      return;
-    }
-  
-    setIsSearching(true);
-    setLoading(true);
-  
-    try {
-      const response = await axiosInstance.get("/items/search", {
-        params: { query: searchQuery.trim() },
-      });
-      setSearchResults(response.data.items || []);
-    } catch (error) {
-      console.error("Error fetching search results:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-  
 
-  const handleAddToCart = async (item: Product, quantity: number) => {
-    try {
-      // Fetch the latest details for the item
-      const response = await axiosInstance.get(`/items/items/priceof/${item.item_key}`, {
-        params: { prices_tag: user.prices_tag }, // Pass the user's price tag as a parameter
-      });
-  
-      const fetchedItem = response.data;
-  
-      if (!fetchedItem || !fetchedItem.price || !fetchedItem.item_name) {
-        alert("Unable to fetch item details. Please try again.");
-        return;
-      }
-  
-      // Add the item to the cart with the fetched details
-      addToCart({
-        ...item,
-        quantityInCart: quantity,
-        price: fetchedItem.price,
-        item_name: fetchedItem.item_name,
-        image: fetchedItem.image || item.image || "../../assets/images/icon.png",
-        name: undefined
-      });
-    } catch (error) {
-      console.error("Error fetching item details:", error);
-      alert("Failed to fetch item details. Please try again.");
-    }
-  };
+
+
+
+
+
+
+
+
+
+
   
   const handleScrollToTop = () => flatListRef.current?.scrollToOffset({ animated: true, offset: 0 });
 
-  const handleClearSearch = () => {
-    setSearchQuery("");
-    setIsSearchActive(false);
-    setItems([]);
-  };
 
   if (loading) return <Loader />;
+
+  const handleAddToCart = async (item: Product, quantity: number) => {
+    await addToCartAsync(item, quantity, user.prices_tag ?? '');
+  };
 
   if (!user.prices_tag) {
     return <Loader />; // Show a loader until prices_tag is available
   }
   return (
     <View style={{ flex: 1 }}>
-      <SearchBar searchQuery={searchQuery} onChange={setSearchQuery} onSearch={handleSearch} />
+      <SearchBar
+        onResults={(results) => {
+          setItems(results);   // Update product list
+          setIsSearching(results.length > 0);  // Set search state
+        }}
+      />
+
       {isSearching  ? (
         user.prices_tag ? ( // Check if prices_tag is available
           <ProductList
@@ -320,7 +245,7 @@ const ProductsPage: React.FC = () => {
             isMobile={false}
             flatListRef={flatListRef}
             onScrollToTop={handleScrollToTop}
-            numColumns={numColumns}
+            numColumns={2}
             pricesTag={user.prices_tag} // Pass only if prices_tag is available
           />
         ) : (
@@ -367,7 +292,7 @@ const ProductsPage: React.FC = () => {
             isMobile={false}
             flatListRef={flatListRef}
             onScrollToTop={handleScrollToTop}
-            numColumns={numColumns}
+            numColumns={2}
             pricesTag={user.prices_tag} // Pass only if prices_tag is available
           />
         ) : (

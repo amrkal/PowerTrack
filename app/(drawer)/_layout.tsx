@@ -8,13 +8,22 @@ import { DrawerContentComponentProps } from '@react-navigation/drawer';
 import axiosInstance from '../../services/axiosInstance';
 import SearchBar from '../../components/SearchBar';
 import { MaterialIcons } from '@expo/vector-icons';
+import { DrawerActions, useNavigation } from '@react-navigation/native';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { useRouter } from 'expo-router';
+import { Header } from 'react-native-elements';
+
 
 export default function Layout() {
+  const navigation = useNavigation();
   return (
     <UserProvider>
       <CartProvider>
         <Drawer
           initialRouteName="LandingPage"
+          screenOptions={{
+            drawerPosition: 'right', // Drawer on the right
+          }}
           drawerContent={(props) => <CustomDrawerContent {...props} />}
         >
           <Drawer.Screen name="HomePage" options={{ title: 'HomePage' }} />
@@ -46,7 +55,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
       }
     };
     fetchMainTypes();
-  }, []);
+  }, []);``
 
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
@@ -87,11 +96,9 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
         />
 
         {/* Search Bar */}
-        <SearchBar
-          searchQuery={searchQuery}
-          onChange={handleSearchChange}
-          onSearch={handleSearchSubmit}
-        />
+        <SearchBar onResults={function (results: any[]): void {
+          throw new Error('Function not implemented.');
+        } }        />
         <TouchableOpacity onPress={() => props.navigation.navigate('HomePage')} style={styles.drawerItem}>
           <Text style={styles.drawerItemText}>דף הבית</Text>
         </TouchableOpacity>

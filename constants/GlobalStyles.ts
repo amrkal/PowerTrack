@@ -498,6 +498,10 @@ feedback: {
 
 
 //-----------------------------------------------------------cart
+CartGLobal: {
+  flex: 1,
+  padding: Padding.base,
+},
 
 deleteButton: {
   width: 40, // Circle width
@@ -520,6 +524,7 @@ cartItem: {
   borderWidth: 1,
   alignItems: 'center',
 },
+
 
 totalContainer: {
   backgroundColor: '#fff',
@@ -559,6 +564,54 @@ cartItemPrice: {
 
 cartList: {
   marginBottom: Padding.base,
+},
+ //-------------------cart summary
+
+ fixedBottomContainer: {
+  position: 'absolute',
+  bottom: 15,
+  left: 0,
+  right: 0,
+  backgroundColor: '#fff',
+  borderTopColor: '#e0e0e0',
+  padding: 10,
+},
+
+ cartSummaryContainer: {
+  backgroundColor: '#f8f8f8',
+  paddingHorizontal: 15,
+  borderTopColor: '#e0e0e0',
+},
+
+cartTotalSection: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: 15,
+},
+
+cartTotalLabel: {
+  fontSize: 18,
+  fontWeight: 'bold',
+  color: '#333',
+},
+
+cartTotalPrice: {
+  fontSize: 20,
+  fontWeight: 'bold',
+  color: Color.dark.primary,
+},
+
+checkoutButton: {
+  borderRadius: 10,
+  width: '100%',
+},
+
+checkoutButtonLabel: {
+  fontSize: 16,
+  fontWeight: 'bold',
+  color: '#fff',
+  textAlign: 'center',
 },
 
 

@@ -26,12 +26,12 @@ export default function Layout() {
           }}
           drawerContent={(props) => <CustomDrawerContent {...props} />}
         >
-          <Drawer.Screen name="HomePage" options={{ title: 'HomePage' }} />
-          <Drawer.Screen name="ProductsPage" options={{ title: 'Products' }} />
-          <Drawer.Screen name="MyCartPage" options={{ title: 'My Cart' }} />
-          <Drawer.Screen name="ProfilePage" options={{ title: 'Profile' }} />
-          <Drawer.Screen name="AboutUsPage" options={{ title: 'About Us' }} />
-          <Drawer.Screen name="ContactUsPage" options={{ title: 'Contact Us' }} />
+          <Drawer.Screen name="HomePage" options={{ title: ' ' }} />
+          <Drawer.Screen name="ProductsPage" options={{ title: '' }} />
+          <Drawer.Screen name="MyCartPage" options={{ title: '' }} />
+          <Drawer.Screen name="ProfilePage" options={{ title: '' }} />
+          <Drawer.Screen name="AboutUsPage" options={{ title: '' }} />
+          <Drawer.Screen name="ContactUsPage" options={{ title: '' }} />
         </Drawer>
       </CartProvider>
     </UserProvider>

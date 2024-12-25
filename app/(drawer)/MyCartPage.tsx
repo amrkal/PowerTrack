@@ -9,6 +9,7 @@ import { DrawerActions } from '@react-navigation/native';
 
 
 
+
 const MyCartPage: React.FC = () => {
   const router = useRouter();
   const { cart, updateCartItem, removeFromCart } = useCart();
@@ -19,7 +20,7 @@ const MyCartPage: React.FC = () => {
       headerRight: () => (
         <MaterialIcons
           name="menu"
-          size={24}
+          size={30}
           color="#1E3A8A"
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
         />

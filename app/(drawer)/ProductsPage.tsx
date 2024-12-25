@@ -43,18 +43,18 @@ const ProductsPage: React.FC = () => {
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <MaterialIcons
             name="menu"
-            size={24}
+            size={30}
             color="#13A8A"
             onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
           />
         </View>
       ),
       headerLeft: () => (
-        <View style={{ flexDirection: "row", alignItems: "center", marginRight: 15 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", marginLeft: 15 }}>
             {selectedCategory !== null && (
             <MaterialIcons
               name="arrow-back"
-              size={24}
+              size={30}
               color="#1E3A8A"
               style={{ marginRight: 10 }}
               onPress={() => setSelectedCategory(null)}
@@ -62,7 +62,7 @@ const ProductsPage: React.FC = () => {
           )}
           <MaterialIcons
             name="account-circle"
-            size={24}
+            size={30}
             color="#1E3A8A"
             style={{ marginRight: 15 }}
             onPress={() => navigation.navigate("ProfilePage" as never)}
@@ -70,7 +70,7 @@ const ProductsPage: React.FC = () => {
           <View>
             <MaterialIcons
               name="shopping-cart"
-              size={24}
+              size={30}
               color="#1E3A8A"
               onPress={() => navigation.navigate("MyCartPage" as never)}
             />

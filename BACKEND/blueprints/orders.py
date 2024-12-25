@@ -73,24 +73,34 @@ def get_order_history():
     try:
         user_id = get_jwt_identity()  # Get the user's ID from the JWT token
         print(f"Looking up orders for user_id: {user_id}")
+
         # Fetch the user's orders from the database using the user_id
         orders = Order.find_by_user_id(user_id)
-        print(f'Your orders are: {orders}')  # Add this line for debugging
-        # Format the orders into a list of dictionaries to send them as a response
-        order_list = []
-        for order in orders:
-            order_list.append({
-                "order_id": str(order["_id"]),
+        print(f"Fetched orders: {orders}")
+
+        if not orders:
+            print("No orders found.")
+            return jsonify({"orders": []}), 200
+
+        # Format the orders into a list of dictionaries without `order_id`
+        order_list = [
+            {
+                "order_number": order.get("order_number", "N/A"),
                 "items": order["items"],
                 "total_amount": order["total_amount"],
                 "order_status": order["order_status"],
-                "order_date": order["order_date"],
-                "updated_at": order["updated_at"]
-            })
+                "order_date": order["order_date"].strftime("%Y-%m-%d %H:%M:%S"),
+                "updated_at": order["updated_at"].strftime("%Y-%m-%d %H:%M:%S")
+            } for order in orders
+        ]
 
-        return jsonify({"orders": order_list}), 200  # Send the order list as a response
+        print(f"Formatted orders: {order_list}")
+        return jsonify({"orders": order_list}), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500  # Handle errors
+        print(f"Error fetching order history: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+
     
 
 @orders_bp.route('/<order_id>', methods=['PUT'])

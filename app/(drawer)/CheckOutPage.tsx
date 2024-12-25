@@ -26,7 +26,7 @@ const CheckOutPage: React.FC = () => {
         items: cart.map(item => ({
           id: item.id,
           item_key: item.item_key,
-          name: item.name,
+          item_name: item.item_name,
           quantity: item.quantityInCart,
           price_per_unit: item.price,
         })),
@@ -43,6 +43,7 @@ const CheckOutPage: React.FC = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+      
   
       if (response.status === 201) {
         // Clear the cart after successful order

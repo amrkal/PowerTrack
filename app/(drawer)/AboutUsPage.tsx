@@ -21,7 +21,7 @@ const AboutUsPage: React.FC = () => {
       headerRight: () => (
         <MaterialIcons
           name="menu"
-          size={24}
+          size={30}
           color="#1E3A8A"
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
         />

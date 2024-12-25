@@ -208,6 +208,7 @@ def search_items():
         return jsonify({"error": str(e)}), 500
 
 
+
 # Route to fetch a single item by ID
 @items_bp.route('/items/<item_id>', methods=['GET'])
 def get_item_by_id(item_id):

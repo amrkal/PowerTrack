@@ -41,7 +41,7 @@ const LoginPage: React.FC = () => {
       // Navigate to the Landing page after successful login
       router.push('/(drawer)/LandingPage');
     } catch (error) {
-      Alert.alert('Login Failed', 'Invalid username or password');
+      Alert.alert('Login Failed', 'Invalid usersasasname or password');
     }
   };
 

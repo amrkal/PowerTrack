@@ -97,7 +97,6 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         ...item,
         quantityInCart: quantity,
         price: fetchedItem.price,
-        item_name: fetchedItem.item_name,
         image: fetchedItem.image || item.image || '../../assets/images/icon.png',
       };
 

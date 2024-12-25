@@ -40,7 +40,7 @@ const ProfilePage: React.FC = () => {
   const [profileImage, setProfileImage] = useState(user.profileImage);
     // App Preferences
     const [isDarkMode, setIsDarkMode] = useState(false);
-    const [language, setLanguage] = useState("English");
+    const [language, setLanguage] = useState("עברית");
 
 
     
@@ -50,7 +50,7 @@ const ProfilePage: React.FC = () => {
       headerRight: () => (
         <MaterialIcons
           name="menu"
-          size={24}
+          size={30}
           color={Colors.dark.primary}
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
         />
@@ -62,7 +62,7 @@ const ProfilePage: React.FC = () => {
   const handleProfileImageEdit = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permissionResult.granted) {
-      Alert.alert("Permission Denied", "Please allow access to your photos.");
+      Alert.alert("הרשאה נדחתה", "נא לאפשר גישה לתמונות שלך.");
       return;
     }
 
@@ -96,10 +96,10 @@ const ProfilePage: React.FC = () => {
       setIsEditing(false);
   
       // Show success message
-      Alert.alert('Success', 'Profile updated successfully!');
+      Alert.alert("הצלחה", "הפרופיל עודכן בהצלחה!");
     } catch (error) {
-      console.error('Error saving profile:', error);
-      Alert.alert('Error', 'Failed to save profile. Please try again.');
+      console.error("שגיאה בעדכון פרופיל:", error);
+      Alert.alert("שגיאה", "נכשל בעדכון הפרופיל. נסה שוב.");
     }
   };
   
@@ -150,7 +150,7 @@ const ProfilePage: React.FC = () => {
           mode="contained"
           onPress={() => setIsEditing(true)}
         >
-          Edit Profile
+          ערוך פרופיל
         </Button>
       </View>
     </View>
@@ -159,23 +159,23 @@ const ProfilePage: React.FC = () => {
       {/* Profile Edit View */}
       {isEditing && (
         <View>
-          <Text variant="titleLarge">Edit Profile</Text>
+          <Text variant="titleLarge">עריכת פרופיל</Text>
           <TextInput
-            label="First Name"
+            label="שם פרטי"
             mode="outlined"
             value={name}
             onChangeText={setName}
             style={GlobalStyles.authInput}
           />
           <TextInput
-            label="Last Name"
+            label="שם משפחה"
             mode="outlined"
             value={familyName}
             onChangeText={setFamilyName}
             style={GlobalStyles.authInput}
           />
           <TextInput
-            label="Email"
+            label="אימייל"
             mode="outlined"
             value={email}
             onChangeText={setEmail}
@@ -183,7 +183,7 @@ const ProfilePage: React.FC = () => {
             keyboardType="email-address"
           />
           <TextInput
-            label="Phone Number"
+            label="מספר טלפון"
             mode="outlined"
             value={phoneNumber}
             onChangeText={setPhoneNumber}
@@ -195,7 +195,7 @@ const ProfilePage: React.FC = () => {
             onPress={handleSaveProfile}
             style={GlobalStyles.profileButton}
           >
-            Save Changes
+            שמור שינויים
           </Button>
         </View>
       )}
@@ -208,7 +208,7 @@ const ProfilePage: React.FC = () => {
             onPress={() => router.push("../Profile/OrderHistoryPage")}
           >
             <IconButton icon="history" />
-            <Text variant="titleMedium">Order History</Text>
+            <Text variant="titleMedium">היסטוריית הזמנות</Text>
           </TouchableOpacity>
           <Divider />
 
@@ -218,7 +218,7 @@ const ProfilePage: React.FC = () => {
             onPress={() => router.push("../Profile/PrivacyPolicyPage")}
           >
             <IconButton icon="file-document" />
-            <Text variant="titleMedium">Privacy Policy</Text>
+            <Text variant="titleMedium">מדיניות פרטיות</Text>
           </TouchableOpacity>
           <Divider />
 
@@ -227,7 +227,7 @@ const ProfilePage: React.FC = () => {
             onPress={() => router.push("../Profile/PrivacySettingsPage")}
           >
             <IconButton icon="security" />
-            <Text variant="titleMedium">Privacy Settings</Text>
+            <Text variant="titleMedium">הגדרות פרטיות</Text>
           </TouchableOpacity>
           <Divider />
 
@@ -237,7 +237,7 @@ const ProfilePage: React.FC = () => {
           >
             <IconButton icon={isDarkMode ? "brightness-3" : "brightness-7"} />
             <Text variant="titleMedium">
-              Dark Mode: {isDarkMode ? "On" : "Off"}
+            מצב כהה: {isDarkMode ? "פועל" : "כבוי"}
             </Text>
 
             <Switch
@@ -251,11 +251,11 @@ const ProfilePage: React.FC = () => {
           <TouchableOpacity
             style={GlobalStyles.settingsItem}
             onPress={() =>
-              changeLanguage(language === "Hebrew" ? "English" : "Hebrew")
+              changeLanguage(language === "עברית" ? "English" : "עברית")
             }
           >
             <IconButton icon="web" />
-            <Text variant="titleMedium">Language: {language}</Text>
+            <Text variant="titleMedium">שפה: {language}</Text>
           </TouchableOpacity>
           <Divider />
                     <TouchableOpacity
@@ -263,7 +263,7 @@ const ProfilePage: React.FC = () => {
             onPress={handleLogout}
           >
             <IconButton icon="logout" />
-            <Text variant="titleMedium">Log Out</Text>
+            <Text variant="titleMedium">התנתק</Text>
           </TouchableOpacity>
           <Divider />
         </View>

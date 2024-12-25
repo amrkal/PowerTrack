@@ -2,10 +2,11 @@
 from datetime import datetime
 import re
 from bson import ObjectId
-from pymongo import MongoClient
+from pymongo import MongoClient, ReturnDocument
 from werkzeug.security import generate_password_hash, check_password_hash
 from config import Config
 from flask_sqlalchemy import SQLAlchemy
+from rapidfuzz import fuzz, process
 
 # Load the MONGO_URI from the Config class
 client = MongoClient(Config.MONGO_URI)
@@ -323,24 +324,49 @@ class Item:
         
 
     @staticmethod
-    def search(query, limit=50):
+    def search(query, limit=50, threshold=60):
+        all_items = list(db_mongo.items.find())
+        matched_items = []
 
-        # Escape special characters in the query
-        escaped_query = re.escape(query)
+        for item in all_items:
+            item_key = item.get("ItemKey", "")
+            item_name = item.get("ItemName", "")
 
-        # Build a case-insensitive regex for the search query
-        search_regex = {'$regex': escaped_query, '$options': 'i'}
+            # Compare with fuzzing
+            item_score_key = fuzz.partial_ratio(query.lower(), item_key.lower())
+            item_score_name = fuzz.partial_ratio(query.lower(), item_name.lower())
 
-        # Create the query to search both ItemKey and ItemName
-        search_query = {
-            '$or': [
-                {'ItemKey': search_regex},
-                {'ItemName': search_regex}
-            ]
-        }
+            # If either score is above threshold, add to results
+            if item_score_key >= threshold or item_score_name >= threshold:
+                item["_score"] = max(item_score_key, item_score_name)
+                matched_items.append(item)
 
-        # Execute the query with a limit
-        return list(db_mongo.items.find(search_query).limit(limit))
+        # Sort by score in descending order
+        matched_items = sorted(matched_items, key=lambda x: x["_score"], reverse=True)
+
+        return matched_items[:limit]
+
+
+
+    # @staticmethod
+    # def search(query, limit=50):
+
+    #     # Escape special characters in the query
+    #     escaped_query = re.escape(query)
+
+    #     # Build a case-insensitive regex for the search query
+    #     search_regex = {'$regex': escaped_query, '$options': 'i'}
+
+    #     # Create the query to search both ItemKey and ItemName
+    #     search_query = {
+    #         '$or': [
+    #             {'ItemKey': search_regex},
+    #             {'ItemName': search_regex}
+    #         ]
+    #     }
+
+    #     # Execute the query with a limit
+    #     return list(db_mongo.items.find(search_query).limit(limit))
     
 
     @staticmethod
@@ -472,13 +498,27 @@ class Item:
 
 class Order:
     @staticmethod
+    def get_next_order_number():
+        """ Get the next order number from the counters collection. """
+        counter = db_mongo.counters.find_one_and_update(
+            {"_id": "order_id"},
+            {"$inc": {"sequence_value": 1}},
+            upsert=True,
+            return_document=ReturnDocument.AFTER
+        )
+        return counter["sequence_value"]
+    
+    
+    @staticmethod
     def find(filter_criteria):
         return db_mongo.orders.find(filter_criteria)
 
     @staticmethod
     def create_order(user_id, items, total_amount):
+        order_number = Order.get_next_order_number()
         order = {
             "user_id": ObjectId(user_id),  # Convert user_id to ObjectId
+            "order_number": order_number,
             "items": items,  # Pass items from request
             "total_amount": total_amount,  # Pass total amount from request
             "order_status": "pending",
@@ -497,7 +537,7 @@ class Order:
         order_list = []
         for order in orders:
             order_list.append({
-                "order_id": str(order["_id"]),
+                "order_number": order["order_number"],
                 "items": order["items"],
                 "total_amount": order["total_amount"],
                 "order_status": order["order_status"],

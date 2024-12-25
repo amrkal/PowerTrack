@@ -23,6 +23,8 @@ export interface Product {
     name: any;
     quantityInCart: number;
   }
+
+  
   
 
   

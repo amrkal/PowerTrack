@@ -620,11 +620,7 @@ checkoutButtonLabel: {
 
   //authentification------------------------------------------------------------------------------------------------------
 
-  authBackground: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
+
 
   authContainer: {
     maxWidth: 500,
@@ -644,7 +640,12 @@ checkoutButtonLabel: {
     bottom: '15%',
   },
 
-
+  authBackground: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  
   authScrollContent: {
     flexGrow: 1,
     alignItems: 'center',

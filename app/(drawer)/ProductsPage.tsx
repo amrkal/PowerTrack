@@ -10,7 +10,7 @@ import Loader from "../../components/Loader";
 import { useCart } from "../context/CartContext";
 import { useUser } from "../context/UserContext";
 import { Product, Category } from "../../components/types";
-import { GlobalStyles } from "../../constants/GlobalStyles";
+import { Colors } from "../../constants/Colors";
 import { Badge } from "react-native-paper";
 
 type ProductsPageRouteParams = {
@@ -44,7 +44,7 @@ const ProductsPage: React.FC = () => {
           <MaterialIcons
             name="menu"
             size={30}
-            color="#13A8A"
+            color={Colors.light.primary}
             onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
           />
         </View>
@@ -63,7 +63,7 @@ const ProductsPage: React.FC = () => {
           <MaterialIcons
             name="account-circle"
             size={30}
-            color="#1E3A8A"
+            color={Colors.light.primary}
             style={{ marginRight: 15 }}
             onPress={() => navigation.navigate("ProfilePage" as never)}
           />
@@ -71,7 +71,7 @@ const ProductsPage: React.FC = () => {
             <MaterialIcons
               name="shopping-cart"
               size={30}
-              color="#1E3A8A"
+              color={Colors.light.primary}
               onPress={() => navigation.navigate("MyCartPage" as never)}
             />
             {cart.length > 0 && ( // Display badge only if there are items in the cart

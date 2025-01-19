@@ -25,12 +25,15 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { DrawerActions } from "@react-navigation/native";
 import { colors } from "react-native-elements";
 import { Colors } from "@/constants/Colors";
+import { useThemeContext } from "../context/ThemeContext";
+import { useTheme } from 'react-native-paper';
 
 
 
 const ProfilePage: React.FC = () => {
   const { user, updateProfileData } = useUser();
   const [isEditing, setIsEditing] = useState(false);
+  const { colors } = useTheme();
 
   // Profile Fields
   const [name, setName] = useState(user.name);
@@ -39,9 +42,8 @@ const ProfilePage: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState(user.phone_number);
   const [profileImage, setProfileImage] = useState(user.profileImage);
     // App Preferences
-    const [isDarkMode, setIsDarkMode] = useState(false);
-    const [language, setLanguage] = useState("עברית");
-
+  const { isDarkMode, toggleDarkMode} = useThemeContext();
+  const [language, changeLanguage] = useState("עברית");
 
     
   const navigation = useNavigation<any>();
@@ -103,22 +105,13 @@ const ProfilePage: React.FC = () => {
     }
   };
   
-  const toggleDarkMode = async () => {
-    setIsDarkMode(!isDarkMode);
-    await AsyncStorage.setItem("darkMode", JSON.stringify(!isDarkMode));
-  };
-
-  const changeLanguage = async (selectedLanguage: string) => {
-    setLanguage(selectedLanguage);
-    await AsyncStorage.setItem("language", selectedLanguage);
-  };
-
   const handleLogout = async () => {
     await AsyncStorage.clear();
     router.push("/Authentication/LoginPage");
   };
 
   return (
+    
     <ScrollView contentContainerStyle={GlobalStyles.profileContainer}>
       {/* Header */}
       <View style={GlobalStyles.profileHeader}>
@@ -269,30 +262,14 @@ const ProfilePage: React.FC = () => {
         </View>
       )}
     </ScrollView>
+
   );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
+
 export default ProfilePage;
-
-
-
-
-
-// <MaterialIcons name="logout" size={24} color={Colors.dark.primary} />.
-// <MaterialIcons name="language" size={24} color={Colors.dark.primary} />
-
-// <MaterialIcons icon={isDarkMode ? "brightness-3" : "brightness-7"} />
-
-// <MaterialIcons name="security" size={24} color={Colors.dark.primary} />
-
-// <MaterialIcons name="description" size={24} color={Colors.dark.primary} />
-
-// <MaterialIcons name="history" size={24} color={Colors.dark.primary} />
-// <MaterialIcons name="camera" size={24} color={Colors.dark.primary} />
-
-//         <MaterialIcons
-//           name="menu"
-//           size={24}
-//           color="#1E3A8A"
-//           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-//         />

@@ -41,7 +41,6 @@ const SearchBar: React.FC<Props> = ({ onResults }) => {
     <TextInput
       mode="outlined"
       placeholder="Search"
-      placeholderTextColor="#000"
       value={searchQuery}
       onChangeText={handleChangeText}
       right={
@@ -50,14 +49,13 @@ const SearchBar: React.FC<Props> = ({ onResults }) => {
         ) : searchQuery.length > 0 ? (
           <TextInput.Icon
             icon="close"
-            color="#000"
             onPress={() => {
               setSearchQuery('');
               onResults([]); // Clear results
             }}
           />
         ) : (
-          <TextInput.Icon icon="magnify" color="#000" />
+          <TextInput.Icon icon="magnify" />
         )
       }
     />

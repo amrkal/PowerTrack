@@ -14,6 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import { WebView } from "react-native-webview";
+import * as FileSystem from 'expo-file-system';
 
 interface Item {
   item_key: string;
@@ -62,7 +63,7 @@ const OrderHistoryPage = () => {
   // Generate PDF using Expo Print
   const generatePDF = async (order: Order) => {
     try {
-      const html = `
+        const html = `
         <html>
           <body>
             <h1 style="text-align:center;">Order Details</h1>
@@ -89,15 +90,27 @@ const OrderHistoryPage = () => {
         </html>
       `;
 
-      const { uri } = await Print.printToFileAsync({ html });
-      setPdfUri(uri);
-      setModalVisible(true);
+        const { uri } = await Print.printToFileAsync({ html });
+        console.log("PDF generated at:", uri);
+        
+        // Move the file to a readable directory
+        const pdfUri = `${FileSystem.documentDirectory}Order-${order.order_number}.pdf`;
+        await FileSystem.moveAsync({ from: uri, to: pdfUri });
 
-      Alert.alert("PDF Generated", "The PDF has been created successfully.");
+        // Share the file directly instead of using WebView
+        const canShare = await Sharing.isAvailableAsync();
+        if (canShare) {
+            await Sharing.shareAsync(pdfUri);
+        } else {
+            Alert.alert("Error", "Sharing is not available on this device");
+        }
     } catch (error) {
-      console.error("Error generating PDF:", error);
+        console.error("Error generating PDF:", error);
     }
-  };
+};
+
+  
+
 
   if (loading) {
     return <ActivityIndicator size="large" />;
@@ -160,13 +173,15 @@ const OrderHistoryPage = () => {
           onRequestClose={() => setModalVisible(false)}
         >
           <WebView
-            source={{ uri: pdfUri }}
-            style={styles.pdfViewer}
-            startInLoadingState
-            onError={() => {
-              Alert.alert("Error", "Failed to load PDF.");
-              setModalVisible(false);
-            }}
+              source={{ uri: pdfUri }}
+              style={styles.pdfViewer}
+              useWebKit={true}
+              startInLoadingState={true}
+              onError={(syntheticEvent) => {
+                  const { nativeEvent } = syntheticEvent;
+                  Alert.alert("Error", `Failed to load PDF: ${nativeEvent.description}`);
+                  setModalVisible(false);
+              }}
           />
           <TouchableOpacity
             style={styles.closeButton}

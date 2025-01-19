@@ -145,7 +145,6 @@ export const GlobalStyles = StyleSheet.create({
 
   optionButton: {
     padding: Padding.base,
-    //backgroundColor: Color.light.background,
     borderRadius: Border.base,
     marginVertical: Gap.sm,
     borderWidth: 1,
@@ -155,7 +154,6 @@ export const GlobalStyles = StyleSheet.create({
 
   selectedOptionButton: {
     borderColor: Color.light.primary,
-    //backgroundColor: Color.light.primary,
   },
 
   optionText: {
@@ -361,7 +359,7 @@ categoryCard: {
   width: '45%',
   height: 150,
   marginBottom: 20,
-  backgroundColor: '#fff',
+
   borderRadius: 10,
   shadowColor: '#000',
   shadowOpacity: 0.1,
@@ -700,7 +698,6 @@ profileHeader: {
   alignItems: "center", // Center vertically
   marginBottom: 20,
   padding: 10,
-  backgroundColor: "#ffffff", // Optional card-style background
   borderRadius: 10,
   elevation: 5, // Shadow for elevation
 },

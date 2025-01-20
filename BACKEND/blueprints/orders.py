@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from bson.objectid import ObjectId
 from datetime import datetime
-from models import Item, Order
+from models import Item, Order ,Returns
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 orders_bp = Blueprint('orders', __name__)
@@ -123,5 +123,117 @@ def update_order_status(order_id):
             return jsonify({"error": "Order not found"}), 404
 
         return jsonify({"message": "Order status updated"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
+
+
+
+
+
+
+@orders_bp.route('/returns', methods=['GET'])
+@jwt_required()
+def get_returnable_items():
+    try:
+        user_id = get_jwt_identity()  # Get the user's ID from the JWT token
+        orders = Order.find_by_user_id(user_id)  # Fetch user orders
+
+        if not orders:
+            return jsonify({"returnable_items": []}), 200
+
+        # Define return eligibility (e.g., within 30 days)
+        return_window_days = 30
+        now = datetime.utcnow()
+
+        returnable_items = []
+        for order in orders:
+            for item in order['items']:
+                purchase_date = order['order_date']
+                if (now - purchase_date).days <= return_window_days:
+                    returnable_items.append({
+                        "order_id": str(order["_id"]),
+                        "item_id": item['id'],
+                        "item_name": item.get('item_name'),
+                        "quantity": item.get('quantity'),
+                        "purchase_date": purchase_date.strftime("%Y-%m-%d %H:%M:%S"),
+                    })
+
+        return jsonify({"returnable_items": returnable_items}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+@orders_bp.route('/returns', methods=['POST'])
+@jwt_required()
+def initiate_return():
+    try:
+        user_id = get_jwt_identity()
+        data = request.json
+
+        order_id = data.get("order_id")
+        item_id = data.get("item_id")
+        quantity_to_return = data.get("quantity_to_return")
+        return_reason = data.get("return_reason")
+
+        # Validate required fields
+        if not order_id or not item_id or not quantity_to_return or not return_reason:
+            return jsonify({"error": "Order ID, Item ID, Quantity to Return, and Return Reason are required"}), 400
+
+        if not isinstance(quantity_to_return, int) or quantity_to_return <= 0:
+            return jsonify({"error": "Quantity to return must be a positive integer"}), 400
+
+        # Fetch the order to ensure it belongs to the user
+        order = Order.find_by_id(order_id)
+        if not order or str(order["user_id"]) != user_id:
+            return jsonify({"error": "Order not found or access denied"}), 404
+
+        # Ensure the item exists in the order
+        item = next((i for i in order["items"] if i["id"] == item_id), None)
+        if not item:
+            return jsonify({"error": "Item not found in order"}), 404
+
+        # Check if the quantity to return is valid
+        available_quantity = item.get("quantity", 0)
+        if quantity_to_return > available_quantity:
+            return jsonify({"error": f"Cannot return more than {available_quantity} units of this item"}), 400
+
+        # Create the return request
+        return_id = Returns.create_return_request(
+            user_id=user_id,
+            order_id=order_id,
+            item_id=item_id,
+            return_reason=return_reason,
+            quantity_to_return=quantity_to_return
+        )
+
+        return jsonify({"message": "Return request created", "return_id": return_id}), 201
+    except Exception as e:
+        print(f"Error in initiate_return: {e}")  # Log the error for debugging
+        return jsonify({"error": str(e)}), 500
+
+
+
+@orders_bp.route('/returns/history', methods=['GET'])
+@jwt_required()
+def get_return_history():
+    try:
+        user_id = get_jwt_identity()
+        return_requests = Returns.find({"user_id": ObjectId(user_id)})
+
+        return_list = [
+            {
+                "return_id": str(r["_id"]),
+                "order_id": str(r["order_id"]),
+                "item_id": r["item_id"],
+                "return_reason": r["return_reason"],
+                "status": r["status"],
+                "created_at": r["created_at"].strftime("%Y-%m-%d %H:%M:%S"),
+                "updated_at": r["updated_at"].strftime("%Y-%m-%d %H:%M:%S"),
+            }
+            for r in return_requests
+        ]
+
+        return jsonify({"returns": return_list}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

@@ -557,3 +557,94 @@ class Order:
     @staticmethod
     def get_all_orders():
         return list(db_mongo.orders.find({}))
+    
+    @staticmethod
+    def find_by_id(order_id):
+        """
+        Retrieve an order by its ID.
+        """
+        try:
+            return db_mongo.orders.find_one({"_id": ObjectId(order_id)})
+        except Exception as e:
+            print(f"Error finding order by ID {order_id}: {e}")
+            return None
+        
+
+
+class Returns:
+    @staticmethod
+    def create_return_request(user_id, order_id, item_id, return_reason, quantity_to_return):
+        """
+        Create a new return request with specified quantity.
+        """
+        try:
+            return_request = {
+                "user_id": ObjectId(user_id),
+                "order_id": ObjectId(order_id),
+                "item_id": ObjectId(item_id),
+                "return_reason": return_reason,
+                "quantity_to_return": quantity_to_return,
+                "status": "pending",  # Default status
+                "created_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow()
+            }
+            result = db_mongo.returns.insert_one(return_request)
+            return str(result.inserted_id)  # Return the ID of the created return request
+        except Exception as e:
+            print(f"Error creating return request: {str(e)}")
+            raise
+
+    @staticmethod
+    def get_user_returns(user_id):
+        """
+        Retrieve all return requests for a specific user.
+        """
+        try:
+            return_requests = list(db_mongo.returns.find({"user_id": ObjectId(user_id)}))
+            for return_request in return_requests:
+                return_request["_id"] = str(return_request["_id"])
+            return return_requests
+        except Exception as e:
+            print(f"Error retrieving return requests for user {user_id}: {str(e)}")
+            raise
+
+    @staticmethod
+    def get_return_by_id(return_id):
+        """
+        Retrieve a specific return request by its ID.
+        """
+        try:
+            return_request = db_mongo.returns.find_one({"_id": ObjectId(return_id)})
+            if return_request:
+                return_request["_id"] = str(return_request["_id"])
+            return return_request
+        except Exception as e:
+            print(f"Error retrieving return request {return_id}: {str(e)}")
+            raise
+
+    @staticmethod
+    def update_return_status(return_id, new_status):
+        """
+        Update the status of a return request.
+        """
+        try:
+            result = db_mongo.returns.update_one(
+                {"_id": ObjectId(return_id)},
+                {"$set": {"status": new_status, "updated_at": datetime.utcnow()}}
+            )
+            return result.modified_count
+        except Exception as e:
+            print(f"Error updating return status for {return_id}: {str(e)}")
+            raise
+
+    @staticmethod
+    def delete_return_request(return_id):
+        """
+        Delete a return request.
+        """
+        try:
+            result = db_mongo.returns.delete_one({"_id": ObjectId(return_id)})
+            return result.deleted_count
+        except Exception as e:
+            print(f"Error deleting return request {return_id}: {str(e)}")
+            raise

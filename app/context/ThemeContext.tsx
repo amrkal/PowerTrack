@@ -113,3 +113,5 @@ export const useThemeContext = () => {
   }
   return context;
 };
+
+export default CustomThemeProvider;

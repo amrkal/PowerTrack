@@ -196,19 +196,27 @@ const ProfilePage: React.FC = () => {
       {/* Settings Section */}
       {!isEditing && (
         <View>
-           <TouchableOpacity
+          <TouchableOpacity
             style={GlobalStyles.settingsItem}
-            onPress={() => router.push("../Profile/OrderHistoryPage")}
+            onPress={() => router.push("/Profile/OrderHistoryPage")}
           >
             <IconButton icon="history" />
             <Text variant="titleMedium">היסטוריית הזמנות</Text>
           </TouchableOpacity>
           <Divider />
 
+          <TouchableOpacity
+            style={GlobalStyles.settingsItem}
+            onPress={() => router.push("/Profile/ReturnsPage")}
+          >
+            <IconButton icon="history" />
+            <Text variant="titleMedium">החזרות</Text>
+          </TouchableOpacity>
+          <Divider />
 
           <TouchableOpacity
             style={GlobalStyles.settingsItem}
-            onPress={() => router.push("../Profile/PrivacyPolicyPage")}
+            onPress={() => router.push("/Profile/PrivacyPolicyPage")}
           >
             <IconButton icon="file-document" />
             <Text variant="titleMedium">מדיניות פרטיות</Text>
@@ -217,12 +225,13 @@ const ProfilePage: React.FC = () => {
 
           <TouchableOpacity
             style={GlobalStyles.settingsItem}
-            onPress={() => router.push("../Profile/PrivacySettingsPage")}
+            onPress={() => router.push("/Profile/PrivacySettingsPage")}
           >
             <IconButton icon="security" />
             <Text variant="titleMedium">הגדרות פרטיות</Text>
           </TouchableOpacity>
           <Divider />
+
 
           <TouchableOpacity
             style={GlobalStyles.settingsItem}
@@ -251,7 +260,8 @@ const ProfilePage: React.FC = () => {
             <Text variant="titleMedium">שפה: {language}</Text>
           </TouchableOpacity>
           <Divider />
-                    <TouchableOpacity
+
+          <TouchableOpacity
             style={GlobalStyles.settingsItem}
             onPress={handleLogout}
           >
@@ -271,5 +281,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+
 
 export default ProfilePage;

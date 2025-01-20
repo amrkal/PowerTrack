@@ -9,6 +9,7 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{ headerShown: false, gestureEnabled: false }} />
         <Stack.Screen name="Authentication" options={{ headerShown: false, gestureEnabled: false }} />
         <Stack.Screen name="(drawer)" options={{ headerShown: false, gestureEnabled: false }} />
+        <Stack.Screen name="Profile" options={{ headerShown: false, gestureEnabled: false }} />
       </Stack>
     </CustomThemeProvider>
   );

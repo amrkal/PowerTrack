@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native';
-import { Color } from './Color';
+import { Colors,Color } from './Colors';
 import { FontFamily, FontSize } from './Fonts';
 import { Border, Padding, Gap } from './Spacing';
 
@@ -273,13 +273,7 @@ export const GlobalStyles = StyleSheet.create({
   globalCategoryContainer: {
     marginBottom: 20,
   },
-  globalCategoryTitle: {
-    width: '100%',
-    height: 35,
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
+
   quantityButtonLabel: {
     fontSize: 18,
   },
@@ -341,12 +335,16 @@ export const GlobalStyles = StyleSheet.create({
 
 //categorylist------------------------------------------------------------------------------------------------------
 
+containerss: {
+  flex: 1,
+  padding: 10,
+},
 globalCategoryCard: {
   width: '100%',
   marginBottom: 20,
-  backgroundColor: '#f5f5f5',
   borderRadius: 10,
   padding: 15,
+  backgroundColor: Colors.light.primary, // Accent color for the global category
   shadowColor: '#000',
   shadowOpacity: 0.1,
   shadowRadius: 5,
@@ -355,11 +353,15 @@ globalCategoryCard: {
   alignItems: 'center',
   justifyContent: 'center',
 },
+globalCategoryTitle: {
+  fontSize: 18,
+  fontWeight: 'bold',
+  textAlign: 'center',
+},
 categoryCard: {
   width: '45%',
-  height: 150,
+  height: 160,
   marginBottom: 20,
-
   borderRadius: 10,
   shadowColor: '#000',
   shadowOpacity: 0.1,
@@ -368,20 +370,26 @@ categoryCard: {
   elevation: 3,
   alignItems: 'center',
   justifyContent: 'center',
-  borderColor: '#ffa64d', // Corrected the hex value for black
-  borderWidth: 2, // Add this to make the border visible
+  borderColor: Colors.light.primary,
+  borderWidth: 2,
   padding: 10,
 },
 categoryImage: {
   width: '100%',
   height: '70%',
-  resizeMode: 'contain',
+  resizeMode: 'cover', // Cover image to fit the available space
+  borderRadius: 8,
   marginBottom: 10,
 },
 categoryName: {
-  fontSize: 16,
+  fontSize: 14,
   fontWeight: 'bold',
   textAlign: 'center',
+},
+noCategories: {
+  fontSize: 14,
+  textAlign: 'center',
+  color: '#999', // Subtle text for "no categories available"
 },
 
 //productitem------------------------------------------------------------------------------------------------------
@@ -417,7 +425,7 @@ card: {
   shadowOffset: { width: 0, height: 4 },
   shadowOpacity: 0.3,
   shadowRadius: 8,
-  borderColor:'#ffa64d',
+  borderColor: Colors.light.primary,
   borderWidth: 2, // Border thickness
   borderStyle: 'solid', // Solid border (default)
 },
@@ -438,11 +446,10 @@ name: {
   fontWeight: 'bold',
   alignSelf:'center',
   textAlign:'right',
-  color: '#333',
+
 },
 price: {
   fontSize: 14,
-  color: '#007BFF',
   marginTop: 5,
   fontWeight: '600',
 },
@@ -461,7 +468,7 @@ quantityButton: {
   width: '30%',
   height: '80%',
   justifyContent: 'center',
-  borderColor: '#1E3A8A', // Match the border to the text color
+  borderColor: Colors.light.primary, // Match the border to the text color
   backgroundColor: 'transparent',
   alignItems: 'center',
   borderRadius: 20,
@@ -478,14 +485,13 @@ quantityInput: {
   paddingHorizontal: 0, // Remove horizontal padding
   borderWidth: 0, // No border to make it clear
   backgroundColor: 'transparent', // Transparent background
-  color: '#000', // Set text color for readability
   alignSelf: 'center', // Align in the center of its container
 },
 
 addToCartButton: {
   marginTop:15,
   margin: 10,
-  borderColor:'#1E3A8A'
+  borderColor: Colors.light.primary,
   
 },
 feedback: {
@@ -518,7 +524,7 @@ cartItem: {
   marginBottom: Padding.base,
   padding: Padding.base,
   borderRadius: Border.base,
-  borderColor: Color.light.grayLight,
+  borderColor: Colors.light.primary,
   borderWidth: 1,
   alignItems: 'center',
 },
@@ -570,15 +576,11 @@ cartList: {
   bottom: 15,
   left: 0,
   right: 0,
-  backgroundColor: '#fff',
-  borderTopColor: '#e0e0e0',
   padding: 10,
 },
 
  cartSummaryContainer: {
-  backgroundColor: '#f8f8f8',
   paddingHorizontal: 15,
-  borderTopColor: '#e0e0e0',
 },
 
 cartTotalSection: {
@@ -591,7 +593,6 @@ cartTotalSection: {
 cartTotalLabel: {
   fontSize: 18,
   fontWeight: 'bold',
-  color: '#333',
 },
 
 cartTotalPrice: {
@@ -608,7 +609,6 @@ checkoutButton: {
 checkoutButtonLabel: {
   fontSize: 16,
   fontWeight: 'bold',
-  color: '#fff',
   textAlign: 'center',
 },
 
@@ -708,7 +708,7 @@ profileButton: {
 },
 
 settingsItem: {
-  flexDirection: "row",
+  flexDirection: "row-reverse",
   alignItems: "center",
   paddingVertical: 10,
 },
@@ -735,6 +735,8 @@ profileEditIcon: {
 //aboutus------------------------------------------------------------------------------------------------------
 
 logoImage: {
+  width:150,
+  height: 150,
   alignSelf: 'center',
   resizeMode: 'contain',
   shadowColor: '#000',
@@ -748,7 +750,6 @@ collapsibleHeader: {
   paddingVertical: 10,
   borderBottomWidth: 1,
   borderColor: '#1E90FF',
-  backgroundColor: '#fff',
   borderRadius: 10,
   marginVertical: 5,
   paddingHorizontal: 10,
@@ -775,7 +776,6 @@ contactCard: {
   padding: 20,
   marginTop: 150,
   marginBottom: 10,
-  backgroundColor: '#fff',
   borderRadius: 20,
   shadowColor: '#000',
   shadowOffset: { width: 0, height: 4 },
@@ -818,7 +818,6 @@ checkoutCard: {
   flex: 1,
   justifyContent: 'center',
   padding: 20,
-  backgroundColor: '#ffffff',
   borderRadius: 10,
   elevation: 4,
 },
@@ -830,16 +829,12 @@ checkoutTitle: {
 },
 checkoutOptionButton: {
   height: 50,
-  backgroundColor: '#cccccc', // Default disabled color
+  backgroundColor: Color.light.gray,
+  borderColor: Colors.light.primary,
 },
 filledButton: {
-  backgroundColor: '#6200ee', // Selected button color
+  backgroundColor: Colors.light.primary,
 },
-
-enabledNextButton: {
-  backgroundColor: '#6200ee', // Active color for enabled button
-},
-
 });
 
 

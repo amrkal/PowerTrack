@@ -3,6 +3,9 @@ from flask import Blueprint, request, jsonify
 from models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required  # Import create_access_token
+from werkzeug.utils import secure_filename
+import os
+from flask import current_app
 
 users_bp = Blueprint('users', __name__)
 
@@ -94,3 +97,26 @@ def update_profile():
         return jsonify({'message': 'Profile updated successfully'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+
+
+@users_bp.route('/users/profileImage', methods=['POST'])
+@jwt_required()  # Make sure the user is authenticated
+def upload_profile_image():
+    print("Received request to upload profile image")
+
+    # Check if the request contains 'profileImage' field
+    if 'profileImage' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+
+    file = request.files['profileImage']
+
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    # Save the file to a path
+    file_path = f"uploads/{file.filename}"
+    file.save(file_path)
+
+    # Respond with success
+    return jsonify({'message': 'Image uploaded successfully', 'filePath': file_path}), 200

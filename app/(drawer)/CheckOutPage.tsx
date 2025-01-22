@@ -11,7 +11,7 @@ const CheckOutPage: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<'Collection' | 'Delivery' | null>(null);
   const [city, setCity] = useState('');
   const [address, setAddress] = useState('');
-  const { cart, clearCart } = useCart(); // Include clearCart from context
+  const { cart, clearCart } = useCart();
   const router = useRouter();
 
   const handleOrderCompletion = async () => {
@@ -21,7 +21,7 @@ const CheckOutPage: React.FC = () => {
         console.error('לא נמצא טוקן גישה');
         return;
       }
-  
+
       const orderDetails = {
         items: cart.map(item => ({
           id: item.id,
@@ -37,18 +37,15 @@ const CheckOutPage: React.FC = () => {
         delivery_method: selectedOption,
         ...(selectedOption === 'Delivery' && { city, address }),
       };
-  
+
       const response = await axiosInstance.post('/orders/orders', orderDetails, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      
-  
+
       if (response.status === 201) {
-        // Clear the cart after successful order
         clearCart();
-        
         Alert.alert('הצלחה', 'ההזמנה הושלמה בהצלחה!');
         router.push('/HomePage');
       }
@@ -64,72 +61,69 @@ const CheckOutPage: React.FC = () => {
   };
 
   return (
-<View style={GlobalStyles.checkoutCard}>
-  <Card.Content>
-    <Title style={GlobalStyles.checkoutTitle}>בחרו כיצד תרצו לקבל את ההזמנה שלכם.</Title>
+    <View style={GlobalStyles.checkoutCard}>
+      <Card.Content>
+        <Title style={GlobalStyles.checkoutTitle}>בחרו כיצד תרצו לקבל את ההזמנה שלכם.</Title>
 
-    {/* Collection Button */}
-    <View style={GlobalStyles.profileButton}>
-      <Button
-        mode="outlined"
-        onPress={() => setSelectedOption('Collection')}
-        contentStyle={[
-          GlobalStyles.checkoutOptionButton,
-          selectedOption === 'Collection' && GlobalStyles.filledButton,
-        ]}
-      >
-        איסוף עצמי
-      </Button>
+        {/* Collection Button */}
+        <View style={GlobalStyles.profileButton}>
+          <Button
+            mode="contained"
+            onPress={() => setSelectedOption(selectedOption === 'Collection' ? null : 'Collection')}
+            contentStyle={[
+              GlobalStyles.checkoutOptionButton,
+              selectedOption === 'Collection' && GlobalStyles.filledButton, // Highlight when selected
+            ]}
+          >
+            איסוף עצמי
+          </Button>
+        </View>
+
+        {/* Delivery Button */}
+        <View style={GlobalStyles.profileButton}>
+          <Button
+            mode="contained"
+            onPress={() => setSelectedOption(selectedOption === 'Delivery' ? null : 'Delivery')}
+            contentStyle={[
+              GlobalStyles.checkoutOptionButton,
+              selectedOption === 'Delivery' && GlobalStyles.filledButton, // Highlight when selected
+            ]}
+          >
+            משלוח
+          </Button>
+        </View>
+
+        {/* Address Inputs for Delivery */}
+        {selectedOption === 'Delivery' && (
+          <View>
+            <TextInput
+              label="עיר"
+              mode="outlined"
+              value={city}
+              onChangeText={setCity}
+              style={GlobalStyles.authInput}
+            />
+            <TextInput
+              label="כתובת"
+              mode="outlined"
+              value={address}
+              onChangeText={setAddress}
+              style={GlobalStyles.authInput}
+            />
+          </View>
+        )}
+
+        {/* Next Button */}
+        <Button
+          mode="contained"
+          onPress={handleOrderCompletion}
+          disabled={!isNextButtonEnabled()}
+          contentStyle={{ height: 50 }}
+        >
+          הבא
+        </Button>
+      </Card.Content>
     </View>
-
-    {/* Delivery Button */}
-    <View style={GlobalStyles.profileButton}>
-      <Button
-        mode="outlined"
-        onPress={() => setSelectedOption('Delivery')}
-        contentStyle={[
-          GlobalStyles.checkoutOptionButton,
-          selectedOption === 'Delivery' && GlobalStyles.filledButton,
-        ]}
-      >
-        משלוח
-      </Button>
-    </View>
-
-    {/* Address Inputs for Delivery */}
-    {selectedOption === 'Delivery' && (
-      <View>
-        <TextInput
-          label="עיר"
-          mode="outlined"
-          value={city}
-          onChangeText={setCity}
-          style={GlobalStyles.authInput}
-        />
-        <TextInput
-          label="כתובת"
-          mode="outlined"
-          value={address}
-          onChangeText={setAddress}
-          style={GlobalStyles.authInput}
-        />
-      </View>
-    )}
-
-    {/* Next Button */}
-    <Button
-      mode="contained"
-      onPress={handleOrderCompletion}
-      disabled={!isNextButtonEnabled()}
-      contentStyle={[
-        GlobalStyles.checkoutOptionButton,
-        isNextButtonEnabled() && GlobalStyles.enabledNextButton,
-      ]}
-    >
-      הבא
-    </Button>
-  </Card.Content>
-</View>
   );
 };
 

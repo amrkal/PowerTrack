@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, FlatList, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { Text, Button } from 'react-native-paper';
+import { View, FlatList, Image, TouchableOpacity } from 'react-native';
+import { Text } from 'react-native-paper';
 import { GlobalStyles } from '../constants/GlobalStyles';
 import { Category } from './types';
 
@@ -13,12 +13,10 @@ interface CategoryListProps {
 
 const CategoryList: React.FC<CategoryListProps> = ({ categories, onSelectCategory, globalCategory }) => {
   return (
-    <View style={{ flex: 1, padding: 10 }}>
+    <View style={GlobalStyles.containerss}>
       {/* Global Category Card */}
       <View style={GlobalStyles.globalCategoryCard}>
-        <Button mode = "contained" style={GlobalStyles.globalCategoryTitle}>
-          {globalCategory}
-        </Button>
+        <Text style={GlobalStyles.globalCategoryTitle}>{globalCategory}</Text>
       </View>
 
       {/* Subcategories displayed as cards */}
@@ -38,11 +36,10 @@ const CategoryList: React.FC<CategoryListProps> = ({ categories, onSelectCategor
         )}
         keyExtractor={(item) => item.sortGroup.toString()}
         numColumns={2}
-        columnWrapperStyle={{ justifyContent: 'space-between' }}
+        columnWrapperStyle={GlobalStyles.columnWrapper}
       />
     </View>
   );
 };
-
 
 export default CategoryList;

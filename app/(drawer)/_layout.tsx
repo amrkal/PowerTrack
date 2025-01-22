@@ -8,6 +8,7 @@ import {
   LayoutAnimation,
 } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Drawer } from 'expo-router/drawer';
 import { CartProvider } from '../context/CartContext';
 import { UserProvider } from '../context/UserContext';
@@ -41,8 +42,8 @@ export default function Layout() {
 
 // Custom Drawer Content
 function CustomDrawerContent(props: DrawerContentComponentProps) {
-  // Access Paper theme colors for dynamic dark/light backgrounds
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
 
   const [mainTypes, setMainTypes] = useState<string[]>([]);
   const [isProductsExpanded, setProductsExpanded] = useState(false);
@@ -64,100 +65,39 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setProductsExpanded(!isProductsExpanded);
   };
+  
 
-  // Create styles AFTER getting the theme
-  const styles = StyleSheet.create({
-    safeAreaView: {
-      flex: 1,
-    },
-    drawerContent: {
-      flex: 1,
-      padding: 20,
-      // Use the theme's background color instead of a fixed light color:
-      backgroundColor: colors.background,
-    },
-    logoImage: {
-      width: 100,
-      height: 100,
-      resizeMode: 'contain',
-      marginBottom: 20,
-      alignSelf: 'center',
-    },
-    drawerItem: {
-      paddingVertical: 15,
-      paddingHorizontal: 10,
-      borderRadius: 5,
-      marginVertical: 5,
-      // Use the theme’s "surface" (or a variant) instead of #fff:
-      backgroundColor: colors.surface,
-
-      borderColor: '#ffa64d', // Keep your brand accent if desired
-      borderWidth: 2,
-      borderStyle: 'solid',
-    },
-    drawerItemText: {
-      fontSize: 16,
-      // Use a theme text color for better dark-mode contrast:
-      color: colors.onSurface,
-    },
-    row: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    arrowIcon: {
-      marginLeft: 10,
-      // You can also use colors.onSurface for the icon:
-      color: colors.onSurface,
-    },
-    subMenu: {
-      paddingLeft: 20,
-    },
-    subMenuItem: {
-      paddingVertical: 10,
-      paddingHorizontal: 10,
-      marginVertical: 5,
-      borderRadius: 5,
-      // Use a subtle variant or second-level elevation color:
-      backgroundColor: colors.elevation?.level2 || colors.surfaceVariant || colors.surface,
-    },
-    subMenuItemText: {
-      fontSize: 14,
-      color: colors.onSurface,
-    },
-    noCategories: {
-      fontSize: 14,
-      textAlign: 'center',
-      marginVertical: 20,
-      color: colors.onSurface,
-    },
-  });
-
+ 
   return (
-    <SafeAreaView style={styles.safeAreaView}>
-      <View style={styles.drawerContent}>
+    <SafeAreaView style={[styles.safeAreaView, { backgroundColor: colors.background }]}>
+    <View style={[styles.drawerContent,]} > 
         <Image
           source={require('../../assets/images/logo.png')}
           resizeMode="contain"
           style={styles.logoImage}
         />
+
+        {/* Drawer Items */}
         <TouchableOpacity
           onPress={() => props.navigation.navigate('HomePage')}
-          style={styles.drawerItem}
+          style={[styles.drawerItem,]}
         >
-          <Text style={styles.drawerItemText}>דף הבית</Text>
+          <MaterialIcons name="home" size={24} style={[styles.drawerIcon, { color: colors.primary }]} />
+          <Text style={[styles.drawerItemText,]}>דף הבית</Text>
         </TouchableOpacity>
 
         {/* Products Section */}
-        <TouchableOpacity style={styles.drawerItem} onPress={toggleProductsSection}>
-          <View style={styles.row}>
-            <Text style={styles.drawerItemText}>המוצרים שלנו</Text>
-            <MaterialIcons
-              name={isProductsExpanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
-              size={24}
-              style={styles.arrowIcon}
-            />
-          </View>
+        <TouchableOpacity
+          style={[styles.drawerItem,]}
+          onPress={toggleProductsSection}
+        >
+          <MaterialIcons name="shopping-bag" size={24} style={[styles.drawerIcon, { color: colors.primary }]} />
+          <Text style={[styles.drawerItemText, { color: colors.onSurface }]}>המוצרים שלנו</Text>
+          <MaterialIcons
+            name={isProductsExpanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
+            size={24}
+            style={[styles.arrowIcon, { color: colors.onSurface }]}
+          />
         </TouchableOpacity>
 
         {isProductsExpanded && (
@@ -167,46 +107,90 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
                 <TouchableOpacity
                   key={index}
                   onPress={() => props.navigation.navigate('ProductsPage', { selectedType: type })}
-                  style={styles.subMenuItem}
+                  style={[styles.subMenuItem,]}
                 >
-                  <Text style={styles.subMenuItemText}>{type}</Text>
+                  <Text style={[styles.subMenuItemText,]}>{type}</Text>
                 </TouchableOpacity>
               ))
             ) : (
-              <Text style={styles.noCategories}>אין קטגוריות זמינות</Text>
+              <Text style={[styles.noCategories,]}>אין קטגוריות זמינות</Text>
             )}
           </View>
         )}
 
         {/* Other Drawer Items */}
-        <TouchableOpacity
-          onPress={() => props.navigation.navigate('MyCartPage')}
-          style={styles.drawerItem}
-        >
-          <Text style={styles.drawerItemText}>עגלת קניות</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => props.navigation.navigate('ProfilePage')}
-          style={styles.drawerItem}
-        >
-          <Text style={styles.drawerItemText}>פרופיל</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => props.navigation.navigate('AboutUsPage')}
-          style={styles.drawerItem}
-        >
-          <Text style={styles.drawerItemText}>אודות</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => props.navigation.navigate('ContactUsPage')}
-          style={styles.drawerItem}
-        >
-          <Text style={styles.drawerItemText}>צור קשר</Text>
-        </TouchableOpacity>
+        {[
+          { label: 'עגלת קניות', icon: 'shopping-cart', route: 'MyCartPage' },
+          { label: 'פרופיל', icon: 'person', route: 'ProfilePage' },
+          { label: 'אודות', icon: 'info', route: 'AboutUsPage' },
+          { label: 'צור קשר', icon: 'contact-mail', route: 'ContactUsPage' },
+        ].map((item, index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={() => props.navigation.navigate(item.route)}
+            style={[styles.drawerItem, ]}
+          >
+            <MaterialIcons name={item.icon as any} size={24} style={[styles.drawerIcon, { color: colors.primary }]} />
+            <Text style={[styles.drawerItemText,]}>{item.label}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
     </SafeAreaView>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  safeAreaView: {
+    flex: 1,
+  },
+  drawerContent: {
+    flex: 1,
+    padding: 16,
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
+    elevation: 4,
+  },
+  logoImage: {
+    width: 100,
+    height: 100,
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  drawerItem: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  drawerIcon: {
+    marginLeft: 10,
+  },
+  drawerItemText: {
+    fontSize: 16,
+    textAlign: 'right',
+    flex: 1,
+    marginRight: 10,
+  },
+  arrowIcon: {
+    marginLeft: 10,
+  },
+  subMenu: {
+    paddingLeft: 20,
+    marginTop: 8,
+  },
+  subMenuItem: {
+    paddingVertical: 8,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  subMenuItemText: {
+    fontSize: 14,
+    textAlign: 'right',
+  },
+  noCategories: {
+    fontSize: 14,
+    textAlign: 'center',
+  },
+});

@@ -24,6 +24,7 @@ const customLightTheme = {
   colors: {
     ...MD3LightTheme.colors,
     ...Colors.light,
+    icon: '#007aff', // Custom icon color for light mode
   },
 };
 
@@ -32,6 +33,7 @@ const customDarkTheme = {
   colors: {
     ...MD3DarkTheme.colors,
     ...Colors.dark,
+    icon: '#007aff', // Custom icon color for light mode
   },
 };
 
@@ -61,19 +63,25 @@ export const CustomThemeProvider: React.FC<{ children: React.ReactNode }> = ({ c
         const storedTheme = await AsyncStorage.getItem('darkMode');
         const storedLanguage = await AsyncStorage.getItem('language');
         if (storedTheme) setIsDarkMode(JSON.parse(storedTheme));
-        if (storedLanguage) setLanguage(storedLanguage);
+        setLanguage(storedLanguage || 'עברית'); // Fallback to 'עברית'
       } catch (error) {
-        console.error('Failed to load theme or language preference:', error);
+        console.error('Failed to load preferences:', error);
       }
     };
+    
     loadPreferences();
   }, []);
 
   const toggleDarkMode = async () => {
-    const newVal = !isDarkMode;
-    setIsDarkMode(newVal);
-    await AsyncStorage.setItem('darkMode', JSON.stringify(newVal));
+    try {
+      const newVal = !isDarkMode;
+      setIsDarkMode(newVal);
+      await AsyncStorage.setItem('darkMode', JSON.stringify(newVal));
+    } catch (error) {
+      console.error('Error saving dark mode preference:', error);
+    }
   };
+  
 
   const changeLanguage = async (selectedLanguage: string) => {
     setLanguage(selectedLanguage);
@@ -94,7 +102,7 @@ export const CustomThemeProvider: React.FC<{ children: React.ReactNode }> = ({ c
           <View style={{ flex: 1, backgroundColor: paperTheme.colors.background }}>
             <StatusBar
               barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-              backgroundColor={isDarkMode ? '#000000' : '#FFFFFF'}
+              backgroundColor={paperTheme.colors.background}
               translucent
             />
             {children}

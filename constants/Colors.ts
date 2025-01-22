@@ -1,5 +1,10 @@
 import { MD3LightTheme as DefaultTheme, MD3DarkTheme as DarkTheme } from 'react-native-paper';
 
+const tintColorLight = '#0a7ea4';
+const tintColorDark = '#fff';
+
+
+
 export const Colors = {
   light: {
     ...DefaultTheme.colors, // Extend the default light theme
@@ -19,6 +24,7 @@ export const Colors = {
     inverseSurface: "#212121", // Inverse dark background
     inverseOnSurface: "#E0E0E0", // Inverse light text
     custom: "#ffa64d",
+    icon : "#1E3A8A",
   },
   dark: {
     ...DarkTheme.colors, // Extend the default dark theme
@@ -37,8 +43,69 @@ export const Colors = {
     outline: "#757575", // Light gray for outlines
     inverseSurface: "#E0E0E0", // Light background for inverse
     inverseOnSurface: "#212121", // Dark text on inverse
+    icon : "#1E3A8A",
   },
 };
+
+export const Color = {
+  light: {
+    text: '#11181C',
+    background: '#FFFFFF',
+    tint: tintColorLight,
+    icon: '#687076',
+    tabIconDefault: '#687076',
+    tabIconSelected: tintColorLight,
+    primary: '#007BFF',
+    primaryHover: '#0056b3',
+    primaryActive: '#004080',
+    primaryDisabled: '#D3D3D3',
+    secondary: '#6C757D',
+    success: '#28A745',
+    successHover: '#218838',
+    danger: '#DC3545',
+    dangerHover: '#c82333',
+    warning: '#FFC107',
+    info: '#17A2B8',
+    white: '#FFFFFF',
+    black: '#000000',
+    gray: '#6C757D',
+    grayLight: '#E9ECEF',
+    grayDark: '#343A40',
+    shadowLight: 'rgba(0, 0, 0, 0.1)',
+    shadowDark: 'rgba(0, 0, 0, 0.2)',
+    gradientStart: '#007BFF',
+    gradientEnd: '#00D4FF',
+    gradientDarkStart: '#1A1A1A',
+    gradientDarkEnd: '#333333',
+    disabled: '#A9A9A9',
+  },
+  dark: {
+    text: '#ECEDEE',
+    background: '#151718',
+    tint: tintColorDark,
+    icon: '#9BA1A6',
+    tabIconDefault: '#9BA1A6',
+    tabIconSelected: tintColorDark,
+    primary: '#007BFF',
+    primaryHover: '#0056b3',
+    primaryActive: '#004080',
+    secondary: '#6C757D',
+    success: '#28A745',
+    successHover: '#218838',
+    danger: '#DC3545',
+    dangerHover: '#c82333',
+    white: '#FFFFFF',
+    black: '#000000',
+    gray: '#6C757D',
+    grayLight: '#343A40',
+    grayDark: '#11181C',
+    shadowLight: 'rgba(0, 0, 0, 0.3)',
+    shadowDark: 'rgba(0, 0, 0, 0.5)',
+    gradientStart: '#1A1A1A',
+    gradientEnd: '#333333',
+  },
+};
+
 
 
 

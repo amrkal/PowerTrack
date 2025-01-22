@@ -55,7 +55,7 @@ const ProductsPage: React.FC = () => {
             <MaterialIcons
               name="arrow-back"
               size={30}
-              color="#1E3A8A"
+              color={Colors.light.primary}
               style={{ marginRight: 10 }}
               onPress={() => setSelectedCategory(null)}
             />

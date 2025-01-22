@@ -36,7 +36,7 @@ const AboutUsPage: React.FC = () => {
         {/* Logo Image Section */}
         <View>
           <Image 
-            source={require('../../assets/logo.jpg')} 
+            source={require('../../assets/images/logo.png')} 
             style={GlobalStyles.logoImage}
           />
         </View>

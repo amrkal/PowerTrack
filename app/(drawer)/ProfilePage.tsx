@@ -27,6 +27,7 @@ import { colors } from "react-native-elements";
 import { Colors } from "@/constants/Colors";
 import { useThemeContext } from "../context/ThemeContext";
 import { useTheme } from 'react-native-paper';
+import axiosInstance from "@/services/axiosInstance";
 
 
 
@@ -60,25 +61,95 @@ const ProfilePage: React.FC = () => {
       headerLeft: () => null, // Hide the default header
     });
   }, [navigation]);
+
   
-  const handleProfileImageEdit = async () => {
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permissionResult.granted) {
-      Alert.alert("הרשאה נדחתה", "נא לאפשר גישה לתמונות שלך.");
-      return;
+  const requestPermissions = async () => {
+    const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
+    const mediaLibraryPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!cameraPermission.granted || !mediaLibraryPermission.granted) {
+      Alert.alert("Permission Denied", "Please allow access to your camera and media library.");
+      return false;
     }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled && result.assets) {
-      setProfileImage(result.assets[0].uri);
+    return true;
+  };
+  
+  
+  const uploadProfileImage = async (imageUri: string): Promise<string | null> => {
+    console.log("Uploading image URI:", imageUri);
+  
+    try {
+      const response = await fetch(imageUri);
+      if (!response.ok) {
+        throw new Error('Failed to fetch the image. Response not OK.');
+      }
+  
+      const blob = await response.blob();
+      console.log("Blob created from image:", blob);
+  
+      // Prepare FormData to send with the request
+      const formData = new FormData();
+      formData.append("profileImage", blob, "profile.jpg");
+  
+      // Make the POST request to upload the image without the Authorization header
+      const uploadResponse = await axiosInstance.post("/users/profileImage", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",   // Set content type to multipart/form-data for file upload
+        },
+      });
+  
+      // Handle the response from the server
+      if (uploadResponse.status === 200 && uploadResponse.data?.filePath) {
+        console.log("Image uploaded successfully:", uploadResponse.data.filePath);
+        setProfileImage(uploadResponse.data.filePath);  // Update state with the uploaded image URL
+        return uploadResponse.data.filePath;
+      } else {
+        console.error("Error uploading image:", uploadResponse);
+        Alert.alert("Error", "Something went wrong during the upload.");
+        return null;
+      }
+    } catch (error) {
+      // Log and alert for any errors
+      console.error("Error during image upload:", error);
+      Alert.alert("Upload Error", "An error occurred while uploading the image.");
+      return null;
     }
   };
+  
+  
+  
+  
+  const handleChoosePhoto = async () => {
+    const hasPermission = await requestPermissions();
+    if (!hasPermission) {
+      Alert.alert("Permission Denied", "Please allow access to your camera and media library.");
+      return;
+    }
+  
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      quality: 1,
+    });
+  
+    if (result.canceled) return;
+  
+    const uri = result.assets[0].uri;
+    console.log("Picked image URI:", uri);
+  
+    setProfileImage(uri); // Set the image URI for preview
+  
+    // Upload the image to the backend
+    // const uploadedImageUrl = await uploadProfileImage(uri);
+    // if (uploadedImageUrl) {
+    //   setProfileImage(uploadedImageUrl); // Set backend image URL after upload
+    // }
+  };
+  
+  
+  
+  
+  
+  
 
   const handleSaveProfile = async () => {
     try {
@@ -88,10 +159,10 @@ const ProfilePage: React.FC = () => {
         familyName,
         email,
         phone_number: phoneNumber,
-        profileImage,
+        profileImage, // The updated image URL from the backend
       };
   
-      // Save to the backend without updating the global context
+      // Save the updated user to the backend
       await updateProfileData(updatedUser);
   
       // Close editing mode locally
@@ -127,7 +198,7 @@ const ProfilePage: React.FC = () => {
         />
         <TouchableOpacity
           style={GlobalStyles.profileEditIcon}
-          onPress={handleProfileImageEdit}
+          onPress={handleChoosePhoto}
         >
           <MaterialIcons name="camera" size={24} color={Colors.dark.primary} />
         </TouchableOpacity>
@@ -245,7 +316,7 @@ const ProfilePage: React.FC = () => {
             <Switch
               value={isDarkMode}
               onValueChange={toggleDarkMode}
-              style={{ marginLeft: "auto" }}
+              style={{ margin: "auto" }}
             />
           </TouchableOpacity>
           <Divider />

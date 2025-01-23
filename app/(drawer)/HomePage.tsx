@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { DrawerActions, useNavigation } from '@react-navigation/native';
 import axiosInstance from '../../services/axiosInstance';
 import { Product } from '../../components/types'; // Use your existing Product type
@@ -25,8 +25,8 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <MaterialIcons
-          name="menu"
+        <AntDesign
+          name="bars"
           size={30}
           color="#1E3A8A"
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}

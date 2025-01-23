@@ -4,8 +4,9 @@ import { Text, Button, TextInput } from 'react-native-paper';
 import { useNavigation, useRouter } from 'expo-router'; // Import useRouter
 import { useCart } from '../context/CartContext'; // Import CartContext
 import { GlobalStyles } from '@/constants/GlobalStyles';
-import { MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { DrawerActions } from '@react-navigation/native';
+
 
 
 
@@ -18,8 +19,8 @@ const MyCartPage: React.FC = () => {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <MaterialIcons
-          name="menu"
+        <AntDesign
+          name="bars"
           size={30}
           color="#1E3A8A"
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}

@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
+from flask_mail import Mail
 from flask_pymongo import PyMongo
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -30,6 +31,15 @@ mail.init_app(app)
 jwt = JWTManager(app)
 
 
+mail = Mail(app)
+UPLOAD_FOLDER = './uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB
+
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+
 # Register Blueprints
 from blueprints.auth import auth_bp
 from blueprints.items import items_bp
@@ -37,7 +47,7 @@ from blueprints.users import users_bp
 from blueprints.resetPassword import resetPassword_bp
 from blueprints.orders import orders_bp
 from blueprints.categories import categories_bp  # Blueprint where update logic is
-from blueprints.admin import admin_bp  # Blueprint where admin routes are
+
 
 app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(items_bp, url_prefix='/items')
@@ -45,7 +55,6 @@ app.register_blueprint(users_bp, url_prefix='/users')
 app.register_blueprint(resetPassword_bp, url_prefix='/resetPassword')
 app.register_blueprint(orders_bp, url_prefix='/orders')
 app.register_blueprint(categories_bp, url_prefix='/categories')  # Corrected URL prefix
-app.register_blueprint(admin_bp, url_prefix='/admin')  # Your admin routes
 
 @app.route('/privacy-policy', methods=['GET'])
 def get_privacy_policy():

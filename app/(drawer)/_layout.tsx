@@ -14,7 +14,9 @@ import { CartProvider } from '../context/CartContext';
 import { UserProvider } from '../context/UserContext';
 import { DrawerContentComponentProps } from '@react-navigation/drawer';
 import axiosInstance from '../../services/axiosInstance';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons,AntDesign } from '@expo/vector-icons';
+import { Color ,Colors } from '@/constants/Colors';
+
 
 // Top-level Layout
 export default function Layout() {
@@ -34,15 +36,17 @@ export default function Layout() {
           <Drawer.Screen name="ProfilePage" options={{ title: '' }} />
           <Drawer.Screen name="AboutUsPage" options={{ title: '' }} />
           <Drawer.Screen name="ContactUsPage" options={{ title: '' }} />
+          <Drawer.Screen name="CheckOutPage" options={{ title: '' }} />
         </Drawer>
       </CartProvider>
     </UserProvider>
   );
 }
 
+
 // Custom Drawer Content
 function CustomDrawerContent(props: DrawerContentComponentProps) {
-  const { colors } = useTheme();
+
   const insets = useSafeAreaInsets();
 
   const [mainTypes, setMainTypes] = useState<string[]>([]);
@@ -69,7 +73,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
 
  
   return (
-    <SafeAreaView style={[styles.safeAreaView, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.safeAreaView,]}>
     <View style={[styles.drawerContent,]} > 
         <Image
           source={require('../../assets/images/logo.png')}
@@ -82,7 +86,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
           onPress={() => props.navigation.navigate('HomePage')}
           style={[styles.drawerItem,]}
         >
-          <MaterialIcons name="home" size={24} style={[styles.drawerIcon, { color: colors.primary }]} />
+          <AntDesign name="home" size={24} style={[styles.drawerIcon, { color: Color.light.primary }]} />
           <Text style={[styles.drawerItemText,]}>דף הבית</Text>
         </TouchableOpacity>
 
@@ -91,12 +95,12 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
           style={[styles.drawerItem,]}
           onPress={toggleProductsSection}
         >
-          <MaterialIcons name="shopping-bag" size={24} style={[styles.drawerIcon, { color: colors.primary }]} />
-          <Text style={[styles.drawerItemText, { color: colors.onSurface }]}>המוצרים שלנו</Text>
-          <MaterialIcons
-            name={isProductsExpanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
+          <AntDesign name="tags" size={24} style={[styles.drawerIcon, { color: Color.light.primary }]} />
+          <Text style={[styles.drawerItemText, { color: Color.light.primary }]}>המוצרים שלנו</Text>
+          <AntDesign
+            name={isProductsExpanded ? 'up' : 'down'}
             size={24}
-            style={[styles.arrowIcon, { color: colors.onSurface }]}
+            style={[styles.arrowIcon, { color: Color.light.primary }]}
           />
         </TouchableOpacity>
 
@@ -120,17 +124,17 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
 
         {/* Other Drawer Items */}
         {[
-          { label: 'עגלת קניות', icon: 'shopping-cart', route: 'MyCartPage' },
-          { label: 'פרופיל', icon: 'person', route: 'ProfilePage' },
+          { label: 'עגלת קניות', icon: 'shoppingcart', route: 'MyCartPage' },
+          { label: 'פרופיל', icon: 'user', route: 'ProfilePage' },
           { label: 'אודות', icon: 'info', route: 'AboutUsPage' },
-          { label: 'צור קשר', icon: 'contact-mail', route: 'ContactUsPage' },
+          { label: 'צור קשר', icon: 'phone', route: 'ContactUsPage' },
         ].map((item, index) => (
           <TouchableOpacity
             key={index}
             onPress={() => props.navigation.navigate(item.route)}
             style={[styles.drawerItem, ]}
           >
-            <MaterialIcons name={item.icon as any} size={24} style={[styles.drawerIcon, { color: colors.primary }]} />
+            <AntDesign name={item.icon as any} size={24} style={[styles.drawerIcon, { color: Color.light.primary }]} />
             <Text style={[styles.drawerItemText,]}>{item.label}</Text>
           </TouchableOpacity>
         ))}

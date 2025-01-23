@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { View, FlatList, Text, Dimensions } from "react-native";
 import { useRoute, RouteProp, useNavigation, DrawerActions, useFocusEffect } from "@react-navigation/native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import axiosInstance from "../../services/axiosInstance";
 import CategoryList from "../../components/CategoryList";
 import ProductList from "../../components/ProductList";
@@ -10,7 +10,7 @@ import Loader from "../../components/Loader";
 import { useCart } from "../context/CartContext";
 import { useUser } from "../context/UserContext";
 import { Product, Category } from "../../components/types";
-import { Colors } from "../../constants/Colors";
+import { Colors , Color } from "../../constants/Colors";
 import { Badge } from "react-native-paper";
 
 type ProductsPageRouteParams = {
@@ -41,10 +41,10 @@ const ProductsPage: React.FC = () => {
     navigation.setOptions({
       headerRight: () => (
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <MaterialIcons
-            name="menu"
+          <AntDesign
+            name="bars"
             size={30}
-            color={Colors.light.primary}
+            color={Color.Blue}
             onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
           />
         </View>
@@ -52,26 +52,26 @@ const ProductsPage: React.FC = () => {
       headerLeft: () => (
         <View style={{ flexDirection: "row", alignItems: "center", marginLeft: 15 }}>
             {selectedCategory !== null && (
-            <MaterialIcons
-              name="arrow-back"
-              size={30}
-              color={Colors.light.primary}
+            <AntDesign
+              name="left"
+              size={27}
+              color={Color.Blue}
               style={{ marginRight: 10 }}
               onPress={() => setSelectedCategory(null)}
             />
           )}
-          <MaterialIcons
-            name="account-circle"
-            size={30}
-            color={Colors.light.primary}
+          <AntDesign
+            name="user"
+            size={27}
+            color={Color.Blue}
             style={{ marginRight: 15 }}
             onPress={() => navigation.navigate("ProfilePage" as never)}
           />
           <View>
-            <MaterialIcons
-              name="shopping-cart"
-              size={30}
-              color={Colors.light.primary}
+            <AntDesign
+              name="shoppingcart"
+              size={27}
+              color={Color.Blue}
               onPress={() => navigation.navigate("MyCartPage" as never)}
             />
             {cart.length > 0 && ( // Display badge only if there are items in the cart

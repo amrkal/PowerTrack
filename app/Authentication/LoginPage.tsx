@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { TextInput, Button, useTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import axiosInstance from '../../services/axiosInstance';
 import { GlobalStyles } from '@/constants/GlobalStyles';
@@ -46,6 +46,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
+      <ImageBackground source={background} style={GlobalStyles.authBackground}>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAwareScrollView
           contentContainerStyle={GlobalStyles.authScrollContent}
@@ -54,7 +55,7 @@ const LoginPage: React.FC = () => {
           enableOnAndroid={true}
           //scrollEnabled={false} // Disable user scroll gestures
         >
-      <ImageBackground source={background} style={GlobalStyles.authBackground}>
+
           <View style={GlobalStyles.authContainer}>
             <TextInput
               mode="outlined"
@@ -63,7 +64,7 @@ const LoginPage: React.FC = () => {
               onChangeText={setUsername}
               autoCapitalize="none"
               style={GlobalStyles.authInput}
-              left={<TextInput.Icon icon="account" color="blue" />}
+              left={<TextInput.Icon icon={() => <AntDesign name="user" size={20} color={theme.colors.primary} />} />}
             />
             <TextInput
               mode="outlined"
@@ -72,7 +73,7 @@ const LoginPage: React.FC = () => {
               onChangeText={setPassword}
               secureTextEntry
               style={GlobalStyles.authInput}
-              left={<TextInput.Icon icon="lock" color="blue"/>}
+              left={<TextInput.Icon icon={() => <AntDesign name="lock" size={20} color={theme.colors.primary} />}/>}
             />
             <View style={GlobalStyles.authRow}>
               <Button
@@ -93,9 +94,9 @@ const LoginPage: React.FC = () => {
               כניסה
             </Button>
           </View>
-      </ImageBackground>
       </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
+      </ImageBackground>
   );
 };
 

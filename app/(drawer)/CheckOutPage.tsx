@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { View, Alert, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Alert, StyleSheet, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
 import { Button, TextInput, Card, Title } from 'react-native-paper';
 import axiosInstance from '../../services/axiosInstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
+import { useNavigation, useRouter } from 'expo-router';
 import { useCart } from '../context/CartContext';
 import { GlobalStyles } from '@/constants/GlobalStyles';
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { DrawerActions } from '@react-navigation/native';
 
 const CheckOutPage: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<'Collection' | 'Delivery' | null>(null);
@@ -13,6 +15,21 @@ const CheckOutPage: React.FC = () => {
   const [address, setAddress] = useState('');
   const { cart, clearCart } = useCart();
   const router = useRouter();
+
+  const navigation = useNavigation<any>();
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <AntDesign
+          name="bars"
+          size={30}
+          color="#1E3A8A"
+          onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+        />
+      ),
+      headerLeft: () => null, // Hide the default header
+    });
+  }, [navigation]);
 
   const handleOrderCompletion = async () => {
     try {
@@ -61,7 +78,11 @@ const CheckOutPage: React.FC = () => {
   };
 
   return (
-    <View style={GlobalStyles.checkoutCard}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1 }}
+    >
+      <ScrollView contentContainerStyle={GlobalStyles.checkoutCard}>
       <Card.Content>
         <Title style={GlobalStyles.checkoutTitle}>בחרו כיצד תרצו לקבל את ההזמנה שלכם.</Title>
 
@@ -123,7 +144,8 @@ const CheckOutPage: React.FC = () => {
           הבא
         </Button>
       </Card.Content>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

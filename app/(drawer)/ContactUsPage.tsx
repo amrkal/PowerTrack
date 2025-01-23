@@ -1,5 +1,5 @@
 import { GlobalStyles } from '@/constants/GlobalStyles';
-import { MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { DrawerActions } from '@react-navigation/native';
 import { useNavigation } from 'expo-router';
 import React, { useEffect } from 'react';
@@ -20,8 +20,8 @@ const ContactUsPage: React.FC = () => {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <MaterialIcons
-          name="menu"
+        <AntDesign
+          name="bars"
           size={30}
           color="#1E3A8A"
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
@@ -82,6 +82,7 @@ const ContactUsPage: React.FC = () => {
               {mailto}
             </Text>
           </View>
+
 
           {/* Phone Contact */}
           <View style={GlobalStyles.contactItem}>

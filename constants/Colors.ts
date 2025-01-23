@@ -28,7 +28,7 @@ export const Colors = {
   },
   dark: {
     ...DarkTheme.colors, // Extend the default dark theme
-    primary: "#1E3A8A", // Deep blue for dark mode primary
+    primary: "#ffa64d", // Deep blue for dark mode primary
     onPrimary: "#FFFFFF", // White text on primary
     primaryContainer: "#1565C0", // Darker blue container
     secondary: "#039BE5", // Bright blue for secondary
@@ -42,12 +42,15 @@ export const Colors = {
     onSurfaceVariant: "#E0E0E0", // Light text on variant surfaces
     outline: "#757575", // Light gray for outlines
     inverseSurface: "#E0E0E0", // Light background for inverse
-    inverseOnSurface: "#212121", // Dark text on inverse
+    inverseOnSurface: "#212121", // Dark text on inverse.
+    custom: "#ffa64d",
     icon : "#1E3A8A",
   },
 };
 
 export const Color = {
+  Blue : "#1E3A8A",
+  Orange: "#ffa64d",
   light: {
     text: '#11181C',
     background: '#FFFFFF',

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Alert, View, StyleSheet, ImageBackground, SafeAreaView } from 'react-native';
-import { Text, TextInput, Button, IconButton } from 'react-native-paper';
+import { Text, TextInput, Button, IconButton, useTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import axiosInstance from '../../services/axiosInstance';
 import { GlobalStyles } from '@/constants/GlobalStyles';
 
@@ -12,6 +12,7 @@ const background = require('../../assets/images/loginBG.jpg');
 const ForgotPasswordPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const navigation = useNavigation(); 
+  const theme = useTheme(); // Access theme colors
 
   const handlePasswordReset = async () => {
     if (!email) {
@@ -37,7 +38,7 @@ const ForgotPasswordPage: React.FC = () => {
           style={GlobalStyles.authBackButton}
           onPress={() => navigation.goBack()}
         />
-        <View style={GlobalStyles.authContainer}>
+        <View style={[GlobalStyles.authContainer, { position: 'fixed' }]}>
           <Text style={GlobalStyles.authInstructionText}>הזן את כתובת האימייל שלך</Text>
 
           <TextInput
@@ -47,7 +48,8 @@ const ForgotPasswordPage: React.FC = () => {
             onChangeText={setEmail}
             keyboardType="email-address"
             autoCapitalize="none"
-            left={<TextInput.Icon icon={() => <MaterialIcons name="email" size={20} />} />}
+            left={<TextInput.Icon icon={() => <AntDesign name="mail" size={20} color={theme.colors.primary}/>} />}
+            style={{ marginBottom: 20 }}
           />
 
           <Button mode="contained" onPress={handlePasswordReset}>

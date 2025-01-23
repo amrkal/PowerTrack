@@ -34,17 +34,32 @@ class User:
     
     @staticmethod
     def update_user(user_id, data):
+        # Find the existing user
+        user = db_mongo.users.find_one({'_id': ObjectId(user_id)})
+        if not user:
+            raise ValueError("User not found")
+
+        # Merge existing user fields with data
+        # If data[key] doesn't exist, keep user[key] as is
+        updated_user = {
+            'name': data.get('name', user.get('name')),
+            'family_name': data.get('familyName', user.get('family_name')),
+            'email': data.get('email', user.get('email')),
+            'city': data.get('city', user.get('city')),
+            'zip_code': data.get('zip_code', user.get('zip_code')),
+            'address': data.get('address', user.get('address')),
+            # also handle profile_image
+            'profile_image': data.get('profile_image', user.get('profile_image')),
+            # ... any other fields you store in the user doc ...
+        }
+
         db_mongo.users.update_one(
             {'_id': ObjectId(user_id)},
-            {'$set': {
-                'name': data['name'],
-                'family_name': data['familyName'],
-                'email': data['email'],
-                'city': data['city'],
-                'zip_code': data['zip_code'],
-                'address': data['address']
-            }}
+            {'$set': updated_user}
         )
+
+        return updated_user  # optional
+
     
 
     @staticmethod
@@ -84,6 +99,7 @@ class User:
     @staticmethod
     def approve_user(username):
         db_mongo.users.update_one({'username': username}, {'$set': {'is_approved': True}})
+
 
 
 

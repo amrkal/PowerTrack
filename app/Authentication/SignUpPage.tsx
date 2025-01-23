@@ -9,13 +9,13 @@ import {
   StyleSheet,
   ImageBackground,
 } from "react-native";
-import { Text, TextInput, Button } from "react-native-paper";
+import { Text, TextInput, Button, useTheme } from "react-native-paper";
 import { GlobalStyles } from "../../constants/GlobalStyles";
 import { router, useNavigation } from "expo-router";
 import axiosInstance from '../../services/axiosInstance';
 import { StackNavigationProp } from "@react-navigation/stack";
 import parsePhoneNumberFromString from "libphonenumber-js";
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import axios from 'axios';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
@@ -40,6 +40,7 @@ const SignUpPage: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   const navigation = useNavigation<SignUpPageNavigationProp>();
+  const theme = useTheme(); // Access theme colors
 
   const validatePhoneNumber = (phone: string): boolean => {
     const phoneNumber = parsePhoneNumberFromString(phone, 'IL');
@@ -87,15 +88,15 @@ const SignUpPage: React.FC = () => {
   };
 
   return (
+    <ImageBackground source={background} style={GlobalStyles.authBackground}>
     <KeyboardAwareScrollView
           contentContainerStyle={GlobalStyles.authScrollContent}
           keyboardShouldPersistTaps="handled"
           extraScrollHeight={100}
-          enableOnAndroid={true}
-          //scrollEnabled={false} // Disable user scroll gestures
         >
+          
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ImageBackground source={background} style={GlobalStyles.authBackground}>
+
             <View style={GlobalStyles.authContainer}>
               {/* שם פרטי ושם משפחה */}
               <View style={GlobalStyles.authRow}>
@@ -106,7 +107,7 @@ const SignUpPage: React.FC = () => {
                   value={name}
                   onChangeText={setName}
                   style={{ flex: 1, marginRight: 8 }} // תופס חצי מהשטח
-                  left={<TextInput.Icon icon={() => <MaterialIcons name="account-circle" size={20} />} />}
+                  left={<TextInput.Icon icon={() => <AntDesign name="user" size={20} color={theme.colors.primary}/>} />}
                 />
                 <TextInput
                   mode="outlined"
@@ -115,7 +116,7 @@ const SignUpPage: React.FC = () => {
                   value={familyName}
                   onChangeText={setFamilyName}
                   style={{ flex: 1 }} // תופס את החצי השני
-                  left={<TextInput.Icon icon={() => <MaterialIcons name="account-circle" size={20} />} />}
+                  left={<TextInput.Icon icon={() => <AntDesign  name="user" size={20} color={theme.colors.primary}/>} />}
                 />
               </View>
 
@@ -127,7 +128,7 @@ const SignUpPage: React.FC = () => {
                 value={username}
                 onChangeText={setUsername}
                 style={GlobalStyles.authInput}
-                left={<TextInput.Icon icon={() => <MaterialIcons name="person" size={20} />} />}
+                left={<TextInput.Icon icon={() => <AntDesign  name="user" size={20} color={theme.colors.primary}/>} />}
               />
 
               {/* אימייל */}
@@ -139,7 +140,7 @@ const SignUpPage: React.FC = () => {
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 style={GlobalStyles.authInput}
-                left={<TextInput.Icon icon={() => <MaterialIcons name="email" size={20} />} />}
+                left={<TextInput.Icon icon={() => <AntDesign name="mail" size={20} color={theme.colors.primary}/>} />}
               />
 
               {/* סיסמה */}
@@ -151,7 +152,7 @@ const SignUpPage: React.FC = () => {
                 onChangeText={setPassword}
                 secureTextEntry
                 style={GlobalStyles.authInput}
-                left={<TextInput.Icon icon={() => <MaterialIcons name="lock" size={20} />} />}
+                left={<TextInput.Icon icon={() => <AntDesign  name="lock" size={20} color={theme.colors.primary}/>} />}
               />
 
               {/* מספר טלפון */}
@@ -163,7 +164,7 @@ const SignUpPage: React.FC = () => {
                 value={phoneNumber}
                 onChangeText={setPhoneNumber}
                 style={GlobalStyles.authInput}
-                left={<TextInput.Icon icon={() => <MaterialIcons name="phone" size={20} />} />}
+                left={<TextInput.Icon icon={() => <AntDesign name="phone" size={20} color={theme.colors.primary}/>} />}
               />
 
               {/* כפתור הרשמה */}
@@ -174,9 +175,10 @@ const SignUpPage: React.FC = () => {
                 כבר יש לך חשבון?
               </Button>
             </View>
-      </ImageBackground>
+      
     </TouchableWithoutFeedback>
         </KeyboardAwareScrollView>
+        </ImageBackground>
   );
 };
 

@@ -13,21 +13,24 @@ import {
   Button,
   Avatar,
   Divider,
-  IconButton,
   Switch,
 } from "react-native-paper";
-import * as ImagePicker from "expo-image-picker";
+
 import { useUser } from "../context/UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useNavigation } from "expo-router";
 import { GlobalStyles } from "@/constants/GlobalStyles";
-import { MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons, createIconSetFromFontello } from "@expo/vector-icons";
 import { DrawerActions } from "@react-navigation/native";
 import { colors } from "react-native-elements";
 import { Colors } from "@/constants/Colors";
 import { useThemeContext } from "../context/ThemeContext";
 import { useTheme } from 'react-native-paper';
 import axiosInstance from "@/services/axiosInstance";
+import { ActionSheetIOS, Platform } from "react-native";
+import * as ImagePicker from "expo-image-picker";
+
+
 
 
 
@@ -45,15 +48,15 @@ const ProfilePage: React.FC = () => {
     // App Preferences
   const { isDarkMode, toggleDarkMode} = useThemeContext();
   const [language, changeLanguage] = useState("עברית");
-
+  const theme = useTheme();
     
   const navigation = useNavigation<any>();
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <MaterialIcons
-          name="menu"
-          size={30}
+        <AntDesign
+          name="bars"
+          size={25}
           color={Colors.dark.primary}
           onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
         />
@@ -62,93 +65,120 @@ const ProfilePage: React.FC = () => {
     });
   }, [navigation]);
 
+
+    // (Optional) Fetch protected image on mount:
+    useEffect(() => {
+      // Uncomment if you want to fetch the protected image on page load:
+       fetchProfileImage();
+    }, []);
   
+    // 1) Utility to fetch a "protected" image and convert it to Base64
+    const fetchProfileImage = async () => {
+      try {
+        const response = await axiosInstance.get("/users/protected-image", {
+          responseType: "arraybuffer", // request binary data
+        });
+  
+        // Convert array buffer to base64 (RN-compatible)
+        const base64 = btoa(
+          new Uint8Array(response.data).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            ""
+          )
+        );
+  
+        // Prepend the data URI prefix
+        const base64ImageUri = `data:image/jpeg;base64,${base64}`;
+  
+        setProfileImage(base64ImageUri);
+      } catch (error) {
+        console.error("Error fetching image:", error);
+      }
+    };
+
+  
+  // Utility Functions
   const requestPermissions = async () => {
-    const cameraPermission = await ImagePicker.requestCameraPermissionsAsync();
-    const mediaLibraryPermission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!cameraPermission.granted || !mediaLibraryPermission.granted) {
-      Alert.alert("Permission Denied", "Please allow access to your camera and media library.");
+    const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
+    const { status: libraryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (cameraStatus !== "granted" || libraryStatus !== "granted") {
+      Alert.alert("Permissions Required", "Please allow camera and media library access.");
       return false;
     }
     return true;
   };
-  
-  
-  const uploadProfileImage = async (imageUri: string): Promise<string | null> => {
-    console.log("Uploading image URI:", imageUri);
-  
+
+  const uploadProfileImage = async (imageUri: string): Promise<void> => {
     try {
-      const response = await fetch(imageUri);
-      if (!response.ok) {
-        throw new Error('Failed to fetch the image. Response not OK.');
-      }
-  
-      const blob = await response.blob();
-      console.log("Blob created from image:", blob);
-  
-      // Prepare FormData to send with the request
       const formData = new FormData();
-      formData.append("profileImage", blob, "profile.jpg");
   
-      // Make the POST request to upload the image without the Authorization header
-      const uploadResponse = await axiosInstance.post("/users/profileImage", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",   // Set content type to multipart/form-data for file upload
-        },
-      });
+      // Append the file using the React Native format
+      formData.append("profileImage", {
+        uri: imageUri,              // The local URI of the image
+        name: "profile.jpg",        // A filename for the server
+        type: "image/jpeg",         // The MIME type
+      } as any); // Casting to 'any' to bypass TS restrictions
   
-      // Handle the response from the server
-      if (uploadResponse.status === 200 && uploadResponse.data?.filePath) {
-        console.log("Image uploaded successfully:", uploadResponse.data.filePath);
-        setProfileImage(uploadResponse.data.filePath);  // Update state with the uploaded image URL
-        return uploadResponse.data.filePath;
+      // Let Axios set the Content-Type automatically
+      const uploadResponse = await axiosInstance.post("/users/profileImage", formData);
+  
+      if (uploadResponse.status === 200) {
+        console.log("Upload successful:", uploadResponse.data);
       } else {
-        console.error("Error uploading image:", uploadResponse);
-        Alert.alert("Error", "Something went wrong during the upload.");
-        return null;
+        console.error("Upload failed:", uploadResponse.data);
       }
     } catch (error) {
-      // Log and alert for any errors
-      console.error("Error during image upload:", error);
-      Alert.alert("Upload Error", "An error occurred while uploading the image.");
-      return null;
+      console.error("Upload error:", error);
     }
   };
   
   
   
-  
+
   const handleChoosePhoto = async () => {
     const hasPermission = await requestPermissions();
-    if (!hasPermission) {
-      Alert.alert("Permission Denied", "Please allow access to your camera and media library.");
-      return;
+    if (!hasPermission) return;
+
+    if (Platform.OS === "ios") {
+      ActionSheetIOS.showActionSheetWithOptions(
+        { options: ["Take Photo", "Choose from Library", "Cancel"], cancelButtonIndex: 2 },
+        async (buttonIndex) => {
+          if (buttonIndex === 0) await launchCamera();
+          if (buttonIndex === 1) await launchImageLibrary();
+        }
+      );
+    } else {
+      Alert.alert("Select Option", "Choose a photo source", [
+        { text: "Camera", onPress: launchCamera },
+        { text: "Gallery", onPress: launchImageLibrary },
+        { text: "Cancel", style: "cancel" },
+      ]);
     }
-  
+  };
+
+  const launchCamera = async () => {
+    const result = await ImagePicker.launchCameraAsync({ allowsEditing: true, quality: 1 });
+    if (!result.canceled) {
+      const uri = result.assets[0].uri;
+      setProfileImage(uri);
+      await uploadProfileImage(uri);
+    }
+  };
+
+  const launchImageLibrary = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
       allowsEditing: true,
-      quality: 1,
+      quality: 0.2,
     });
   
-    if (result.canceled) return;
-  
-    const uri = result.assets[0].uri;
-    console.log("Picked image URI:", uri);
-  
-    setProfileImage(uri); // Set the image URI for preview
-  
-    // Upload the image to the backend
-    // const uploadedImageUrl = await uploadProfileImage(uri);
-    // if (uploadedImageUrl) {
-    //   setProfileImage(uploadedImageUrl); // Set backend image URL after upload
-    // }
+    if (!result.canceled) {
+      const uri = result.assets[0].uri;
+      setProfileImage(uri); // Preview the image
+      await uploadProfileImage(uri); // Upload to backend
+    }
   };
-  
-  
-  
-  
-  
   
 
   const handleSaveProfile = async () => {
@@ -200,7 +230,7 @@ const ProfilePage: React.FC = () => {
           style={GlobalStyles.profileEditIcon}
           onPress={handleChoosePhoto}
         >
-          <MaterialIcons name="camera" size={24} color={Colors.dark.primary} />
+          <AntDesign name="camera" size={24} color={Colors.dark.primary} />
         </TouchableOpacity>
       </View>
 
@@ -223,7 +253,6 @@ const ProfilePage: React.FC = () => {
       {/* Profile Edit View */}
       {isEditing && (
         <View>
-          <Text variant="titleLarge">עריכת פרופיל</Text>
           <TextInput
             label="שם פרטי"
             mode="outlined"
@@ -271,8 +300,8 @@ const ProfilePage: React.FC = () => {
             style={GlobalStyles.settingsItem}
             onPress={() => router.push("/Profile/OrderHistoryPage")}
           >
-            <IconButton icon="history" />
-            <Text variant="titleMedium">היסטוריית הזמנות</Text>
+            <AntDesign name="calendar" size={25} color={theme.colors.primary}  />
+            <Text style= {GlobalStyles.settingsItemText}>היסטוריית הזמנות</Text>
           </TouchableOpacity>
           <Divider />
 
@@ -280,8 +309,8 @@ const ProfilePage: React.FC = () => {
             style={GlobalStyles.settingsItem}
             onPress={() => router.push("/Profile/ReturnsPage")}
           >
-            <IconButton icon="history" />
-            <Text variant="titleMedium">החזרות</Text>
+            <AntDesign name="retweet" size={25} color={theme.colors.primary} />
+            <Text style= {GlobalStyles.settingsItemText}>החזרות</Text>
           </TouchableOpacity>
           <Divider />
 
@@ -289,8 +318,8 @@ const ProfilePage: React.FC = () => {
             style={GlobalStyles.settingsItem}
             onPress={() => router.push("/Profile/PrivacyPolicyPage")}
           >
-            <IconButton icon="file-document" />
-            <Text variant="titleMedium">מדיניות פרטיות</Text>
+            <AntDesign name="filetext1" size={25} color={theme.colors.primary}  />
+            <Text style= {GlobalStyles.settingsItemText}>מדיניות פרטיות</Text>
           </TouchableOpacity>
           <Divider />
 
@@ -298,8 +327,8 @@ const ProfilePage: React.FC = () => {
             style={GlobalStyles.settingsItem}
             onPress={() => router.push("/Profile/PrivacySettingsPage")}
           >
-            <IconButton icon="security" />
-            <Text variant="titleMedium">הגדרות פרטיות</Text>
+            <AntDesign name= "lock" size={25} color={theme.colors.primary} />
+            <Text style= {GlobalStyles.settingsItemText}>הגדרות פרטיות</Text>
           </TouchableOpacity>
           <Divider />
 
@@ -308,16 +337,15 @@ const ProfilePage: React.FC = () => {
             style={GlobalStyles.settingsItem}
             onPress={toggleDarkMode}
           >
-            <IconButton icon={isDarkMode ? "brightness-3" : "brightness-7"} />
-            <Text variant="titleMedium">
-            מצב כהה: {isDarkMode ? "פועל" : "כבוי"}
-            </Text>
-
-            <Switch
-              value={isDarkMode}
-              onValueChange={toggleDarkMode}
-              style={{ margin: "auto" }}
+            <AntDesign
+              name={(isDarkMode ? "moon" : "bulb1") as keyof typeof AntDesign.glyphMap}
+              size={25}
+              color={theme.colors.primary}
             />
+            <Text style= {GlobalStyles.settingsItemText}>
+              מצב כהה: {isDarkMode ? "פועל" : "כבוי"}
+            </Text>
+            <Switch value={isDarkMode} onValueChange={toggleDarkMode} />
           </TouchableOpacity>
           <Divider />
 
@@ -327,8 +355,8 @@ const ProfilePage: React.FC = () => {
               changeLanguage(language === "עברית" ? "English" : "עברית")
             }
           >
-            <IconButton icon="web" />
-            <Text variant="titleMedium">שפה: {language}</Text>
+            <AntDesign name="earth" size={25} color={theme.colors.primary}  />
+            <Text style= {GlobalStyles.settingsItemText}>שפה: {language}</Text>
           </TouchableOpacity>
           <Divider />
 
@@ -336,8 +364,8 @@ const ProfilePage: React.FC = () => {
             style={GlobalStyles.settingsItem}
             onPress={handleLogout}
           >
-            <IconButton icon="logout" />
-            <Text variant="titleMedium">התנתק</Text>
+            <AntDesign name="logout" size={25} color={theme.colors.primary}  />
+            <Text style= {GlobalStyles.settingsItemText}>התנתק</Text>
           </TouchableOpacity>
           <Divider />
         </View>
@@ -347,11 +375,6 @@ const ProfilePage: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 
 export default ProfilePage;

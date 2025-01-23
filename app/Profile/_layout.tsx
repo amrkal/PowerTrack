@@ -3,6 +3,7 @@ import { Stack } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Color } from '@/constants/Colors';
 
 const ProfileLayout = () => {
   const router = useRouter();
@@ -12,7 +13,12 @@ const ProfileLayout = () => {
       screenOptions={({ navigation }) => ({
         headerLeft: () => (
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <MaterialIcons name="arrow-back" size={24} />
+            <MaterialIcons
+              name="arrow-back"
+              size={30}
+              color={Color.Blue}
+              style={{ marginRight: 10 }}
+            />
           </TouchableOpacity>
         ),
         headerShown: true,

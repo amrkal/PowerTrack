@@ -16,7 +16,7 @@ import {
   ThemeProvider as NavigationThemeProvider,
 } from '@react-navigation/native';
 
-import { Colors } from '../../constants/Colors';
+import { Colors ,Color } from '../../constants/Colors';
 
 // 1. Merge Paper + Navigation themes with custom colors
 const customLightTheme = {
@@ -27,6 +27,7 @@ const customLightTheme = {
     icon: '#007aff', // Custom icon color for light mode
   },
 };
+
 
 const customDarkTheme = {
   ...MD3DarkTheme,

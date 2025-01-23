@@ -344,7 +344,7 @@ globalCategoryCard: {
   marginBottom: 20,
   borderRadius: 10,
   padding: 15,
-  backgroundColor: Colors.light.primary, // Accent color for the global category
+  backgroundColor: Color.Blue, // Accent color for the global category
   shadowColor: '#000',
   shadowOpacity: 0.1,
   shadowRadius: 5,
@@ -468,8 +468,9 @@ quantityButton: {
   width: '30%',
   height: '80%',
   justifyContent: 'center',
-  borderColor: Colors.light.primary, // Match the border to the text color
+  borderColor: Color.Blue, // Match the border to the text color
   backgroundColor: 'transparent',
+  color: Color.Blue, // Text color
   alignItems: 'center',
   borderRadius: 20,
 },
@@ -491,7 +492,8 @@ quantityInput: {
 addToCartButton: {
   marginTop:15,
   margin: 10,
-  borderColor: Colors.light.primary,
+  borderColor: Color.Blue,
+  color: Color.Blue,
   
 },
 feedback: {
@@ -624,7 +626,6 @@ checkoutButtonLabel: {
     maxWidth: 500,
     padding: 10,
     borderRadius: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.60)',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 1,
     shadowRadius: 8,
@@ -646,8 +647,7 @@ checkoutButtonLabel: {
   
   authScrollContent: {
     flexGrow: 1,
-    alignItems: 'center',
-    textAlign:'center',
+    flex: 1
   },
 
   authInput: {
@@ -709,9 +709,14 @@ profileButton: {
 
 settingsItem: {
   flexDirection: "row-reverse",
+  paddingHorizontal: 10,
   alignItems: "center",
-  paddingVertical: 10,
+  paddingVertical: 20,
 },
+settingsItemText: {
+  marginRight: 10,
+},
+
 
 profileUserName: {
   fontSize: 18,

@@ -118,7 +118,6 @@ const OrderHistoryPage = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Order History</Text>
       <FlatList
         data={orders}
         keyExtractor={(order) => order.order_number}
@@ -200,8 +199,7 @@ export default OrderHistoryPage;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: "#f4f4f4",
+
   },
   title: {
     fontSize: 24,

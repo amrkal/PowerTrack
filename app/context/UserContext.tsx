@@ -70,7 +70,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         address: userData.address,
         zip_code: userData.zip_code,
         city: userData.city,
-        profileImage: userData.photo,
+        profileImage: userData.profile_image,
         prices_tag: userData.prices_tag,
       });
     } catch (error) {
@@ -88,19 +88,21 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         return;
       }
   
-      // Send updated data to the backend
       await axiosInstance.put('/users/profile', updatedUser, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
   
-      // Do not immediately update the user state here
+      // Fetch the updated user from the server
+      await fetchProfileData();
+  
       console.log('Profile updated successfully!');
     } catch (error) {
       console.error('Error updating profile:', error);
     }
   };
+  
   
   
 

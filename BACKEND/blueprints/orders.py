@@ -3,8 +3,15 @@ from bson.objectid import ObjectId
 from datetime import datetime
 from models import Item, Order ,Returns
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_mail import Mail, Message
+from models import User  # Adjust the import based on your project structure
+from flask import current_app as app
+from extensions import mail  # Import mail from app's extensions
+
 
 orders_bp = Blueprint('orders', __name__)
+
+# Initialize mail (you can add this to your app setup)
 
 @orders_bp.route('/orders', methods=['POST'])
 @jwt_required()
@@ -19,7 +26,10 @@ def create_order():
         total_amount = data.get('total_amount')
 
         if not items:
-            return jsonify({"error": "Items and total amount are required"}), 400
+            return jsonify({"error": "'items' field is required"}), 400
+
+        if not total_amount:
+            return jsonify({"error": "'total_amount' field is required"}), 400
 
         # Validate each item
         for item in items:
@@ -59,11 +69,100 @@ def create_order():
             "updated_at": datetime.utcnow()
         }
         order_id = Order.create_order(user_id=user_id, items=items, total_amount=total_amount).inserted_id
+
+        # Send email to user after order is created
+        user = User.find_by_id(user_id)
+        user_email = user.get('email')
+        send_order_email(user_email, items, total_amount)
+
         return jsonify({"message": "Order created", "order_id": str(order_id)}), 201
 
     except Exception as e:
         print(f"Error occurred: {e}")  # Debugging
         return jsonify({"error": str(e)}), 500
+    
+
+def send_order_email(user_email, items, total_amount):
+    try:
+        subject = "Order Confirmation"
+        message_body = f"Thank you for your order!\n\nHere are the details:\n\nItems Ordered:\n"
+
+        for item in items:
+            message_body += f"- {item['name']} (Quantity: {item['quantity']})\n"
+
+        message_body += f"\nTotal Amount: {total_amount}"
+
+        msg = Message(subject,
+                      recipients=[user_email, app.config['MAIL_USERNAME']],  # Send to both user and admin email
+                      body=message_body)
+        mail.send(msg)
+
+        print("Email sent successfully!")
+    except Exception as e:
+        print(f"Error sending email: {e}")
+
+
+
+
+
+# @orders_bp.route('/orders', methods=['POST'])
+# @jwt_required()
+# def create_order():
+#     try:
+#         user_id = get_jwt_identity()  # Fetch the user's ID from the JWT token
+#         data = request.json
+#         print(f"Request data: {data}")  # Debugging
+
+#         # Extract order details from the request
+#         items = data.get('items')
+#         total_amount = data.get('total_amount')
+
+#         if not items:
+#             return jsonify({"error": "Items and total amount are required"}), 400
+
+#         # Validate each item
+#         for item in items:
+#             item_id = item.get('id')
+#             quantity_purchased = item.get('quantity')
+
+#             if not item_id or quantity_purchased is None:
+#                 return jsonify({"error": "Each item must have an ID and quantity"}), 400
+
+#             if not isinstance(quantity_purchased, int) or quantity_purchased <= 0:
+#                 return jsonify({"error": "Quantity must be a positive integer"}), 400
+
+#             # Fetch the item from the database
+#             db_item = Item.find_by_id(ObjectId(item_id))
+#             print(f"Database item: {db_item}")  # Debugging
+
+#             if not db_item:
+#                 return jsonify({"error": f"Item with ID {item_id} not found"}), 404
+
+#             # Allow negative stock levels
+#             current_quantity = db_item.get('Quantity', 0)
+#             new_quantity = current_quantity - quantity_purchased
+#             print(f"Updating item ID {item_id} with new quantity {new_quantity}")  # Debugging
+            
+#             # Update stock level
+#             update_result = Item.update_item_quantity(item_id, new_quantity)
+#             if update_result.modified_count == 0:
+#                 return jsonify({"error": f"Failed to update stock for item ID {item_id}"}), 500
+
+#         # Create the order
+#         order = {
+#             "user_id": ObjectId(user_id),
+#             "items": items,
+#             "total_amount": total_amount,
+#             "order_status": "pending",
+#             "order_date": datetime.utcnow(),
+#             "updated_at": datetime.utcnow()
+#         }
+#         order_id = Order.create_order(user_id=user_id, items=items, total_amount=total_amount).inserted_id
+#         return jsonify({"message": "Order created", "order_id": str(order_id)}), 201
+
+#     except Exception as e:
+#         print(f"Error occurred: {e}")  # Debugging
+#         return jsonify({"error": str(e)}), 500
 
 
 

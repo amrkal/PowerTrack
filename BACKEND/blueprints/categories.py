@@ -24,7 +24,7 @@ def get_category_types():
         if not types:
             logger.warning("No types found in database.")
             return jsonify({"error": "No types found"}), 404
-        logger.info("Types fetched successfully: %s", types)
+        # logger.info("Types fetched successfully: %s", types)
         return jsonify({"types": types}), 200
     except Exception as e:
         logger.error(f"Error fetching types: {e}")
@@ -40,14 +40,14 @@ def get_categories():
             if not categories:
                 logger.warning(f"No categories found for type: {category_type}")
                 return jsonify({"error": f"No categories found for type: {category_type}"}), 404
-            logger.info(f"Categories fetched successfully for type '{category_type}': {categories}")
+            # logger.info(f"Categories fetched successfully for type '{category_type}': {categories}")
         else:
             # Fetch all categories if no type is specified
             categories = Category.get_all()
             if not categories:
                 logger.warning("No categories found in database.")
                 return jsonify({"error": "No categories found"}), 404
-            logger.info("Categories fetched successfully: %s", categories)
+            # logger.info("Categories fetched successfully: %s", categories)
 
         return jsonify({"categories": categories}), 200
 

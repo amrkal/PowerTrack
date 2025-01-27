@@ -125,7 +125,7 @@ const ReturnPage = () => {
         {isSelected && (
           <TextInput
             style={styles.input}
-            placeholder="Quantity"
+            placeholder="כמות"
             keyboardType="numeric"
             onChangeText={(value) => updateQuantity(item, value)}
           />
@@ -136,7 +136,7 @@ const ReturnPage = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Returnable Items</Text>
+      <Text style={styles.header}>פריטים להחזרה</Text>
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
@@ -146,7 +146,7 @@ const ReturnPage = () => {
             keyExtractor={(item) => `${item.order_id}-${item.item_id}`}
             renderItem={renderItem}
           />
-          <Button mode="contained" onPress={() => setShowModal(true)}>Submit Return</Button>
+          <Button mode="contained" onPress={() => setShowModal(true)}>שלח החזרה</Button>
         </>
       )}
 
@@ -161,12 +161,12 @@ const ReturnPage = () => {
           <View style={styles.modalContent}>
             <TextInput
               style={styles.modalInput}
-              placeholder="Enter reason for return"
+              placeholder="סיבת החזרה"
               value={returnReason}
               onChangeText={setReturnReason}
             />
-            <Button mode="contained" onPress={handleSubmitReturn}>Submit</Button>
-            <Button onPress={() => setShowModal(false)}>Cancel</Button>
+            <Button mode="contained" onPress={handleSubmitReturn}>אישור</Button>
+            <Button onPress={() => setShowModal(false)}>ביטול</Button>
           </View>
         </View>
       </Modal>

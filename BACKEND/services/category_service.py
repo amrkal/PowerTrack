@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 def update_categories_from_excel():
     # 1. Fetch distinct SortGroups from the items collection
     distinct_sort_groups = mongo.db.items.distinct("SortGroup")
-    logger.info(f"Distinct SortGroups from items: {distinct_sort_groups}")
+    # logger.info(f"Distinct SortGroups from items: {distinct_sort_groups}")
 
     # 2. Load the mapping from the Excel file
     file_path = './Groups.xlsx'  # Use the updated Excel file
@@ -15,7 +15,7 @@ def update_categories_from_excel():
     data.columns = data.columns.str.strip()  # Strip any extra spaces
 
     # Log the column names to verify that they are correct
-    logger.info(f"Excel columns: {data.columns.tolist()}")
+    #logger.info(f"Excel columns: {data.columns.tolist()}")
 
 
 
@@ -30,7 +30,7 @@ def update_categories_from_excel():
     }
 
     # Log the mapping to ensure it's processed correctly
-    logger.info(f"Sort Group Mapping: {sort_group_mapping}")
+    #logger.info(f"Sort Group Mapping: {sort_group_mapping}")
 
     # 3. Insert or update categories in the categories collection
     categories_collection = mongo.db.categories  # Define the collection
@@ -44,7 +44,7 @@ def update_categories_from_excel():
             category_type = category_info["type"]  # Get the 'Type' field
 
             # Log each category update attempt
-            logger.info(f"Processing SortGroup: {sort_group}, Category: {category_name}, GlobalCategory: {global_category_name}, Type: {category_type}")
+            #logger.info(f"Processing SortGroup: {sort_group}, Category: {category_name}, GlobalCategory: {global_category_name}, Type: {category_type}")
 
             # Update or insert the category in the categories collection
             result = categories_collection.update_one(
@@ -60,14 +60,14 @@ def update_categories_from_excel():
                 upsert=True  # Insert if the category doesn't exist
             )
 
-            if result.matched_count > 0:
-                logger.info(f"Updated category with SortGroup: {sort_group}, GlobalCategory: {global_category_name}, Type: {category_type}")
-            else:
-                logger.info(f"Inserted new category with SortGroup: {sort_group}, GlobalCategory: {global_category_name}, Type: {category_type}")
-        else:
-            logger.warning(f"SortGroup {sort_group} not found in the mapping")
+    #         if result.matched_count > 0:
+    #             logger.info(f"Updated category with SortGroup: {sort_group}, GlobalCategory: {global_category_name}, Type: {category_type}")
+    #         else:
+    #             logger.info(f"Inserted new category with SortGroup: {sort_group}, GlobalCategory: {global_category_name}, Type: {category_type}")
+    #     else:
+    #         logger.warning(f"SortGroup {sort_group} not found in the mapping")
 
-    logger.info("Categories processed successfully!")
+    # logger.info("Categories processed successfully!")
 
 
 

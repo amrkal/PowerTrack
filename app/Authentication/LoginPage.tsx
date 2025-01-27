@@ -39,6 +39,7 @@ const LoginPage: React.FC = () => {
       }
 
       // Navigate to the Landing page after successful login
+      console.log('access_token:', access_token);
       router.push('/(drawer)/LandingPage');
     } catch (error) {
       Alert.alert('Login Failed', 'Invalid usersasasname or password');

@@ -49,7 +49,6 @@ const ProfilePage: React.FC = () => {
   const { isDarkMode, toggleDarkMode} = useThemeContext();
   const [language, changeLanguage] = useState("עברית");
   const theme = useTheme();
-    
   const navigation = useNavigation<any>();
   useEffect(() => {
     navigation.setOptions({
@@ -65,37 +64,6 @@ const ProfilePage: React.FC = () => {
     });
   }, [navigation]);
 
-
-    // (Optional) Fetch protected image on mount:
-    useEffect(() => {
-      // Uncomment if you want to fetch the protected image on page load:
-       fetchProfileImage();
-    }, []);
-  
-    // 1) Utility to fetch a "protected" image and convert it to Base64
-    const fetchProfileImage = async () => {
-      try {
-        const response = await axiosInstance.get("/users/protected-image", {
-          responseType: "arraybuffer", // request binary data
-        });
-  
-        // Convert array buffer to base64 (RN-compatible)
-        const base64 = btoa(
-          new Uint8Array(response.data).reduce(
-            (data, byte) => data + String.fromCharCode(byte),
-            ""
-          )
-        );
-  
-        // Prepend the data URI prefix
-        const base64ImageUri = `data:image/jpeg;base64,${base64}`;
-  
-        setProfileImage(base64ImageUri);
-      } catch (error) {
-        console.error("Error fetching image:", error);
-      }
-    };
-
   
   // Utility Functions
   const requestPermissions = async () => {
@@ -109,29 +77,35 @@ const ProfilePage: React.FC = () => {
     return true;
   };
 
-  const uploadProfileImage = async (imageUri: string): Promise<void> => {
+
+  const uploadProfileImage = async (imageUri: string): Promise<{ filePath: string } | undefined> => {
     try {
       const formData = new FormData();
   
-      // Append the file using the React Native format
+      // Append the file using the correct format for React Native
       formData.append("profileImage", {
-        uri: imageUri,              // The local URI of the image
-        name: "profile.jpg",        // A filename for the server
-        type: "image/jpeg",         // The MIME type
-      } as any); // Casting to 'any' to bypass TS restrictions
+        uri: imageUri,              // Local URI of the image
+        name: "profile.jpg",        // The file name (can be dynamic)
+        type: "image/jpeg",         // MIME type
+      } as any); // Casting to 'any' to avoid TypeScript issues
   
-      // Let Axios set the Content-Type automatically
-      const uploadResponse = await axiosInstance.post("/users/profileImage", formData);
+      const response = await axiosInstance.post("/users/profileImage", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
   
-      if (uploadResponse.status === 200) {
-        console.log("Upload successful:", uploadResponse.data);
+      if (response.status === 200) {
+        console.log("Upload successful:", response.data);
+        return response.data; // { filePath: 'http://your-backend/uploads/filename.jpg' }
       } else {
-        console.error("Upload failed:", uploadResponse.data);
+        console.error("Upload failed:", response.data);
       }
     } catch (error) {
       console.error("Upload error:", error);
     }
   };
+  
   
   
   
@@ -156,6 +130,7 @@ const ProfilePage: React.FC = () => {
       ]);
     }
   };
+  
 
   const launchCamera = async () => {
     const result = await ImagePicker.launchCameraAsync({ allowsEditing: true, quality: 1 });
@@ -179,6 +154,7 @@ const ProfilePage: React.FC = () => {
       await uploadProfileImage(uri); // Upload to backend
     }
   };
+  
   
 
   const handleSaveProfile = async () => {
@@ -221,9 +197,8 @@ const ProfilePage: React.FC = () => {
         <Avatar.Image
           size={100}
           source={{
-            uri:
-              profileImage ||
-              "https://i.pinimg.com/originals/07/33/ba/0733ba760b29378474dea0fdbcb97107.png",
+            uri:  "https://i.pinimg.com/originals/07/33/ba/0733ba760b29378474dea0fdbcb97107.png",
+            // profileImage  ||
           }}
         />
         <TouchableOpacity
@@ -338,7 +313,7 @@ const ProfilePage: React.FC = () => {
             onPress={toggleDarkMode}
           >
             <AntDesign
-              name={(isDarkMode ? "moon" : "bulb1") as keyof typeof AntDesign.glyphMap}
+              name={(isDarkMode ? "star" : "bulb1") as keyof typeof AntDesign.glyphMap}
               size={25}
               color={theme.colors.primary}
             />

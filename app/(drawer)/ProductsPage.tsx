@@ -36,6 +36,13 @@ const ProductsPage: React.FC = () => {
   const [isSearching, setIsSearching] = useState(false);
 
 
+  useEffect(() => {
+    console.log("Route params:", route.params);
+    console.log("Selected Type:", selectedType);
+    console.log("Selected Category:", selectedCategory);
+  }, [route.params, selectedType, selectedCategory]);
+  
+
   // Set dynamic header with back, menu, profile, and cart icons
   useEffect(() => {
     navigation.setOptions({
@@ -102,16 +109,19 @@ const ProductsPage: React.FC = () => {
     const fetchTypesAndNavigate = async () => {
       try {
         setLoading(true);
+  
+        // Fetch types from the backend
         const response = await axiosInstance.get("/categories/types");
         const fetchedTypes: string[] = response.data.types || [];
-
   
         if (fetchedTypes.length > 0) {
           const firstType = fetchedTypes[0];
-          setSelectedType(firstType);
   
-          // Correctly pass the selectedType to ProductsPage
-          navigation.navigate("ProductsPage" as never, { selectedType: firstType } as never);
+          // Only navigate or set type if no type is already selected
+          if (!selectedType) {
+            setSelectedType(firstType);
+            navigation.navigate("ProductsPage" as never, { selectedType: firstType } as never);
+          }
         }
       } catch (error) {
         console.error("Error fetching types:", error);
@@ -120,20 +130,25 @@ const ProductsPage: React.FC = () => {
       }
     };
   
+    // Call the function to fetch types
     fetchTypesAndNavigate();
-  }, []);
+  }, []); // Keep dependency array empty to run only on component mount
+  
   
 
 
   // Handle focus and reset states
   useFocusEffect(
     useCallback(() => {
+      // Reset states on navigation back to ProductsPage
       if (selectedType !== selectedTypeFromRoute) {
         setSelectedType(selectedTypeFromRoute);
-        resetStates();
+        resetStates(); // Clear categories and items
       }
     }, [selectedTypeFromRoute])
   );
+  
+  
 
   // Reset states for categories and items
   const resetStates = () => {
@@ -144,38 +159,49 @@ const ProductsPage: React.FC = () => {
   };
 
 
-  // Fetch categories
-  useEffect(() => {
-    if (!selectedType) return;
+useFocusEffect(
+  useCallback(() => {
+    // Refetch categories and reset items when the screen is focused
+    const refetchData = async () => {
+      if (selectedType) {
+        try {
+          setLoading(true);
 
-    const fetchCategories = async () => {
-      setLoading(true);
-      try {
-        const response = await axiosInstance.get("/categories/categories");
-        const data = typeof response.data === "string" ? JSON.parse(response.data.replace(/NaN/g, '"Unknown"')) : response.data;
+          // Fetch categories for the current selectedType
+          const response = await axiosInstance.get("/categories/categories");
+          const data = typeof response.data === "string"
+            ? JSON.parse(response.data.replace(/NaN/g, '"Unknown"'))
+            : response.data;
 
-        const fetchedCategories: Category[] = data.categories || [];
-        if (fetchedCategories.length) {
+          const fetchedCategories: Category[] = data.categories || [];
           const grouped = fetchedCategories.reduce<{ [key: string]: Category[] }>((acc, category) => {
             const globalCategory = category.globalCategory || "Other";
             if (!acc[globalCategory]) acc[globalCategory] = [];
             acc[globalCategory].push(category);
             return acc;
           }, {});
+
           setGroupedCategories(grouped);
-        } else {
-          console.warn("No categories found in the response");
-          setGroupedCategories({});
+
+          // Fetch items for the current selected category, if any
+          if (selectedCategory !== null) {
+            const itemResponse = await axiosInstance.get(
+              `/items/items/price/${selectedCategory}?priceListNumber=${user.prices_tag}`
+            );
+            setItems(itemResponse.data.items || []);
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
-    fetchCategories();
-  }, [selectedType]);
+    refetchData();
+  }, [selectedType, selectedCategory, user.prices_tag]) // Dependencies ensure data is refreshed properly
+);
+
 
   // Fetch items based on the selected category
   useEffect(() => {

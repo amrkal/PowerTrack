@@ -11,7 +11,7 @@ def get_items_by_same_category_price(sortGroup):
     try:
         # Get the PriceListNumber from the request's query parameters (default to 1 if not provided)
         price_list_number = request.args.get('priceListNumber', default=1, type=int)
-        print(f"Received sortGroup: {sortGroup}, PriceListNumber: {price_list_number}")
+        #print(f"Received sortGroup: {sortGroup}, PriceListNumber: {price_list_number}")
 
         # Pass both sortGroup and PriceListNumber to the method
         items = Item.get_all_items_by_same_category_price(sortGroup, price_list_number)
@@ -44,7 +44,7 @@ def get_items_by_category_price(sortGroup):
     try:
         # Get the PriceListNumber from the request's query parameters (default to 1 if not provided)
         price_list_number = request.args.get('priceListNumber', default=1, type=int)
-        print(f"Received sortGroup: {sortGroup}, PriceListNumber: {price_list_number}")
+        #print(f"Received sortGroup: {sortGroup}, PriceListNumber: {price_list_number}")
 
         # Pass both sortGroup and PriceListNumber to the method
         items = Item.get_all_items_by_category_price(sortGroup, price_list_number)
@@ -97,7 +97,7 @@ def get_items():
 def get_item_price_by_key(item_key):
     try:
         prices_tag = request.args.get('prices_tag', type=int)
-        print(f"Received item_key: {item_key}, prices_tag: {prices_tag}")
+        #print(f"Received item_key: {item_key}, prices_tag: {prices_tag}")
 
         if not prices_tag:
             print("Missing prices_tag")
@@ -111,7 +111,7 @@ def get_item_price_by_key(item_key):
 
         # Fetch the price
         price = Item.get_price_by_item_and_tag(item_key, prices_tag)
-        print(f"Price for item_key {item_key}: {price}")
+        #print(f"Price for item_key {item_key}: {price}")
         if price is None:
             return jsonify({"error": "Price not found"}), 404
 

@@ -14,33 +14,8 @@ from flask import send_from_directory
 users_bp = Blueprint('users', __name__)
 
 
-@users_bp.route('/protected-image', methods=['GET'])
-@jwt_required()
-def get_protected_image():
-    # 1. Identify the user
-    user_id = get_jwt_identity()
-    user = User.find_by_id(ObjectId(user_id))
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-
-    # 2. Check if user has a stored image path
-    profile_image_path = user.get('profile_image')
-    if not profile_image_path:
-        return jsonify({"error": "No profile image set"}), 404
-
-    # 3. Make sure the file exists
-    if not os.path.exists(profile_image_path):
-        return jsonify({"error": "File not found on server"}), 404
-
-    # 4. Return the file as a send_file (Flask will handle MIME type if extension is known)
-    # Or you can manually set a mimetype if needed
-    return send_file(profile_image_path, mimetype='image/jpeg')
 
 
-# Serve files from the 'uploads' directory
-@users_bp.route('/uploads/<path:filename>', methods=['GET'])
-def serve_uploaded_file(    ):
-    return send_from_directory('uploads', filename)
 
 @users_bp.route('/login', methods=['POST'])
 def login():
@@ -100,6 +75,7 @@ def get_profile():
         if not user:
             return jsonify({'error': 'User not found'}), 404
         print(user)
+        print(user.get('profile_image'))
         # Return the user profile data with default empty values if fields are missing
         return jsonify({
             'name': user.get('name', ''),
@@ -111,9 +87,11 @@ def get_profile():
             'prices_tag': user.get('prices_tag'),
             'profile_image': user.get('profile_image', ''),
         }), 200
+    
     except Exception as e:
         # Log the error for debugging
         return jsonify({'error': 'An internal server error occurred.'}), 500
+    
 
 
 
@@ -137,6 +115,8 @@ def update_profile():
 @jwt_required()
 def upload_profile_image():
     user_id = get_jwt_identity()
+
+    # Check if 'profileImage' is in the request
     if 'profileImage' not in request.files:
         return jsonify({"error": "No file uploaded"}), 400
 
@@ -149,22 +129,46 @@ def upload_profile_image():
     extension = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
     unique_filename = f"{uuid.uuid4().hex}.{extension}" if extension else uuid.uuid4().hex
 
-    # Save the file in 'uploads'
+    # Save the file in the 'uploads' directory
     uploads_path = "./uploads"
     os.makedirs(uploads_path, exist_ok=True)
     file_path = os.path.join(uploads_path, unique_filename)
     file.save(file_path)
 
-    # Create a public URL for the image
-    # Assuming your Flask runs at http://your-domain-or-ip:5000
-    public_url = f"http://your-domain-or-ip:5000/users/uploads/{unique_filename}"
+    # Generate a public URL
+    public_url = f"{unique_filename}"
 
-    # Update user record with the public URL
+    # Update the user's profile with the image URL
     user = User.find_by_id(ObjectId(user_id))
     if not user:
         return jsonify({"error": "User not found"}), 404
 
-    # Save the public_url in the database
     User.update_user(user_id, {"profile_image": public_url})
 
     return jsonify({"filePath": public_url}), 200
+
+
+@users_bp.route('/protected-image', methods=['GET'])
+@jwt_required()
+def get_protected_image():
+    user_id = get_jwt_identity()
+    user = User.find_by_id(ObjectId(user_id))
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    profile_image_url = user.get('profile_image')
+    if not profile_image_url:
+        return jsonify({"error": "No profile image set"}), 404
+
+    profile_image_path = os.path.join('./uploads', profile_image_url)
+
+    if not os.path.exists(profile_image_path):
+        return jsonify({"error": "File not found on server"}), 404
+
+    # Send file as binary with proper headers
+    response = send_file(profile_image_path, mimetype='image/jpeg')
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
+

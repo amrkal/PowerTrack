@@ -65,11 +65,12 @@ const VerificationPage: React.FC = () => {
     }
   };
 
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ImageBackground source={background} style={GlobalStyles.authBackground}>
-        <SafeAreaView style={GlobalStyles.authSafeArea}>
-          <View style={GlobalStyles.authContainer}>
+    <ImageBackground source={background} style={GlobalStyles.authBackground}>
+      <SafeAreaView style={GlobalStyles.authSafeArea}>
+          <View style={[GlobalStyles.authContainer, { position: 'fixed' }]}>
             <Text style={GlobalStyles.authInstructionText}>
               Verification code sent to your phone.
             </Text>

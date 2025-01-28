@@ -65,9 +65,13 @@ def verify_code():
     try:
         data = request.json
         phone_number = data.get('phone_number')
+        verification_code = data.get('code')  # Mocked verification code
 
         # Debugging: Print incoming request data to console
-        print(f"Verifying user for phone number: {phone_number}")
+        print(f"Verifying user for phone number: {phone_number} with code: {verification_code}")
+
+        if not phone_number or not verification_code:
+            return jsonify({'error': 'Phone number and verification code are required.'}), 400
 
         # Verify if the phone number exists in unverified users
         if phone_number not in unverified_users:
@@ -75,27 +79,30 @@ def verify_code():
 
         user_data = unverified_users[phone_number]
 
-        # Skip the verification code check for now
-        # Directly create the user in the main database
-        User.create_user(
-            username=user_data['username'],
-            password=user_data['password'],
-            phone_number=phone_number,
-            name=user_data['name'],
-            family_name=user_data['family_name'],
-            email=user_data['email']
-        )
+        # Mocked verification logic: accept any 6-digit code
+        if len(verification_code) == 6 and verification_code.isdigit():
+            # Directly create the user in the main database
+            User.create_user(
+                username=user_data['username'],
+                password=user_data['password'],
+                phone_number=phone_number,
+                name=user_data['name'],
+                family_name=user_data['family_name'],
+                email=user_data['email']
+            )
 
-        # Remove user from unverified_users after successful registration
-        del unverified_users[phone_number]
+            # Remove user from unverified_users after successful registration
+            del unverified_users[phone_number]
 
-        return jsonify({'message': 'User verified and registered successfully!'}), 200
+            return jsonify({'message': 'User verified and registered successfully!', 'verified': True}), 200
+        else:
+            return jsonify({'error': 'Invalid verification code.', 'verified': False}), 400
 
     except Exception as e:
         # Log the exception details for debugging
         print(f"Error in verify_code: {str(e)}")
         return jsonify({'error': 'An internal error occurred', 'details': str(e)}), 500
-    
+
 
 # @auth_bp.route('/verify-code', methods=['POST'])
 # def verify_code():

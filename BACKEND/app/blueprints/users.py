@@ -1,7 +1,7 @@
 from fileinput import filename
 from bson import ObjectId
 from flask import Blueprint, request, jsonify, send_file
-from models import User
+from app.models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required  # Import create_access_token
 from werkzeug.utils import secure_filename

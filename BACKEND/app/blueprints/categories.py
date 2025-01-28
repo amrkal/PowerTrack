@@ -2,9 +2,9 @@ from flask import Blueprint, request, jsonify
 from flask_pymongo import PyMongo
 import pandas as pd
 import logging
-from extensions import mongo
-from models import Category, Item
-from services.category_service import update_categories_from_excel
+from app.extensions import mongo
+from app.models import Category, Item
+from app.services.category_service import update_categories_from_excel
 
 categories_bp = Blueprint('categories', __name__)
 

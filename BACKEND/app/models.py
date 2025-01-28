@@ -4,9 +4,12 @@ import re
 from bson import ObjectId
 from pymongo import MongoClient, ReturnDocument
 from werkzeug.security import generate_password_hash, check_password_hash
-from config import Config
+from app.config import Config
 from flask_sqlalchemy import SQLAlchemy
 from rapidfuzz import fuzz, process
+import uuid
+import datetime
+from passlib.hash import bcrypt
 
 # Load the MONGO_URI from the Config class
 client = MongoClient(Config.MONGO_URI)
@@ -14,6 +17,57 @@ db_mongo = client['PowerTrack']
 
 # SQLAlchemy instance for SQL database
 db_sql = SQLAlchemy()
+
+class PasswordResetToken:
+    """Handles creation and validation of one-time reset tokens."""
+
+    @staticmethod
+    def create_token_for_email(email, ttl_minutes=30):
+        """
+        Create a random token for the given email.
+        Hash it, store in DB with an expiration.
+        Return the raw token to be emailed to the user.
+        """
+        raw_token = str(uuid.uuid4())  # or secrets.token_urlsafe()
+        hashed_token = bcrypt.hash(raw_token)
+
+        expires_at = datetime.datetime.utcnow() + datetime.timedelta(minutes=ttl_minutes)
+
+        reset_doc = {
+            "email": email,
+            "token": hashed_token,
+            "expires_at": expires_at,
+            "used": False,
+        }
+
+        # Insert into password_resets collection
+        db_mongo.password_resets.insert_one(reset_doc)
+        return raw_token  # Return the raw token to be emailed
+
+    @staticmethod
+    def validate_token(raw_token):
+        """
+        Find a matching token in the DB that:
+         - is not used
+         - is not expired
+         - matches raw_token when hashed
+        Return the matching doc if found, else None.
+        """
+        now = datetime.datetime.utcnow()
+        docs = db_mongo.password_resets.find({"used": False, "expires_at": {"$gt": now}})
+
+        for doc in docs:
+            # Compare hashed token with raw_token
+            if bcrypt.verify(raw_token, doc["token"]):
+                return doc
+        return None
+
+    @staticmethod
+    def mark_used(doc_id):
+        """Mark the token doc as used to prevent reuse."""
+        db_mongo.password_resets.update_one({"_id": doc_id}, {"$set": {"used": True}})
+
+
 
 class User:
     @staticmethod

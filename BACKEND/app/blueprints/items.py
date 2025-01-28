@@ -1,6 +1,6 @@
 from bson import ObjectId
 from flask import Blueprint, jsonify, request
-from models import Item
+from app.models import Item
 
 items_bp = Blueprint('items', __name__)
 

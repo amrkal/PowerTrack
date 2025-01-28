@@ -6,18 +6,21 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import logging
 import os
-from services.category_service import update_categories_from_excel
-from extensions import mail, mongo
+from app.services.category_service import update_categories_from_excel
+from app.extensions import mail, mongo
+from pymongo import MongoClient
+
 
 # Load environment variables
 load_dotenv()
+
 
 # Create Flask app instance
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
 # Configure Flask app with settings from Config
-app.config.from_object('config.Config')
+app.config.from_object('app.config.Config')
 
 # Logging for debugging
 logging.basicConfig(level=logging.INFO)
@@ -27,26 +30,25 @@ logger = logging.getLogger(__name__)
 mongo.init_app(app)
 mail.init_app(app)
 
+
 # Initialize JWT
 jwt = JWTManager(app)
 
 
-mail = Mail(app)
 UPLOAD_FOLDER = './uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB
-
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
 
 # Register Blueprints
-from blueprints.auth import auth_bp
-from blueprints.items import items_bp
-from blueprints.users import users_bp
-from blueprints.resetPassword import resetPassword_bp
-from blueprints.orders import orders_bp
-from blueprints.categories import categories_bp  # Blueprint where update logic is
+from app.blueprints.auth import auth_bp
+from app.blueprints.items import items_bp
+from app.blueprints.users import users_bp
+from app.blueprints.resetPassword import resetPassword_bp
+from app.blueprints.orders import orders_bp
+from app.blueprints.categories import categories_bp  # Blueprint where update logic is
 
 
 app.register_blueprint(auth_bp, url_prefix='/auth')

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-from models import User
+from app.models import User
 
 auth_bp = Blueprint('auth', __name__)
 # Temporary in-memory store for unverified users (in production, use a database or Redis)

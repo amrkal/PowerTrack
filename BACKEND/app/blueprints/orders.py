@@ -1,12 +1,12 @@
 from flask import Blueprint, jsonify, request
 from bson.objectid import ObjectId
 from datetime import datetime
-from models import Item, Order ,Returns
+from app.models import Item, Order ,Returns
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask_mail import Mail, Message
-from models import User  # Adjust the import based on your project structure
+from app.models import User  # Adjust the import based on your project structure
 from flask import current_app as app
-from extensions import mail  # Import mail from app's extensions
+from app.extensions import mail  # Import mail from app's extensions
 
 
 orders_bp = Blueprint('orders', __name__)

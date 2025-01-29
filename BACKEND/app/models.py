@@ -8,7 +8,6 @@ from app.config import Config
 from flask_sqlalchemy import SQLAlchemy
 from rapidfuzz import fuzz, process
 import uuid
-import datetime
 from passlib.hash import bcrypt
 
 # Load the MONGO_URI from the Config class

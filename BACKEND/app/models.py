@@ -224,12 +224,24 @@ class Item:
     def get_all():
         # Regular expression to match the pattern "**-***"
         pattern = r'^\d{2}-\d{3}$'
-        return list(db_mongo.items.find({"ItemKey": {"$regex": pattern}}))
+        return list(db_mongo.items.find({"ItemKey": {"$regex": pattern}, "$or": [
+        {"isVisible": True},
+        {"isVisible": {"$exists": False}}
+    ]}))
    
     @staticmethod
     def find_by_item_key(item_key):
-        return db_mongo.items.find_one({"ItemKey": item_key})
-
+        """
+        Returns a single item by 'ItemKey',
+        only if isVisible is True or missing.
+        """
+        return db_mongo.items.find_one({
+            "ItemKey": item_key,
+            "$or": [
+                {"isVisible": True},
+                {"isVisible": {"$exists": False}}
+            ]
+        })
     @staticmethod
     def get_all_items_by_category(sortGroup):
         """Fetch all items belonging to a specific category by sortGroup"""
@@ -237,7 +249,10 @@ class Item:
         try:
             # Query MongoDB to find items by the category's sortGroup
             items = list(db_mongo.items.find(
-                {"SortGroup": sortGroup}, 
+                {"SortGroup": sortGroup ,"$or": [
+                        {"isVisible": True},
+                        {"isVisible": {"$exists": False}}
+                    ]}, 
                 {
                     "_id": 1,  # We need _id to convert to string later
                     "ItemKey": 1,
@@ -275,7 +290,10 @@ class Item:
         try:
             # Query MongoDB to find items by the category's sortGroup
             items = list(db_mongo.items.find(
-                {"SortGroup": sortGroup}, 
+                {"SortGroup": sortGroup,"$or": [
+                        {"isVisible": True},
+                        {"isVisible": {"$exists": False}}
+                    ]}, 
                 {
                     "_id": 1,  # We need _id to convert to string later
                     "ItemKey": 1,
@@ -317,7 +335,10 @@ class Item:
         try:
             # Query MongoDB to find items by the category's sortGroup
             items = list(db_mongo.items.find(
-                {"SortGroup": sortGroup}, 
+                {"SortGroup": sortGroup,"$or": [
+                        {"isVisible": True},
+                        {"isVisible": {"$exists": False}}
+                    ]}, 
                 {
                     "_id": 1,  # We need _id to convert to string later
                     "ItemKey": 1,
@@ -394,7 +415,10 @@ class Item:
 
     @staticmethod
     def search(query, limit=50, threshold=60):
-        all_items = list(db_mongo.items.find())
+        all_items = list(db_mongo.items.find({"$or": [
+                        {"isVisible": True},
+                        {"isVisible": {"$exists": False}}
+                    ]}))
         matched_items = []
 
         for item in all_items:
@@ -415,27 +439,6 @@ class Item:
 
         return matched_items[:limit]
 
-
-
-    # @staticmethod
-    # def search(query, limit=50):
-
-    #     # Escape special characters in the query
-    #     escaped_query = re.escape(query)
-
-    #     # Build a case-insensitive regex for the search query
-    #     search_regex = {'$regex': escaped_query, '$options': 'i'}
-
-    #     # Create the query to search both ItemKey and ItemName
-    #     search_query = {
-    #         '$or': [
-    #             {'ItemKey': search_regex},
-    #             {'ItemName': search_regex}
-    #         ]
-    #     }
-
-    #     # Execute the query with a limit
-    #     return list(db_mongo.items.find(search_query).limit(limit))
     
 
     @staticmethod
@@ -488,7 +491,10 @@ class Item:
 
     @staticmethod
     def find_by_id(item_id):
-        return db_mongo.items.find_one({"_id": item_id})
+        return db_mongo.items.find_one({"_id": item_id,"$or": [
+                {"isVisible": True},
+                {"isVisible": {"$exists": False}}
+            ]})
 
     @staticmethod
     def update_item(item_id, data):
@@ -530,7 +536,10 @@ class Item:
         try:
             # Fetch the latest items based on the creation date or item ID
             items = list(db_mongo.items.find(
-                {}, 
+                {"$or": [
+                {"isVisible": True},
+                {"isVisible": {"$exists": False}}
+            ]}, 
                 {
                     "_id": 1,
                     "ItemKey": 1,

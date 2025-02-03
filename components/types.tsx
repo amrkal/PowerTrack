@@ -1,5 +1,8 @@
 // types.ts (or inside the same component if you prefer)
 export interface Product {
+    type: string | number | (string | number)[] | null | undefined;
+    sortGroup: any;
+    discount: boolean;
     id: string;
     item_key: string;
     item_name: string;

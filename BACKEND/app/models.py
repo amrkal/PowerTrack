@@ -261,7 +261,8 @@ class Item:
                     "description": 1,
                     "Quantity": 1,
                     "SortGroup": 1,
-                    "Price": 1
+                    "Price": 1,
+
                 }
             ))
 
@@ -570,6 +571,42 @@ class Item:
             return formatted_items
         except Exception as e:
             print(f"Error fetching latest items: {str(e)}")
+            return []
+        
+
+    @staticmethod
+    def get_discounted_items(limit=10, PriceListNumber=None):
+        """Retrieve items that have a DiscountPrc greater than 0 and include DiscountCode."""
+        try:
+            discounted_items = db_mongo.items.find({"DiscountPrc": {"$gt": 0}, "$or": [
+                {"isVisible": True},
+                {"isVisible": {"$exists": False}}
+            ]}).limit(limit)
+
+            items_list = []
+            for item in discounted_items:
+                price = Item.get_price_by_item_and_tag(item['ItemKey'], PriceListNumber)  # Fetch price from price list
+                discount_percentage = item.get("DiscountPrc", 0)  # Use DiscountPrc instead of discount
+                discounted_price = price - (price * discount_percentage / 100)  # Calculate discounted price
+                discount_code = item.get("DiscountCode", "")  # Include DiscountCode
+
+                items_list.append({
+                    'id': str(item['_id']),
+                    'item_key': item.get('ItemKey'),
+                    'item_name': item.get('ItemName'),
+                    'description': item.get('description', ''),
+                    'price': price,
+                    'discount_percentage': discount_percentage,  # Discount percentage
+                    'discounted_price': round(discounted_price, 2),  # Final price after discount
+                    'discount_code': discount_code,  # Include DiscountCode
+                    'sortGroup': item.get('SortGroup', 'others'),
+                    'quantity': item.get('Quantity', 0),
+                    'image': item.get('image', ''),
+                    'added_date': item.get('DatF', datetime.now().isoformat())
+                })
+            return items_list
+        except Exception as e:
+            print(f"Error fetching discounted items: {str(e)}")
             return []
 
 

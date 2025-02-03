@@ -14,7 +14,7 @@ import { Colors , Color } from "../../constants/Colors";
 import { Badge } from "react-native-paper";
 
 type ProductsPageRouteParams = {
-  ProductsPage: { selectedType: string | null; items?: Product[]; searchQuery?: string };
+  ProductsPage: { selectedType: string | null;selectedCategory?: string | null; items?: Product[]; searchQuery?: string };
 };
 
 const ProductsPage: React.FC = () => {
@@ -25,9 +25,13 @@ const ProductsPage: React.FC = () => {
   const navigation = useNavigation<any>();
   const selectedTypeFromRoute = route.params?.selectedType || null;
   const searchItemsFromRoute = route.params?.items || null;
+  const selectedCategoryFromRoute = route.params?.selectedCategory || null  // Convert to number safely
+
+
+
 
   const [groupedCategories, setGroupedCategories] = useState<{ [key: string]: Category[] }>({});
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(selectedCategoryFromRoute ? String(selectedCategoryFromRoute) : null); // Initialize category
   const [selectedType, setSelectedType] = useState<string | null>(selectedTypeFromRoute);
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<Product[]>([]);
@@ -302,7 +306,7 @@ useFocusEffect(
             return (
               <CategoryList
                 categories={filteredCategories}
-                onSelectCategory={setSelectedCategory}
+                onSelectCategory={(categoryId: number) => setSelectedCategory(String(categoryId))}
                 isMobile={true}
                 globalCategory={globalCategory}
               />

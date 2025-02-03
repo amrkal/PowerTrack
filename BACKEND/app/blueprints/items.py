@@ -21,7 +21,20 @@ def get_items_by_same_category_price(sortGroup):
         return jsonify({'error': str(e)}), 500
     
 
+@items_bp.route('/items/discounted', methods=['GET'])
+def get_discounted_items():
+    try:
+        limit = int(request.args.get('limit', 10))  # Get limit from query params
+        PriceListNumber = request.args.get('prices_tag', type=int)  # Fetch price list tag
+        discounted_items = Item.get_discounted_items(limit, PriceListNumber)  # Fetch discounted items
+
+        return jsonify({"items": discounted_items}), 200
+    except Exception as e:
+        print(f"Error fetching discounted items: {e}")
+        return jsonify({'error': 'Internal server error occurred'}), 500
+
 # Route to get the latest items
+
 @items_bp.route('/items/latest', methods=['GET'])
 def get_latest_items():
     try:

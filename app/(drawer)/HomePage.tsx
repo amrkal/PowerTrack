@@ -50,16 +50,18 @@ const HomePage: React.FC = () => {
     });
   }, [navigation]);
 
-  // Function to navigate to the category page and show the selected item
   const handleItemPress = (item: Product) => {
     router.push({
       pathname: "/ProductsPage",
       params: {
-        selectedType: "תעשייה", // Dynamically pass the item's type
-        selectedCategory: "10", // Dynamically pass the item's category (converted to string)
+        selectedType: "תעשייה", // Navigate to the selected type
+        searchQuery: item.item_key, // Search for the specific item
       },
     });
   };
+  
+  
+  
   
   
   

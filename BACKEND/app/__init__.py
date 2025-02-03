@@ -65,8 +65,10 @@ def get_privacy_policy():
 # Call the function to update categories from Excel at app startup
 def create_app():
     # Initialize any other app configurations or extensions here
-    update_categories_from_excel()
+    with app.app_context():  # Ensure it runs inside an app context
+        update_categories_from_excel()
     return app
+
 
 # Define a test route to check if app is working
 @app.route('/')

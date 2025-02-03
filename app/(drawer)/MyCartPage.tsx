@@ -68,6 +68,7 @@ const MyCartPage: React.FC = () => {
     throw new Error('Function not implemented.');
   }
 
+
   return (
     <View style ={GlobalStyles.CartGLobal}>
             <FlatList
@@ -83,10 +84,15 @@ const MyCartPage: React.FC = () => {
               style={GlobalStyles.deleteButton}
               compact
               onPress={() => handleDelete(item.id)} children={undefined}/>
-            <Image
-              source={item.image ? { uri: item.image } : require('../../assets/images/icon.png')}
-              style={GlobalStyles.cartItemImage}
-            />
+              <Image
+                source={
+                  item.image && item.image.startsWith("http")
+                    ? { uri: item.image }
+                    : require('../../assets/images/icon.png') // Fallback image
+                }
+                style={GlobalStyles.cartItemImage}
+                resizeMode="cover"
+              />
             <View style={GlobalStyles.cartItemDetails}>
               <Text style={GlobalStyles.cartItemName}>{item.item_name}</Text>
               <Text style={GlobalStyles.cartItemPrice}>₪{item.price.toFixed(2)}</Text>

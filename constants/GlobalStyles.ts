@@ -376,7 +376,7 @@ categoryCard: {
 },
 categoryImage: {
   width: '100%',
-  height: '70%',
+  height: '90%',
   resizeMode: 'cover', // Cover image to fit the available space
   borderRadius: 8,
   marginBottom: 10,
@@ -462,7 +462,7 @@ quantityContainer: {
   alignItems: 'center',
   flex: 1,
   marginTop: 10,
-  alignSelf:'center',
+
 },
 quantityButton: {
   width: '30%',
@@ -472,7 +472,6 @@ quantityButton: {
   backgroundColor: 'transparent',
   color: Color.Blue, // Text color
   alignItems: 'center',
-  borderRadius: 20,
 },
 quantityInput: {
   width: '30%', // Ensure the width accommodates numbers comfortably
@@ -546,10 +545,13 @@ totalText: {
 },
 
 cartItemImage: {
-  width: 100,
-  height: 100,
+  width: 110,
+  height: 110,
   borderRadius: Border.base,
   marginRight: Gap.base,
+  resizeMode: 'cover', 
+  backgroundColor: '#f8f9fa',
+
 },
 
 cartItemDetails: {

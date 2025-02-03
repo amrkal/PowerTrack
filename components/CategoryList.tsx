@@ -4,6 +4,9 @@ import { Text } from 'react-native-paper';
 import { GlobalStyles } from '../constants/GlobalStyles';
 import { Category } from './types';
 
+// Import the fallback image correctly
+const fallbackImage = require('../assets/images/icon.png');
+
 interface CategoryListProps {
   categories: Category[];
   onSelectCategory: (categoryId: number) => void;
@@ -22,18 +25,27 @@ const CategoryList: React.FC<CategoryListProps> = ({ categories, onSelectCategor
       {/* Subcategories displayed as cards */}
       <FlatList
         data={categories}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => onSelectCategory(item.sortGroup)}
-            style={GlobalStyles.categoryCard}
-          >
-            <Image
-              source={{ uri: item.image || '../../assets/images/logo.png' }}
-              style={GlobalStyles.categoryImage}
-            />
-            <Text style={GlobalStyles.categoryName}>{item.name}</Text>
-          </TouchableOpacity>
-        )}
+        renderItem={({ item }) => {
+          // Ensure that item.image is only used if it's a valid URL
+          const imageSource =
+            item.image && item.image.startsWith('http')
+              ? { uri: item.image }
+              : fallbackImage; // Fallback to local image
+
+          return (
+            <TouchableOpacity
+              onPress={() => onSelectCategory(item.sortGroup)}
+              style={GlobalStyles.categoryCard}
+            >
+              <Image
+                source={imageSource}
+                style={GlobalStyles.categoryImage}
+                resizeMode="cover"
+              />
+              <Text style={GlobalStyles.categoryName}>{item.name}</Text>
+            </TouchableOpacity>
+          );
+        }}
         keyExtractor={(item) => item.sortGroup.toString()}
         numColumns={2}
         columnWrapperStyle={GlobalStyles.columnWrapper}

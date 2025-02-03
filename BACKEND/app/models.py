@@ -160,7 +160,7 @@ class Category:
     @staticmethod
     def get_all():
         """ Retrieve all categories with pagination support """
-        return list(db_mongo.categories.find({}, {"_id": 0, "sortGroup": 1, "globalCategory": 1,"name": 1, "type": 1}))
+        return list(db_mongo.categories.find({}, {"_id": 0, "sortGroup": 1, "globalCategory": 1,"name": 1, "type": 1, "image":1}))
 
     @staticmethod
     def get_unique_types():
@@ -174,13 +174,14 @@ class Category:
 
 
     @staticmethod
-    def create_category(sortGroup, name, description=None):
+    def create_category(sortGroup, name, description=None, image=""):
         """ Create a new category """
         try:
             category_data = {
                 'sortGroup': sortGroup,
                 'name': name,
                 'description': description if description else '',
+                'image': image,  # New field for image
                 'createdAt': datetime.utcnow(),
                 'updatedAt': datetime.utcnow(),
                 'status': 'active'  # Default status is active

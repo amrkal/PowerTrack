@@ -31,7 +31,6 @@ const ProductsPage: React.FC = () => {
   const [selectedType, setSelectedType] = useState<string | null>(selectedTypeFromRoute);
   const [loading, setLoading] = useState(true);
   const [items, setItems] = useState<Product[]>([]);
-  const [isSearchActive, setIsSearchActive] = useState(false);
   const flatListRef = useRef<FlatList>(null);
   const [isSearching, setIsSearching] = useState(false);
 
@@ -154,7 +153,7 @@ const ProductsPage: React.FC = () => {
   const resetStates = () => {
     setSelectedCategory(null);
     setGroupedCategories({});
-    setIsSearchActive(false);
+    setIsSearching(false);
     setItems([]);
   };
 
@@ -205,7 +204,7 @@ useFocusEffect(
 
   // Fetch items based on the selected category
   useEffect(() => {
-    if (!isSearchActive && selectedCategory !== null) {
+    if (!isSearching && selectedCategory !== null) {
       const fetchItems = async () => {
         setLoading(true);
         try {
@@ -219,14 +218,14 @@ useFocusEffect(
       };  
       fetchItems();
     }
-  }, [selectedCategory, user.prices_tag, isSearchActive]);
+  }, [selectedCategory, user.prices_tag, isSearching]);
 
   useEffect(() => {
     console.log("Route params:", route.params);
     if (searchItemsFromRoute) {
       console.log("Search items received:", searchItemsFromRoute);
       setItems(searchItemsFromRoute);
-      setIsSearchActive(true);
+      setIsSearching(true);
     }
   }, [searchItemsFromRoute]);
 

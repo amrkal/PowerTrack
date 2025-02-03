@@ -5,9 +5,11 @@
 ---
 
 ## 📌 Introduction  
-PowerTrack is an **innovative management application** designed to **optimize order processing and inventory tracking** for electrical stores. It automates **order fulfillment, real-time stock updates, and reporting**, ensuring businesses operate efficiently, reduce manual errors, and enhance customer satisfaction.  
+PowerTrack is an **innovative management application** designed to **optimize order processing and inventory tracking** for electrical stores. 
+It automates **order fulfillment, real-time stock updates, and reporting**, ensuring businesses operate efficiently, reduce manual errors, and enhance customer satisfaction.  
 
-This application is tailored to address inefficiencies in traditional inventory systems, offering *seamless automation, scalability, and an intuitive user experience. By leveraging **modern technologies* such as *React Native, Flask, and MongoDB, PowerTrack is **fast, secure, and scalable** for growing businesses.  
+This application is tailored to address inefficiencies in traditional inventory systems, offering **seamless automation, scalability, and an intuitive user experience.** 
+By leveraging **modern technologies** such as **React Native, Flask, and MongoDB**, PowerTrack is **fast, secure, and scalable** for growing businesses.  
 
 ---
 
